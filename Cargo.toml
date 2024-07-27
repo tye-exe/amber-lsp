@@ -1,0 +1,14 @@
+[package]
+name = "amber-lsp"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rust-sitter = "0.4.2"
+tokio = { version = "1.39.1", features = ["full"] }
+tower-lsp = "0.20.0"
+phf = { version = "0.11", features = ["macros"] }
+
+
+[build-dependencies]
+rust-sitter-tool = "0.4.2"
