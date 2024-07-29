@@ -12,3 +12,6 @@ phf = { version = "0.11", features = ["macros"] }
 
 [build-dependencies]
 rust-sitter-tool = "0.4.2"
+
+[dev-dependencies]
+insta = { version = "1.39.0", features = ["yaml"] }

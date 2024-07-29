@@ -1,0 +1,15 @@
+---
+source: src/tests/grammar/alpha034.rs
+expression: "parse(\"-5\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Expression(
+                Number(
+                    -5.0,
+                ),
+            ),
+        ),
+    ],
+)

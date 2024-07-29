@@ -1,0 +1,32 @@
+---
+source: src/tests/grammar/alpha034.rs
+expression: "parse(r#\"$echo \\\"Hello, world!\\\"$\"#).unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Expression(
+                Command(
+                    (),
+                    [
+                        Text(
+                            "echo ",
+                        ),
+                        Escape(
+                            (),
+                            "\"",
+                        ),
+                        Text(
+                            "Hello, world!",
+                        ),
+                        Escape(
+                            (),
+                            "\"",
+                        ),
+                    ],
+                    (),
+                ),
+            ),
+        ),
+    ],
+)

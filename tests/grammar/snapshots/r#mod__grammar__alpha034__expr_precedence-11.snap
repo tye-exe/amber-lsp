@@ -1,0 +1,48 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"true as Bool as Text as Num * 2 / foo()\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                Expression(
+                    Divide(
+                        Multiply(
+                            Cast(
+                                Cast(
+                                    Cast(
+                                        Boolean(
+                                            True,
+                                        ),
+                                        (),
+                                        "Bool",
+                                    ),
+                                    (),
+                                    "Text",
+                                ),
+                                (),
+                                "Num",
+                            ),
+                            (),
+                            Number(
+                                2.0,
+                            ),
+                        ),
+                        (),
+                        FunctionInvocation(
+                            Variable(
+                                "foo",
+                            ),
+                            (),
+                            [],
+                            (),
+                            None,
+                        ),
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

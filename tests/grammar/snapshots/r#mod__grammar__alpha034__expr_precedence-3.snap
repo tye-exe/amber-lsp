@@ -1,0 +1,30 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"2 - 3 - 4\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                Expression(
+                    Subtract(
+                        Subtract(
+                            Number(
+                                2.0,
+                            ),
+                            (),
+                            Number(
+                                3.0,
+                            ),
+                        ),
+                        (),
+                        Number(
+                            4.0,
+                        ),
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

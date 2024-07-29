@@ -1,0 +1,19 @@
+---
+source: src/tests/grammar/alpha034.rs
+expression: "parse(\"1 as Num\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Expression(
+                Cast(
+                    Number(
+                        1.0,
+                    ),
+                    (),
+                    "Num",
+                ),
+            ),
+        ),
+    ],
+)

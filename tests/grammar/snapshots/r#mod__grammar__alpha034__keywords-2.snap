@@ -1,0 +1,16 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"continue\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                Continue(
+                    (),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

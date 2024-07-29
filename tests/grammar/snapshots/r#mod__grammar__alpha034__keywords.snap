@@ -1,0 +1,16 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"break\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                Break(
+                    (),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

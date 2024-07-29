@@ -1,0 +1,24 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"\\\"Hello, world!\\\"\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                Expression(
+                    Text(
+                        (),
+                        [
+                            Text(
+                                "Hello, world!",
+                            ),
+                        ],
+                        (),
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

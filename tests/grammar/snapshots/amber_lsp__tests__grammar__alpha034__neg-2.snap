@@ -1,0 +1,28 @@
+---
+source: src/tests/grammar/alpha034.rs
+expression: "parse(\"-(1 - 2)\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Expression(
+                Neg(
+                    (),
+                    Parentheses(
+                        (),
+                        Subtract(
+                            Number(
+                                1.0,
+                            ),
+                            (),
+                            Number(
+                                2.0,
+                            ),
+                        ),
+                        (),
+                    ),
+                ),
+            ),
+        ),
+    ],
+)

@@ -1,0 +1,23 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"let a = 10\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                VariableInit(
+                    (),
+                    Variable(
+                        "a",
+                    ),
+                    (),
+                    Number(
+                        10.0,
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

@@ -1,0 +1,39 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(r#\"\"\\\"text in quotes\\\" \\\\\"\"#).unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                Expression(
+                    Text(
+                        (),
+                        [
+                            Escape(
+                                (),
+                                "\"",
+                            ),
+                            Text(
+                                "text in quotes",
+                            ),
+                            Escape(
+                                (),
+                                "\"",
+                            ),
+                            Text(
+                                " ",
+                            ),
+                            Escape(
+                                (),
+                                "\\",
+                            ),
+                        ],
+                        (),
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

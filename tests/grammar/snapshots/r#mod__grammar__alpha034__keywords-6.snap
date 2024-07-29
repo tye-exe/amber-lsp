@@ -1,0 +1,17 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"return\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                Return(
+                    (),
+                    None,
+                ),
+                None,
+            ),
+        ),
+    ],
+)

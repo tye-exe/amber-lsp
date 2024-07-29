@@ -1,0 +1,27 @@
+---
+source: src/tests/grammar/alpha034.rs
+expression: "parse(\"true and false and true\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Expression(
+                And(
+                    And(
+                        Boolean(
+                            True,
+                        ),
+                        (),
+                        Boolean(
+                            False,
+                        ),
+                    ),
+                    (),
+                    Boolean(
+                        True,
+                    ),
+                ),
+            ),
+        ),
+    ],
+)

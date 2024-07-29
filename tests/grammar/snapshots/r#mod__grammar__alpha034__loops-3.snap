@@ -1,0 +1,41 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"loop var1, var2 in 1..2 {}\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                IterLoop(
+                    (),
+                    WithIndex(
+                        Variable(
+                            "var1",
+                        ),
+                        (),
+                        Variable(
+                            "var2",
+                        ),
+                    ),
+                    (),
+                    Range(
+                        Number(
+                            1.0,
+                        ),
+                        (),
+                        None,
+                        Number(
+                            2.0,
+                        ),
+                    ),
+                    Block(
+                        (),
+                        [],
+                        (),
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

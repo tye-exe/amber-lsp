@@ -1,0 +1,20 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"name_1\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                Expression(
+                    VariableGet(
+                        Variable(
+                            "name_1",
+                        ),
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

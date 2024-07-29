@@ -1,0 +1,18 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"false\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                Expression(
+                    Boolean(
+                        False,
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

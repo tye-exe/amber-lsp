@@ -1,0 +1,25 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"-(1)\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                Expression(
+                    Neg(
+                        (),
+                        Parentheses(
+                            (),
+                            Number(
+                                1.0,
+                            ),
+                            (),
+                        ),
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

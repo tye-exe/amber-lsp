@@ -1,0 +1,37 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"-(2 + 3) * 5\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                Expression(
+                    Multiply(
+                        Neg(
+                            (),
+                            Parentheses(
+                                (),
+                                Add(
+                                    Number(
+                                        2.0,
+                                    ),
+                                    (),
+                                    Number(
+                                        3.0,
+                                    ),
+                                ),
+                                (),
+                            ),
+                        ),
+                        (),
+                        Number(
+                            5.0,
+                        ),
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

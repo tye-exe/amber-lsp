@@ -1,0 +1,56 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"if true { echo 10 } else { echo 20 }\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                IfCondition(
+                    (),
+                    IfCondition(
+                        Boolean(
+                            True,
+                        ),
+                        Block(
+                            (),
+                            [
+                                Statement(
+                                    Echo(
+                                        (),
+                                        Number(
+                                            10.0,
+                                        ),
+                                    ),
+                                    None,
+                                ),
+                            ],
+                            (),
+                        ),
+                    ),
+                    Some(
+                        Else(
+                            (),
+                            Block(
+                                (),
+                                [
+                                    Statement(
+                                        Echo(
+                                            (),
+                                            Number(
+                                                20.0,
+                                            ),
+                                        ),
+                                        None,
+                                    ),
+                                ],
+                                (),
+                            ),
+                        ),
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

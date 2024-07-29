@@ -1,0 +1,18 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"import {} \\\"path/to/module\\\"\").unwrap()"
+---
+Statement(
+    [
+        Import(
+            (),
+            ImportSpecific(
+                (),
+                [],
+                (),
+            ),
+            "\"path/to/module\"",
+            None,
+        ),
+    ],
+)

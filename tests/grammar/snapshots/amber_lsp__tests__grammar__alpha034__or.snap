@@ -1,0 +1,21 @@
+---
+source: src/tests/grammar/alpha034.rs
+expression: "parse(\"false or false\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Expression(
+                Or(
+                    Boolean(
+                        False,
+                    ),
+                    (),
+                    Boolean(
+                        False,
+                    ),
+                ),
+            ),
+        ),
+    ],
+)

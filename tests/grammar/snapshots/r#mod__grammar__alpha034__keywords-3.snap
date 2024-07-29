@@ -1,0 +1,17 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"fail\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                Fail(
+                    (),
+                    None,
+                ),
+                None,
+            ),
+        ),
+    ],
+)

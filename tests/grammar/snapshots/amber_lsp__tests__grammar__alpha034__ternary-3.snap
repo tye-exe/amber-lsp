@@ -1,0 +1,41 @@
+---
+source: src/tests/grammar/alpha034.rs
+expression: "parse(\"true ? 1 + 2 : false ? 5 : 6\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Expression(
+                Ternary(
+                    Boolean(
+                        True,
+                    ),
+                    (),
+                    Add(
+                        Number(
+                            1.0,
+                        ),
+                        (),
+                        Number(
+                            2.0,
+                        ),
+                    ),
+                    (),
+                    Ternary(
+                        Boolean(
+                            False,
+                        ),
+                        (),
+                        Number(
+                            5.0,
+                        ),
+                        (),
+                        Number(
+                            6.0,
+                        ),
+                    ),
+                ),
+            ),
+        ),
+    ],
+)

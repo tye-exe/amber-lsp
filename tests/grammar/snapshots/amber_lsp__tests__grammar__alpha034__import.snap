@@ -1,0 +1,15 @@
+---
+source: src/tests/grammar/alpha034.rs
+expression: "parse(\"import * \\\"path/to/module\\\"\").unwrap()"
+---
+Statement(
+    [
+        Import(
+            (),
+            ImportAll(
+                (),
+            ),
+            "\"path/to/module\"",
+        ),
+    ],
+)

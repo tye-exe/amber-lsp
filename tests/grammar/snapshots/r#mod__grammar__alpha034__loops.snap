@@ -1,0 +1,21 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"loop {}\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                InfiniteLoop(
+                    (),
+                    Block(
+                        (),
+                        [],
+                        (),
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

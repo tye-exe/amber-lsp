@@ -1,0 +1,40 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"unsafe silent {}\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                CommandModifier(
+                    Unsafe(
+                        (),
+                    ),
+                ),
+                None,
+            ),
+        ),
+        Statement(
+            Statement(
+                CommandModifier(
+                    Silent(
+                        (),
+                    ),
+                ),
+                None,
+            ),
+        ),
+        Statement(
+            Statement(
+                Block(
+                    Block(
+                        (),
+                        [],
+                        (),
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

@@ -1,0 +1,36 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"$command --arg1 -v$\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                Expression(
+                    Command(
+                        (),
+                        [
+                            Text(
+                                "command ",
+                            ),
+                            CommandOption(
+                                (),
+                                "arg1",
+                            ),
+                            Text(
+                                " ",
+                            ),
+                            CommandOption(
+                                (),
+                                "v",
+                            ),
+                        ],
+                        (),
+                        None,
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

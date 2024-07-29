@@ -1,0 +1,28 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"a = 10 + 2\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                VariableSet(
+                    Variable(
+                        "a",
+                    ),
+                    (),
+                    Add(
+                        Number(
+                            10.0,
+                        ),
+                        (),
+                        Number(
+                            2.0,
+                        ),
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

@@ -1,0 +1,23 @@
+---
+source: src/tests/grammar/alpha034.rs
+expression: "parse(\"\n        // This is a comment\n        1 + 2\n    \")"
+---
+Ok(
+    Statement(
+        [
+            Statement(
+                Expression(
+                    Add(
+                        Number(
+                            1.0,
+                        ),
+                        (),
+                        Number(
+                            2.0,
+                        ),
+                    ),
+                ),
+            ),
+        ],
+    ),
+)

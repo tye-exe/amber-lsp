@@ -1,0 +1,20 @@
+---
+source: src/tests/grammar/alpha034.rs
+expression: "parse(\"if true {}\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            IfCondition(
+                (),
+                Boolean(
+                    True,
+                ),
+                (),
+                [],
+                (),
+                None,
+            ),
+        ),
+    ],
+)

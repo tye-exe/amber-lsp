@@ -1,0 +1,33 @@
+---
+source: src/tests/grammar/alpha034.rs
+expression: "parse(\"\\\"Hello, {name}! How are you?\\\"\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Expression(
+                Text(
+                    (),
+                    [
+                        Text(
+                            "Hello, ",
+                        ),
+                        Expression(
+                            (),
+                            VariableGet(
+                                Variable(
+                                    "name",
+                                ),
+                            ),
+                            (),
+                        ),
+                        Text(
+                            "! How are you?",
+                        ),
+                    ],
+                    (),
+                ),
+            ),
+        ),
+    ],
+)

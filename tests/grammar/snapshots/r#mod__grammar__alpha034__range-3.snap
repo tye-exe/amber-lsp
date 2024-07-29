@@ -1,0 +1,32 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"1..2..3\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                Expression(
+                    Range(
+                        Range(
+                            Number(
+                                1.0,
+                            ),
+                            (),
+                            None,
+                            Number(
+                                2.0,
+                            ),
+                        ),
+                        (),
+                        None,
+                        Number(
+                            3.0,
+                        ),
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

@@ -1,0 +1,30 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"$$ failed {}\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                Expression(
+                    Command(
+                        (),
+                        [],
+                        (),
+                        Some(
+                            Handle(
+                                (),
+                                Block(
+                                    (),
+                                    [],
+                                    (),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

@@ -1,0 +1,36 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"1 + 2 < 2 + 1\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                Expression(
+                    Lt(
+                        Add(
+                            Number(
+                                1.0,
+                            ),
+                            (),
+                            Number(
+                                2.0,
+                            ),
+                        ),
+                        (),
+                        Add(
+                            Number(
+                                2.0,
+                            ),
+                            (),
+                            Number(
+                                1.0,
+                            ),
+                        ),
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

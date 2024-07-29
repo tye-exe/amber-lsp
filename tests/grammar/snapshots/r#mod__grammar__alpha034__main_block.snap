@@ -1,0 +1,26 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"\n        main {\n            echo 10\n        }\n    \").unwrap()"
+---
+Statement(
+    [
+        Main(
+            (),
+            Block(
+                (),
+                [
+                    Statement(
+                        Echo(
+                            (),
+                            Number(
+                                10.0,
+                            ),
+                        ),
+                        None,
+                    ),
+                ],
+                (),
+            ),
+        ),
+    ],
+)

@@ -1,0 +1,26 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"1 + 2 // This is a comment without a newline\")"
+---
+Ok(
+    Statement(
+        [
+            Statement(
+                Statement(
+                    Expression(
+                        Add(
+                            Number(
+                                1.0,
+                            ),
+                            (),
+                            Number(
+                                2.0,
+                            ),
+                        ),
+                    ),
+                    None,
+                ),
+            ),
+        ],
+    ),
+)

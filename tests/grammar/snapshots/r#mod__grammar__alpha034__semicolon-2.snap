@@ -1,0 +1,32 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"1; 2;\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                Expression(
+                    Number(
+                        1.0,
+                    ),
+                ),
+                Some(
+                    (),
+                ),
+            ),
+        ),
+        Statement(
+            Statement(
+                Expression(
+                    Number(
+                        2.0,
+                    ),
+                ),
+                Some(
+                    (),
+                ),
+            ),
+        ),
+    ],
+)

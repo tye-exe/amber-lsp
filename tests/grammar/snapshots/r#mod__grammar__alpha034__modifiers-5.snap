@@ -1,0 +1,45 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"unsafe silent $command$\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                CommandModifier(
+                    Unsafe(
+                        (),
+                    ),
+                ),
+                None,
+            ),
+        ),
+        Statement(
+            Statement(
+                CommandModifier(
+                    Silent(
+                        (),
+                    ),
+                ),
+                None,
+            ),
+        ),
+        Statement(
+            Statement(
+                Expression(
+                    Command(
+                        (),
+                        [
+                            Text(
+                                "command",
+                            ),
+                        ],
+                        (),
+                        None,
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

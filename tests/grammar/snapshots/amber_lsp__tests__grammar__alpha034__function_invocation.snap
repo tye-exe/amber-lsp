@@ -1,0 +1,20 @@
+---
+source: src/tests/grammar/alpha034.rs
+expression: "parse(\"func()\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Expression(
+                FunctionInvocation(
+                    Variable(
+                        "func",
+                    ),
+                    (),
+                    [],
+                    (),
+                ),
+            ),
+        ),
+    ],
+)

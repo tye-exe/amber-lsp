@@ -4,8 +4,6 @@ use tower_lsp::{Client, LanguageServer, LspService, Server};
 
 mod grammar;
 
-mod tests;
-
 #[derive(Debug)]
 struct Backend {
     client: Client,

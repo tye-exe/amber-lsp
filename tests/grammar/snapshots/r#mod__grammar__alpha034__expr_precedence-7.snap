@@ -1,0 +1,30 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"2 / 3 + 1\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                Expression(
+                    Add(
+                        Divide(
+                            Number(
+                                2.0,
+                            ),
+                            (),
+                            Number(
+                                3.0,
+                            ),
+                        ),
+                        (),
+                        Number(
+                            1.0,
+                        ),
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

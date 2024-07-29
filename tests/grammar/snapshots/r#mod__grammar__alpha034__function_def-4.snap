@@ -1,0 +1,54 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"fun func(a: Num, b: Text, c: Bool): Num {}\").unwrap()"
+---
+Statement(
+    [
+        FunctionDefinition(
+            (),
+            "func",
+            (),
+            [
+                Typed(
+                    Variable(
+                        "a",
+                    ),
+                    Type(
+                        (),
+                        "Num",
+                    ),
+                ),
+                Typed(
+                    Variable(
+                        "b",
+                    ),
+                    Type(
+                        (),
+                        "Text",
+                    ),
+                ),
+                Typed(
+                    Variable(
+                        "c",
+                    ),
+                    Type(
+                        (),
+                        "Bool",
+                    ),
+                ),
+            ],
+            (),
+            Some(
+                Type(
+                    (),
+                    "Num",
+                ),
+            ),
+            Block(
+                (),
+                [],
+                (),
+            ),
+        ),
+    ],
+)

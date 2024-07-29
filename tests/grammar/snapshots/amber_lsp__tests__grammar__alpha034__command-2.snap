@@ -1,0 +1,33 @@
+---
+source: src/tests/grammar/alpha034.rs
+expression: "parse(\"$echo \\\"Hello, {name}!\\\"$\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Expression(
+                Command(
+                    (),
+                    [
+                        Text(
+                            "echo \"Hello, ",
+                        ),
+                        Expression(
+                            (),
+                            VariableGet(
+                                Variable(
+                                    "name",
+                                ),
+                            ),
+                            (),
+                        ),
+                        Text(
+                            "!\"",
+                        ),
+                    ],
+                    (),
+                ),
+            ),
+        ),
+    ],
+)

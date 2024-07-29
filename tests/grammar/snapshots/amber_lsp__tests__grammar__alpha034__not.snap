@@ -1,0 +1,18 @@
+---
+source: src/tests/grammar/alpha034.rs
+expression: "parse(\"not true\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Expression(
+                Not(
+                    (),
+                    Boolean(
+                        True,
+                    ),
+                ),
+            ),
+        ),
+    ],
+)

@@ -1,0 +1,63 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"\n        {\n            echo 10\n        }\n        {\n            {\n                echo 20\n            }\n        }\n    \").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                Block(
+                    Block(
+                        (),
+                        [
+                            Statement(
+                                Echo(
+                                    (),
+                                    Number(
+                                        10.0,
+                                    ),
+                                ),
+                                None,
+                            ),
+                        ],
+                        (),
+                    ),
+                ),
+                None,
+            ),
+        ),
+        Statement(
+            Statement(
+                Block(
+                    Block(
+                        (),
+                        [
+                            Statement(
+                                Block(
+                                    Block(
+                                        (),
+                                        [
+                                            Statement(
+                                                Echo(
+                                                    (),
+                                                    Number(
+                                                        20.0,
+                                                    ),
+                                                ),
+                                                None,
+                                            ),
+                                        ],
+                                        (),
+                                    ),
+                                ),
+                                None,
+                            ),
+                        ],
+                        (),
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

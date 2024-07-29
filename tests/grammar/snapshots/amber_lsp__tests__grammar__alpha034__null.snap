@@ -1,0 +1,15 @@
+---
+source: src/tests/grammar/alpha034.rs
+expression: "parse(\"null\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Expression(
+                Null(
+                    (),
+                ),
+            ),
+        ),
+    ],
+)

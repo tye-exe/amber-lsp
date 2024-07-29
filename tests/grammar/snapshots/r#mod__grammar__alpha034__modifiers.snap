@@ -1,0 +1,18 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"unsafe\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                CommandModifier(
+                    Unsafe(
+                        (),
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)

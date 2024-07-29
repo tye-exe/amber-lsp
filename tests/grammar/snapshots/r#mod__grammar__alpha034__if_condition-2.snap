@@ -1,0 +1,37 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"if true { echo 10 }\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                IfCondition(
+                    (),
+                    IfCondition(
+                        Boolean(
+                            True,
+                        ),
+                        Block(
+                            (),
+                            [
+                                Statement(
+                                    Echo(
+                                        (),
+                                        Number(
+                                            10.0,
+                                        ),
+                                    ),
+                                    None,
+                                ),
+                            ],
+                            (),
+                        ),
+                    ),
+                    None,
+                ),
+                None,
+            ),
+        ),
+    ],
+)

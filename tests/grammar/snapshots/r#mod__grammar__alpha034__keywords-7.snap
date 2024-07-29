@@ -1,0 +1,21 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"return 1\").unwrap()"
+---
+Statement(
+    [
+        Statement(
+            Statement(
+                Return(
+                    (),
+                    Some(
+                        Number(
+                            1.0,
+                        ),
+                    ),
+                ),
+                None,
+            ),
+        ),
+    ],
+)
