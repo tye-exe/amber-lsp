@@ -14,7 +14,6 @@
 /// 11. Call
 #[rust_sitter::grammar("Amber_v0_3_4_alpha")]
 pub mod grammar {
-
     #[derive(PartialEq, Debug)]
     pub enum Variable {
         Variable(
@@ -507,10 +506,12 @@ pub mod grammar {
 
     #[rust_sitter::language]
     #[derive(PartialEq, Debug)]
-    pub enum Language {
-        Statement(
-            #[rust_sitter::repeat(non_empty = true)]
-            Vec<GlobalStatement>,
-        )
+    pub struct Language {
+        #[rust_sitter::repeat(non_empty = true)]
+        pub statements: Vec<GlobalStatement>,
+        // Statement(
+        //     #[rust_sitter::repeat(non_empty = true)]
+        //     Vec<GlobalStatement>,
+        // )
     }
 }
