@@ -4,44 +4,34 @@ expression: "parse(\"25 / 5 * 3 + 7 - 2 * 4\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    Subtract(
-                        Add(
-                            Multiply(
-                                Divide(
-                                    Number(
-                                        25.0,
-                                    ),
-                                    (),
-                                    Number(
-                                        5.0,
-                                    ),
-                                ),
-                                (),
-                                Number(
-                                    3.0,
-                                ),
-                            ),
-                            (),
+        Expression(
+            Subtract(
+                Add(
+                    Multiply(
+                        Divide(
                             Number(
-                                7.0,
+                                25.0,
+                            ),
+                            Number(
+                                5.0,
                             ),
                         ),
-                        (),
-                        Multiply(
-                            Number(
-                                2.0,
-                            ),
-                            (),
-                            Number(
-                                4.0,
-                            ),
+                        Number(
+                            3.0,
                         ),
                     ),
+                    Number(
+                        7.0,
+                    ),
                 ),
-                None,
+                Multiply(
+                    Number(
+                        2.0,
+                    ),
+                    Number(
+                        4.0,
+                    ),
+                ),
             ),
         ),
     ],

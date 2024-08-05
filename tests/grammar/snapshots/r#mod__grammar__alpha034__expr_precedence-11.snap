@@ -4,44 +4,30 @@ expression: "parse(\"true as Bool as Text as Num * 2 / foo()\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    Divide(
-                        Multiply(
+        Expression(
+            Divide(
+                Multiply(
+                    Cast(
+                        Cast(
                             Cast(
-                                Cast(
-                                    Cast(
-                                        Boolean(
-                                            True,
-                                        ),
-                                        (),
-                                        "Bool",
-                                    ),
-                                    (),
-                                    "Text",
+                                Boolean(
+                                    true,
                                 ),
-                                (),
-                                "Num",
+                                "Bool",
                             ),
-                            (),
-                            Number(
-                                2.0,
-                            ),
+                            "Text",
                         ),
-                        (),
-                        FunctionInvocation(
-                            Variable(
-                                "foo",
-                            ),
-                            (),
-                            [],
-                            (),
-                            None,
-                        ),
+                        "Num",
+                    ),
+                    Number(
+                        2.0,
                     ),
                 ),
-                None,
+                FunctionInvocation(
+                    "foo",
+                    [],
+                    None,
+                ),
             ),
         ),
     ],

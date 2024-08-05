@@ -4,36 +4,15 @@ expression: "parse(\"silent unsafe {}\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                CommandModifier(
-                    Silent(
-                        (),
-                    ),
-                ),
-                None,
-            ),
+        CommandModifier(
+            Silent,
         ),
-        Statement(
-            Statement(
-                CommandModifier(
-                    Unsafe(
-                        (),
-                    ),
-                ),
-                None,
-            ),
+        CommandModifier(
+            Unsafe,
         ),
-        Statement(
-            Statement(
-                Block(
-                    Block(
-                        (),
-                        [],
-                        (),
-                    ),
-                ),
-                None,
+        Block(
+            Block(
+                [],
             ),
         ),
     ],

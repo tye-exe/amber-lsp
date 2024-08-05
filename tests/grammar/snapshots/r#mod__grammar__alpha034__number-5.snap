@@ -4,14 +4,11 @@ expression: "parse(\"-5\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    Number(
-                        -5.0,
-                    ),
+        Expression(
+            Neg(
+                Number(
+                    5.0,
                 ),
-                None,
             ),
         ),
     ],

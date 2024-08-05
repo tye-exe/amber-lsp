@@ -1,31 +1,14 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"fun func(a: Num) {}\").unwrap()"
+expression: "parse(\"fun func(a) {}\").unwrap()"
 ---
-Statement(
+FunctionDefinition(
+    "func",
     [
-        FunctionDefinition(
-            (),
-            "func",
-            (),
-            [
-                Typed(
-                    Variable(
-                        "a",
-                    ),
-                    Type(
-                        (),
-                        "Num",
-                    ),
-                ),
-            ],
-            (),
-            None,
-            Block(
-                (),
-                [],
-                (),
-            ),
+        Generic(
+            "a",
         ),
     ],
+    None,
+    [],
 )

@@ -1,6 +1,6 @@
-use std::collections::HashMap;
-
-use amber_lsp::grammar::{self, alpha034::grammar::Language};
+use amber_lsp::grammar::alpha034::{parse as parse_grammar, GlobalStatement};
+use chumsky::error::Simple;
+use chumsky::Parser as ChumskyParser;
 
 #[derive(Debug)]
 pub enum AmberVersion {
@@ -25,10 +25,10 @@ impl Parser {
         Self { version }
     }
 
-    pub fn parse(&self, input: &str) -> Result<Language, Vec<rust_sitter::errors::ParseError>> {
+    pub fn parse(&self, input: &str) -> (Option<GlobalStatement>, Vec<Simple<char>>) {
         match self.version {
             AmberVersion::Alpha034 => {
-                return Ok(grammar::alpha034::grammar::parse(input)?);
+                parse_grammar().parse_recovery(input)
             }
         }
     }

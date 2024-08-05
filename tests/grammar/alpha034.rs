@@ -1,6 +1,11 @@
+use chumsky::{error::Simple, Parser};
 use insta::assert_debug_snapshot;
 
-use amber_lsp::grammar::alpha034::grammar::parse;
+use amber_lsp::grammar::alpha034::{parse as parse_grammar, FunctionArgument, TypeAnnotation};
+
+fn parse(input: &str) -> Result<amber_lsp::grammar::alpha034::GlobalStatement, Vec<Simple<char>>> {
+    parse_grammar().parse(input)
+}
 
 #[test]
 fn test_text() {
@@ -26,6 +31,7 @@ fn test_number() {
     assert_debug_snapshot!(parse("-1.0").unwrap());
     assert_debug_snapshot!(parse("-1.24").unwrap());
     assert_debug_snapshot!(parse("-5").unwrap());
+    assert_debug_snapshot!(parse("001.00004").unwrap());
 }
 
 #[test]
@@ -83,6 +89,7 @@ fn test_mults_and_adds() {
     assert_debug_snapshot!(parse("1 * 2 + 3").unwrap());
     assert_debug_snapshot!(parse("1 / 2 + 3").unwrap());
     assert_debug_snapshot!(parse("1 - 2 / 3").unwrap());
+    assert_debug_snapshot!(parse("3 * 2 - --2 * 2").unwrap());
 }
 
 #[test]
@@ -251,9 +258,9 @@ fn test_import() {
 #[test]
 fn test_function_def() {
     assert_debug_snapshot!(parse("fun func() {}").unwrap());
-    assert_debug_snapshot!(parse("fun func(a: Num) {}").unwrap());
-    assert_debug_snapshot!(parse("fun func(a: Num, b: Text) {}").unwrap());
-    assert_debug_snapshot!(parse("fun func(a: Num, b: Text, c: Bool): Num {}").unwrap());
+    assert_debug_snapshot!(parse("fun func(a) {}").unwrap());
+    assert_debug_snapshot!(parse("fun func(a : Num) {}").unwrap());
+    assert_debug_snapshot!(parse("fun func(a: Num, b, c: Bool): Num {}").unwrap());
     assert_debug_snapshot!(parse("
         fun func(a: Num, b: Text, c: Bool): Num {
             echo 10

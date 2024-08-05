@@ -1,27 +1,20 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"true ? 1 : 2\").unwrap()"
+expression: "parse(\"true then 1 else 2\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    Ternary(
-                        Boolean(
-                            True,
-                        ),
-                        (),
-                        Number(
-                            1.0,
-                        ),
-                        (),
-                        Number(
-                            2.0,
-                        ),
-                    ),
+        Expression(
+            Ternary(
+                Boolean(
+                    true,
                 ),
-                None,
+                Number(
+                    1.0,
+                ),
+                Number(
+                    2.0,
+                ),
             ),
         ),
     ],

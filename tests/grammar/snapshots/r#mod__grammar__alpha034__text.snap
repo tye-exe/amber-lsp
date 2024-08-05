@@ -4,20 +4,13 @@ expression: "parse(\"\\\"Hello, world!\\\"\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
+        Expression(
+            Text(
+                [
                     Text(
-                        (),
-                        [
-                            Text(
-                                "Hello, world!",
-                            ),
-                        ],
-                        (),
+                        "Hello, world!",
                     ),
-                ),
-                None,
+                ],
             ),
         ),
     ],

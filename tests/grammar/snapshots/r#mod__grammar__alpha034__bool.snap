@@ -4,14 +4,9 @@ expression: "parse(\"true\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    Boolean(
-                        True,
-                    ),
-                ),
-                None,
+        Expression(
+            Boolean(
+                true,
             ),
         ),
     ],

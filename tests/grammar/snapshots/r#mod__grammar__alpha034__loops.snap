@@ -4,17 +4,9 @@ expression: "parse(\"loop {}\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                InfiniteLoop(
-                    (),
-                    Block(
-                        (),
-                        [],
-                        (),
-                    ),
-                ),
-                None,
+        InfiniteLoop(
+            Block(
+                [],
             ),
         ),
     ],

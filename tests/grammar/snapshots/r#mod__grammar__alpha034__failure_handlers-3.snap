@@ -4,24 +4,13 @@ expression: "parse(\"foo()?\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    FunctionInvocation(
-                        Variable(
-                            "foo",
-                        ),
-                        (),
-                        [],
-                        (),
-                        Some(
-                            Propagate(
-                                (),
-                            ),
-                        ),
-                    ),
+        Expression(
+            FunctionInvocation(
+                "foo",
+                [],
+                Some(
+                    Propagate,
                 ),
-                None,
             ),
         ),
     ],

@@ -4,18 +4,12 @@ expression: "parse(\"1 as Num\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    Cast(
-                        Number(
-                            1.0,
-                        ),
-                        (),
-                        "Num",
-                    ),
+        Expression(
+            Cast(
+                Number(
+                    1.0,
                 ),
-                None,
+                "Num",
             ),
         ),
     ],

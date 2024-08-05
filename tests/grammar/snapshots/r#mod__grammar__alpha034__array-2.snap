@@ -4,20 +4,13 @@ expression: "parse(\"[1]\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    Array(
-                        (),
-                        [
-                            Number(
-                                1.0,
-                            ),
-                        ],
-                        (),
+        Expression(
+            Array(
+                [
+                    Number(
+                        1.0,
                     ),
-                ),
-                None,
+                ],
             ),
         ),
     ],

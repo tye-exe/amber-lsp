@@ -4,38 +4,29 @@ expression: "parse(\"true or false and true and true or false\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    Or(
-                        Or(
+        Expression(
+            Or(
+                Or(
+                    Boolean(
+                        true,
+                    ),
+                    And(
+                        And(
                             Boolean(
-                                True,
+                                false,
                             ),
-                            (),
-                            And(
-                                And(
-                                    Boolean(
-                                        False,
-                                    ),
-                                    (),
-                                    Boolean(
-                                        True,
-                                    ),
-                                ),
-                                (),
-                                Boolean(
-                                    True,
-                                ),
+                            Boolean(
+                                true,
                             ),
                         ),
-                        (),
                         Boolean(
-                            False,
+                            true,
                         ),
                     ),
                 ),
-                None,
+                Boolean(
+                    false,
+                ),
             ),
         ),
     ],

@@ -4,26 +4,17 @@ expression: "parse(\"func(1, 2)\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    FunctionInvocation(
-                        Variable(
-                            "func",
-                        ),
-                        (),
-                        [
-                            Number(
-                                1.0,
-                            ),
-                            Number(
-                                2.0,
-                            ),
-                        ],
-                        (),
-                        None,
+        Expression(
+            FunctionInvocation(
+                "func",
+                [
+                    Number(
+                        1.0,
                     ),
-                ),
+                    Number(
+                        2.0,
+                    ),
+                ],
                 None,
             ),
         ),

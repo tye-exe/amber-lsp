@@ -4,18 +4,10 @@ expression: "parse(\"a = 10\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                VariableSet(
-                    Variable(
-                        "a",
-                    ),
-                    (),
-                    Number(
-                        10.0,
-                    ),
-                ),
-                None,
+        VariableSet(
+            "a",
+            Number(
+                10.0,
             ),
         ),
     ],

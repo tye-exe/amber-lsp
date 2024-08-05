@@ -4,16 +4,10 @@ expression: "parse(\"a /= 10\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                ShorthandDiv(
-                    "a",
-                    (),
-                    Number(
-                        10.0,
-                    ),
-                ),
-                None,
+        ShorthandDiv(
+            "a",
+            Number(
+                10.0,
             ),
         ),
     ],

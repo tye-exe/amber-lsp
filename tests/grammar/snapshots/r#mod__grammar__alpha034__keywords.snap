@@ -4,13 +4,6 @@ expression: "parse(\"break\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Break(
-                    (),
-                ),
-                None,
-            ),
-        ),
+        Break,
     ],
 )

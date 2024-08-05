@@ -4,35 +4,25 @@ expression: "parse(r#\"\"\\\"text in quotes\\\" \\\\\"\"#).unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    Text(
-                        (),
-                        [
-                            Escape(
-                                (),
-                                "\"",
-                            ),
-                            Text(
-                                "text in quotes",
-                            ),
-                            Escape(
-                                (),
-                                "\"",
-                            ),
-                            Text(
-                                " ",
-                            ),
-                            Escape(
-                                (),
-                                "\\",
-                            ),
-                        ],
-                        (),
+        Expression(
+            Text(
+                [
+                    Escape(
+                        "\"",
                     ),
-                ),
-                None,
+                    Text(
+                        "text in quotes",
+                    ),
+                    Escape(
+                        "\"",
+                    ),
+                    Text(
+                        " ",
+                    ),
+                    Escape(
+                        "\\",
+                    ),
+                ],
             ),
         ),
     ],

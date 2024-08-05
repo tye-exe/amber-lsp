@@ -71,8 +71,6 @@ impl LanguageServer for Backend {
             });
     }
 
-    
-
     async fn did_close(&self, params: DidCloseTextDocumentParams) {
         self.document_map.remove(&params.text_document.uri.to_string());
     }

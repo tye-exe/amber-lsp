@@ -1,0 +1,13 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"001.00004\").unwrap()"
+---
+Statement(
+    [
+        Expression(
+            Number(
+                1.00004,
+            ),
+        ),
+    ],
+)

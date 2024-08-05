@@ -1,0 +1,32 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"3 * 2 - --2 * 2\").unwrap()"
+---
+Statement(
+    [
+        Expression(
+            Subtract(
+                Multiply(
+                    Number(
+                        3.0,
+                    ),
+                    Number(
+                        2.0,
+                    ),
+                ),
+                Multiply(
+                    Neg(
+                        Neg(
+                            Number(
+                                2.0,
+                            ),
+                        ),
+                    ),
+                    Number(
+                        2.0,
+                    ),
+                ),
+            ),
+        ),
+    ],
+)

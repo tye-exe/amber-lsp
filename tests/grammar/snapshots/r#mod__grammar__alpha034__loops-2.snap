@@ -4,33 +4,20 @@ expression: "parse(\"loop var1 in 1..2 {}\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                IterLoop(
-                    (),
-                    Single(
-                        Variable(
-                            "var1",
-                        ),
-                    ),
-                    (),
-                    Range(
-                        Number(
-                            1.0,
-                        ),
-                        (),
-                        None,
-                        Number(
-                            2.0,
-                        ),
-                    ),
-                    Block(
-                        (),
-                        [],
-                        (),
-                    ),
+        IterLoop(
+            Single(
+                "var1",
+            ),
+            Range(
+                Number(
+                    1.0,
                 ),
-                None,
+                Number(
+                    2.0,
+                ),
+            ),
+            Block(
+                [],
             ),
         ),
     ],

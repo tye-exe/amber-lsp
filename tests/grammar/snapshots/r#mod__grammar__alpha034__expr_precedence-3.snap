@@ -4,26 +4,19 @@ expression: "parse(\"2 - 3 - 4\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    Subtract(
-                        Subtract(
-                            Number(
-                                2.0,
-                            ),
-                            (),
-                            Number(
-                                3.0,
-                            ),
-                        ),
-                        (),
-                        Number(
-                            4.0,
-                        ),
+        Expression(
+            Subtract(
+                Subtract(
+                    Number(
+                        2.0,
+                    ),
+                    Number(
+                        3.0,
                     ),
                 ),
-                None,
+                Number(
+                    4.0,
+                ),
             ),
         ),
     ],

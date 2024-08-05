@@ -4,15 +4,8 @@ expression: "parse(\"silent\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                CommandModifier(
-                    Silent(
-                        (),
-                    ),
-                ),
-                None,
-            ),
+        CommandModifier(
+            Silent,
         ),
     ],
 )

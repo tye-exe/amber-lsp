@@ -4,15 +4,8 @@ expression: "parse(\"null\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    Null(
-                        (),
-                    ),
-                ),
-                None,
-            ),
+        Expression(
+            Null,
         ),
     ],
 )

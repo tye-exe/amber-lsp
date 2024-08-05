@@ -4,32 +4,21 @@ expression: "parse(\"$echo \\\"Hello, {name}!\\\"$\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    Command(
-                        (),
-                        [
-                            Text(
-                                "echo \"Hello, ",
-                            ),
-                            Expression(
-                                (),
-                                VariableGet(
-                                    Variable(
-                                        "name",
-                                    ),
-                                ),
-                                (),
-                            ),
-                            Text(
-                                "!\"",
-                            ),
-                        ],
-                        (),
-                        None,
+        Expression(
+            Command(
+                [
+                    Text(
+                        "echo \"Hello, ",
                     ),
-                ),
+                    Expression(
+                        Var(
+                            "name",
+                        ),
+                    ),
+                    Text(
+                        "!\"",
+                    ),
+                ],
                 None,
             ),
         ),

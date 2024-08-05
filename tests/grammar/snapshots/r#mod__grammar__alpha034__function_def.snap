@@ -2,20 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"fun func() {}\").unwrap()"
 ---
-Statement(
-    [
-        FunctionDefinition(
-            (),
-            "func",
-            (),
-            [],
-            (),
-            None,
-            Block(
-                (),
-                [],
-                (),
-            ),
-        ),
-    ],
+FunctionDefinition(
+    "func",
+    [],
+    None,
+    [],
 )

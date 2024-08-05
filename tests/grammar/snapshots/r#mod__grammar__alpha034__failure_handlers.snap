@@ -4,21 +4,12 @@ expression: "parse(\"$$?\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    Command(
-                        (),
-                        [],
-                        (),
-                        Some(
-                            Propagate(
-                                (),
-                            ),
-                        ),
-                    ),
+        Expression(
+            Command(
+                [],
+                Some(
+                    Propagate,
                 ),
-                None,
             ),
         ),
     ],

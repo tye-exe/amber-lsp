@@ -4,15 +4,9 @@ expression: "parse(\"echo 1\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Echo(
-                    (),
-                    Number(
-                        1.0,
-                    ),
-                ),
-                None,
+        Echo(
+            Number(
+                1.0,
             ),
         ),
     ],

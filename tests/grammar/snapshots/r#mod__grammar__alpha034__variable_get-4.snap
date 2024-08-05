@@ -4,16 +4,9 @@ expression: "parse(\"name_1_\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    VariableGet(
-                        Variable(
-                            "name_1_",
-                        ),
-                    ),
-                ),
-                None,
+        Expression(
+            Var(
+                "name_1_",
             ),
         ),
     ],

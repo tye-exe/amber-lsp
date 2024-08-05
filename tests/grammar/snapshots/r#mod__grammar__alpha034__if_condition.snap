@@ -4,24 +4,16 @@ expression: "parse(\"if true {}\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                IfCondition(
-                    (),
-                    IfCondition(
-                        Boolean(
-                            True,
-                        ),
-                        Block(
-                            (),
-                            [],
-                            (),
-                        ),
-                    ),
-                    None,
+        IfCondition(
+            IfCondition(
+                Boolean(
+                    true,
                 ),
-                None,
+                Block(
+                    [],
+                ),
             ),
+            None,
         ),
     ],
 )

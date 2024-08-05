@@ -4,19 +4,10 @@ expression: "parse(\"func()\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    FunctionInvocation(
-                        Variable(
-                            "func",
-                        ),
-                        (),
-                        [],
-                        (),
-                        None,
-                    ),
-                ),
+        Expression(
+            FunctionInvocation(
+                "func",
+                [],
                 None,
             ),
         ),

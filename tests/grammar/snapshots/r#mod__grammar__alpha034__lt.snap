@@ -4,20 +4,14 @@ expression: "parse(\"1 < 2\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    Lt(
-                        Number(
-                            1.0,
-                        ),
-                        (),
-                        Number(
-                            2.0,
-                        ),
-                    ),
+        Expression(
+            Lt(
+                Number(
+                    1.0,
                 ),
-                None,
+                Number(
+                    2.0,
+                ),
             ),
         ),
     ],

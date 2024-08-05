@@ -4,17 +4,11 @@ expression: "parse(\"fail 1\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Fail(
-                    (),
-                    Some(
-                        Number(
-                            1.0,
-                        ),
-                    ),
+        Fail(
+            Some(
+                Number(
+                    1.0,
                 ),
-                None,
             ),
         ),
     ],

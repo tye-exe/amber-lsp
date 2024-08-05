@@ -4,19 +4,11 @@ expression: "parse(\"nameof variable\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    Nameof(
-                        (),
-                        VariableGet(
-                            Variable(
-                                "variable",
-                            ),
-                        ),
-                    ),
+        Expression(
+            Nameof(
+                Var(
+                    "variable",
                 ),
-                None,
             ),
         ),
     ],

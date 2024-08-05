@@ -4,42 +4,27 @@ expression: "parse(\"if true { echo 10 } else {}\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                IfCondition(
-                    (),
-                    IfCondition(
-                        Boolean(
-                            True,
-                        ),
-                        Block(
-                            (),
-                            [
-                                Statement(
-                                    Echo(
-                                        (),
-                                        Number(
-                                            10.0,
-                                        ),
-                                    ),
-                                    None,
-                                ),
-                            ],
-                            (),
-                        ),
-                    ),
-                    Some(
-                        Else(
-                            (),
-                            Block(
-                                (),
-                                [],
-                                (),
+        IfCondition(
+            IfCondition(
+                Boolean(
+                    true,
+                ),
+                Block(
+                    [
+                        Echo(
+                            Number(
+                                10.0,
                             ),
                         ),
+                    ],
+                ),
+            ),
+            Some(
+                Else(
+                    Block(
+                        [],
                     ),
                 ),
-                None,
             ),
         ),
     ],

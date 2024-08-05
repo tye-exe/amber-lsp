@@ -4,16 +4,10 @@ expression: "parse(\"a %= 10\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                ShorthandModulo(
-                    "a",
-                    (),
-                    Number(
-                        10.0,
-                    ),
-                ),
-                None,
+        ShorthandModulo(
+            "a",
+            Number(
+                10.0,
             ),
         ),
     ],

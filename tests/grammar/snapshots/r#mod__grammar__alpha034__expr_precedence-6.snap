@@ -4,46 +4,33 @@ expression: "parse(\"(8+2)*(7-3)/2\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    Divide(
-                        Multiply(
-                            Parentheses(
-                                (),
-                                Add(
-                                    Number(
-                                        8.0,
-                                    ),
-                                    (),
-                                    Number(
-                                        2.0,
-                                    ),
-                                ),
-                                (),
+        Expression(
+            Divide(
+                Multiply(
+                    Parentheses(
+                        Add(
+                            Number(
+                                8.0,
                             ),
-                            (),
-                            Parentheses(
-                                (),
-                                Subtract(
-                                    Number(
-                                        7.0,
-                                    ),
-                                    (),
-                                    Number(
-                                        3.0,
-                                    ),
-                                ),
-                                (),
+                            Number(
+                                2.0,
                             ),
                         ),
-                        (),
-                        Number(
-                            2.0,
+                    ),
+                    Parentheses(
+                        Subtract(
+                            Number(
+                                7.0,
+                            ),
+                            Number(
+                                3.0,
+                            ),
                         ),
                     ),
                 ),
-                None,
+                Number(
+                    2.0,
+                ),
             ),
         ),
     ],

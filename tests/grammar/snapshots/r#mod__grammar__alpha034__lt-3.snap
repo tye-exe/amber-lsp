@@ -4,38 +4,29 @@ expression: "parse(\"1 + 2 < 2 + 1 < 5\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    Lt(
-                        Lt(
-                            Add(
-                                Number(
-                                    1.0,
-                                ),
-                                (),
-                                Number(
-                                    2.0,
-                                ),
-                            ),
-                            (),
-                            Add(
-                                Number(
-                                    2.0,
-                                ),
-                                (),
-                                Number(
-                                    1.0,
-                                ),
-                            ),
-                        ),
-                        (),
+        Expression(
+            Lt(
+                Lt(
+                    Add(
                         Number(
-                            5.0,
+                            1.0,
+                        ),
+                        Number(
+                            2.0,
+                        ),
+                    ),
+                    Add(
+                        Number(
+                            2.0,
+                        ),
+                        Number(
+                            1.0,
                         ),
                     ),
                 ),
-                None,
+                Number(
+                    5.0,
+                ),
             ),
         ),
     ],

@@ -4,59 +4,32 @@ expression: "parse(\"\n        {\n            echo 10\n        }\n        {\n   
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Block(
-                    Block(
-                        (),
-                        [
-                            Statement(
-                                Echo(
-                                    (),
-                                    Number(
-                                        10.0,
-                                    ),
-                                ),
-                                None,
-                            ),
-                        ],
-                        (),
+        Block(
+            Block(
+                [
+                    Echo(
+                        Number(
+                            10.0,
+                        ),
                     ),
-                ),
-                None,
+                ],
             ),
         ),
-        Statement(
-            Statement(
-                Block(
+        Block(
+            Block(
+                [
                     Block(
-                        (),
-                        [
-                            Statement(
-                                Block(
-                                    Block(
-                                        (),
-                                        [
-                                            Statement(
-                                                Echo(
-                                                    (),
-                                                    Number(
-                                                        20.0,
-                                                    ),
-                                                ),
-                                                None,
-                                            ),
-                                        ],
-                                        (),
+                        Block(
+                            [
+                                Echo(
+                                    Number(
+                                        20.0,
                                     ),
                                 ),
-                                None,
-                            ),
-                        ],
-                        (),
+                            ],
+                        ),
                     ),
-                ),
-                None,
+                ],
             ),
         ),
     ],

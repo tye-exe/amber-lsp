@@ -4,26 +4,19 @@ expression: "parse(\"false or false or true\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    Or(
-                        Or(
-                            Boolean(
-                                False,
-                            ),
-                            (),
-                            Boolean(
-                                False,
-                            ),
-                        ),
-                        (),
-                        Boolean(
-                            True,
-                        ),
+        Expression(
+            Or(
+                Or(
+                    Boolean(
+                        false,
+                    ),
+                    Boolean(
+                        false,
                     ),
                 ),
-                None,
+                Boolean(
+                    true,
+                ),
             ),
         ),
     ],

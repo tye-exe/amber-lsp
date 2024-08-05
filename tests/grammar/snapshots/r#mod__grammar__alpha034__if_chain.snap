@@ -4,79 +4,55 @@ expression: "parse(\"\n        if {\n            2 == 3 {\n                echo 
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                IfChain(
-                    (),
-                    (),
-                    [
-                        IfCondition(
-                            IfCondition(
-                                Eq(
-                                    Number(
-                                        2.0,
-                                    ),
-                                    (),
-                                    Number(
-                                        3.0,
-                                    ),
-                                ),
-                                Block(
-                                    (),
-                                    [
-                                        Statement(
-                                            Echo(
-                                                (),
-                                                Number(
-                                                    10.0,
-                                                ),
-                                            ),
-                                            None,
-                                        ),
-                                    ],
-                                    (),
-                                ),
+        IfChain(
+            [
+                IfCondition(
+                    IfCondition(
+                        Eq(
+                            Number(
+                                2.0,
+                            ),
+                            Number(
+                                3.0,
                             ),
                         ),
-                        IfCondition(
-                            InlineIfCondition(
-                                Boolean(
-                                    True,
-                                ),
-                                (),
+                        Block(
+                            [
                                 Echo(
-                                    (),
                                     Number(
                                         10.0,
                                     ),
                                 ),
-                            ),
+                            ],
                         ),
-                        Else(
-                            Else(
-                                (),
-                                Block(
-                                    (),
-                                    [
-                                        Statement(
-                                            Echo(
-                                                (),
-                                                Number(
-                                                    20.0,
-                                                ),
-                                            ),
-                                            None,
-                                        ),
-                                    ],
-                                    (),
-                                ),
-                            ),
-                        ),
-                    ],
-                    (),
+                    ),
                 ),
-                None,
-            ),
+                IfCondition(
+                    InlineIfCondition(
+                        Boolean(
+                            true,
+                        ),
+                        Echo(
+                            Number(
+                                10.0,
+                            ),
+                        ),
+                    ),
+                ),
+                Else(
+                    Else(
+                        Block(
+                            [
+                                Echo(
+                                    Number(
+                                        20.0,
+                                    ),
+                                ),
+                            ],
+                        ),
+                    ),
+                ),
+            ],
         ),
     ],
 )

@@ -4,31 +4,20 @@ expression: "parse(\"let a = 10 + 2 * 3\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                VariableInit(
-                    (),
-                    Variable(
-                        "a",
+        VariableInit(
+            "a",
+            Add(
+                Number(
+                    10.0,
+                ),
+                Multiply(
+                    Number(
+                        2.0,
                     ),
-                    (),
-                    Add(
-                        Number(
-                            10.0,
-                        ),
-                        (),
-                        Multiply(
-                            Number(
-                                2.0,
-                            ),
-                            (),
-                            Number(
-                                3.0,
-                            ),
-                        ),
+                    Number(
+                        3.0,
                     ),
                 ),
-                None,
             ),
         ),
     ],

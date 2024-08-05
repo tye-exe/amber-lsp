@@ -4,13 +4,6 @@ expression: "parse(\"continue\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Continue(
-                    (),
-                ),
-                None,
-            ),
-        ),
+        Continue,
     ],
 )

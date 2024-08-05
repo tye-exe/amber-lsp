@@ -4,14 +4,11 @@ expression: "parse(\"-1.24\").unwrap()"
 ---
 Statement(
     [
-        Statement(
-            Statement(
-                Expression(
-                    Number(
-                        -1.24,
-                    ),
+        Expression(
+            Neg(
+                Number(
+                    1.24,
                 ),
-                None,
             ),
         ),
     ],
