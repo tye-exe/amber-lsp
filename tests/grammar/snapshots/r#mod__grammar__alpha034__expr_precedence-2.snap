@@ -2,27 +2,66 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"1 + 2 / 4 / 6\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Add(
-                Number(
-                    1.0,
-                ),
-                Divide(
-                    Divide(
-                        Number(
-                            2.0,
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Add(
+                            (
+                                Number(
+                                    (
+                                        1.0,
+                                        0..1,
+                                    ),
+                                ),
+                                0..1,
+                            ),
+                            (
+                                Divide(
+                                    (
+                                        Divide(
+                                            (
+                                                Number(
+                                                    (
+                                                        2.0,
+                                                        4..5,
+                                                    ),
+                                                ),
+                                                4..5,
+                                            ),
+                                            (
+                                                Number(
+                                                    (
+                                                        4.0,
+                                                        8..9,
+                                                    ),
+                                                ),
+                                                8..9,
+                                            ),
+                                        ),
+                                        4..9,
+                                    ),
+                                    (
+                                        Number(
+                                            (
+                                                6.0,
+                                                12..13,
+                                            ),
+                                        ),
+                                        12..13,
+                                    ),
+                                ),
+                                4..13,
+                            ),
                         ),
-                        Number(
-                            4.0,
-                        ),
-                    ),
-                    Number(
-                        6.0,
+                        0..13,
                     ),
                 ),
+                0..13,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..13,
 )

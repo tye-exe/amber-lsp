@@ -2,18 +2,39 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"silent unsafe {}\").unwrap()"
 ---
-Statement(
-    [
-        CommandModifier(
-            Silent,
-        ),
-        CommandModifier(
-            Unsafe,
-        ),
-        Block(
-            Block(
-                [],
+(
+    Statement(
+        [
+            (
+                CommandModifier(
+                    (
+                        Silent,
+                        0..6,
+                    ),
+                ),
+                0..6,
             ),
-        ),
-    ],
+            (
+                CommandModifier(
+                    (
+                        Unsafe,
+                        7..13,
+                    ),
+                ),
+                7..13,
+            ),
+            (
+                Block(
+                    (
+                        Block(
+                            [],
+                        ),
+                        14..16,
+                    ),
+                ),
+                14..16,
+            ),
+        ],
+    ),
+    0..16,
 )

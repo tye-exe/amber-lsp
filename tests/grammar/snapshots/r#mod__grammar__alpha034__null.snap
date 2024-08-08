@@ -2,10 +2,19 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"null\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Null,
-        ),
-    ],
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Null,
+                        0..4,
+                    ),
+                ),
+                0..4,
+            ),
+        ],
+    ),
+    0..4,
 )

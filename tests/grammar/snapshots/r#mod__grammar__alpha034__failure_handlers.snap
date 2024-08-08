@@ -2,15 +2,27 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"$$?\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Command(
-                [],
-                Some(
-                    Propagate,
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Command(
+                            [],
+                            Some(
+                                (
+                                    Propagate,
+                                    2..3,
+                                ),
+                            ),
+                        ),
+                        0..3,
+                    ),
                 ),
+                0..3,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..3,
 )

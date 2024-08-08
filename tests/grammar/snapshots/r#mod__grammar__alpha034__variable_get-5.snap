@@ -2,12 +2,24 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"_var\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Var(
-                "_var",
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Var(
+                            (
+                                "_var",
+                                0..4,
+                            ),
+                        ),
+                        0..4,
+                    ),
+                ),
+                0..4,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..4,
 )

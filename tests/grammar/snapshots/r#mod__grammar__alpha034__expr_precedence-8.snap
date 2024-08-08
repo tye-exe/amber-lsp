@@ -2,37 +2,94 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"25 / 5 * 3 + 7 - 2 * 4\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Subtract(
-                Add(
-                    Multiply(
-                        Divide(
-                            Number(
-                                25.0,
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Subtract(
+                            (
+                                Add(
+                                    (
+                                        Multiply(
+                                            (
+                                                Divide(
+                                                    (
+                                                        Number(
+                                                            (
+                                                                25.0,
+                                                                0..2,
+                                                            ),
+                                                        ),
+                                                        0..2,
+                                                    ),
+                                                    (
+                                                        Number(
+                                                            (
+                                                                5.0,
+                                                                5..6,
+                                                            ),
+                                                        ),
+                                                        5..6,
+                                                    ),
+                                                ),
+                                                0..6,
+                                            ),
+                                            (
+                                                Number(
+                                                    (
+                                                        3.0,
+                                                        9..10,
+                                                    ),
+                                                ),
+                                                9..10,
+                                            ),
+                                        ),
+                                        0..10,
+                                    ),
+                                    (
+                                        Number(
+                                            (
+                                                7.0,
+                                                13..14,
+                                            ),
+                                        ),
+                                        13..14,
+                                    ),
+                                ),
+                                0..14,
                             ),
-                            Number(
-                                5.0,
+                            (
+                                Multiply(
+                                    (
+                                        Number(
+                                            (
+                                                2.0,
+                                                17..18,
+                                            ),
+                                        ),
+                                        17..18,
+                                    ),
+                                    (
+                                        Number(
+                                            (
+                                                4.0,
+                                                21..22,
+                                            ),
+                                        ),
+                                        21..22,
+                                    ),
+                                ),
+                                17..22,
                             ),
                         ),
-                        Number(
-                            3.0,
-                        ),
-                    ),
-                    Number(
-                        7.0,
+                        0..22,
                     ),
                 ),
-                Multiply(
-                    Number(
-                        2.0,
-                    ),
-                    Number(
-                        4.0,
-                    ),
-                ),
+                0..22,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..22,
 )

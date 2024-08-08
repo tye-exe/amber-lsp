@@ -1,21 +1,48 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"true then 1 else 2\").unwrap()"
+expression: "parse(\"   true then 1 else 2   \").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Ternary(
-                Boolean(
-                    true,
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Ternary(
+                            (
+                                Boolean(
+                                    (
+                                        true,
+                                        3..7,
+                                    ),
+                                ),
+                                3..7,
+                            ),
+                            (
+                                Number(
+                                    (
+                                        1.0,
+                                        13..14,
+                                    ),
+                                ),
+                                13..14,
+                            ),
+                            (
+                                Number(
+                                    (
+                                        2.0,
+                                        20..21,
+                                    ),
+                                ),
+                                20..21,
+                            ),
+                        ),
+                        3..21,
+                    ),
                 ),
-                Number(
-                    1.0,
-                ),
-                Number(
-                    2.0,
-                ),
+                3..21,
             ),
-        ),
-    ],
+        ],
+    ),
+    3..21,
 )

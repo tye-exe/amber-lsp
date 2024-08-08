@@ -2,12 +2,21 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"loop {}\").unwrap()"
 ---
-Statement(
-    [
-        InfiniteLoop(
-            Block(
-                [],
+(
+    Statement(
+        [
+            (
+                InfiniteLoop(
+                    (
+                        Block(
+                            [],
+                        ),
+                        5..7,
+                    ),
+                ),
+                0..7,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..7,
 )

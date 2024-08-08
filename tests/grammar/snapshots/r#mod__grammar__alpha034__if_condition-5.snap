@@ -2,28 +2,64 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"\n        if true: echo 10\n        else: echo 20\n    \").unwrap()"
 ---
-Statement(
-    [
-        IfCondition(
-            InlineIfCondition(
-                Boolean(
-                    true,
-                ),
-                Echo(
-                    Number(
-                        10.0,
+(
+    Statement(
+        [
+            (
+                IfCondition(
+                    (
+                        InlineIfCondition(
+                            (
+                                Boolean(
+                                    (
+                                        true,
+                                        12..16,
+                                    ),
+                                ),
+                                12..16,
+                            ),
+                            (
+                                Echo(
+                                    (
+                                        Number(
+                                            (
+                                                10.0,
+                                                23..25,
+                                            ),
+                                        ),
+                                        23..25,
+                                    ),
+                                ),
+                                18..25,
+                            ),
+                        ),
+                        12..25,
                     ),
-                ),
-            ),
-            Some(
-                InlineElse(
-                    Echo(
-                        Number(
-                            20.0,
+                    Some(
+                        (
+                            InlineElse(
+                                (
+                                    Echo(
+                                        (
+                                            Number(
+                                                (
+                                                    20.0,
+                                                    45..47,
+                                                ),
+                                            ),
+                                            45..47,
+                                        ),
+                                    ),
+                                    40..47,
+                                ),
+                            ),
+                            34..47,
                         ),
                     ),
                 ),
+                9..47,
             ),
-        ),
-    ],
+        ],
+    ),
+    9..47,
 )

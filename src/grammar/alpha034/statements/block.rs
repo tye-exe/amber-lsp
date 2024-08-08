@@ -1,17 +1,18 @@
 use chumsky::prelude::*;
 
-use crate::grammar::alpha034::{Block, Statement};
+use crate::grammar::alpha034::{Block, Spanned, Statement};
 
-pub fn block_parser(stmnts: Recursive<char, Statement, Simple<char>>) -> impl Parser<char, Block, Error = Simple<char>> + '_ {
+pub fn block_parser(
+    stmnts: Recursive<char, Spanned<Statement>, Simple<char>>,
+) -> impl Parser<char, Spanned<Block>, Error = Simple<char>> + '_ {
     just("{")
-        .padded()
-        .ignore_then(stmnts.clone().repeated())
+        .ignore_then(stmnts.clone().padded().repeated())
         .then_ignore(just("}"))
-        .padded()
-        .map(|body| Block::Block(body))
+        .map_with_span(|body, span| (Block::Block(body), span))
 }
 
-pub fn block_parser_statement(stmnts: Recursive<char, Statement, Simple<char>>) -> impl Parser<char, Statement, Error = Simple<char>> + '_ {
-    block_parser(stmnts)
-        .map(|block| Statement::Block(block))
+pub fn block_parser_statement(
+    stmnts: Recursive<char, Spanned<Statement>, Simple<char>>,
+) -> impl Parser<char, Spanned<Statement>, Error = Simple<char>> + '_ {
+    block_parser(stmnts).map_with_span(|block, span| (Statement::Block(block), span))
 }

@@ -2,23 +2,56 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"let a = 10 + 2 * 3\").unwrap()"
 ---
-Statement(
-    [
-        VariableInit(
-            "a",
-            Add(
-                Number(
-                    10.0,
-                ),
-                Multiply(
-                    Number(
-                        2.0,
+(
+    Statement(
+        [
+            (
+                VariableInit(
+                    (
+                        "a",
+                        4..5,
                     ),
-                    Number(
-                        3.0,
+                    (
+                        Add(
+                            (
+                                Number(
+                                    (
+                                        10.0,
+                                        8..10,
+                                    ),
+                                ),
+                                8..10,
+                            ),
+                            (
+                                Multiply(
+                                    (
+                                        Number(
+                                            (
+                                                2.0,
+                                                13..14,
+                                            ),
+                                        ),
+                                        13..14,
+                                    ),
+                                    (
+                                        Number(
+                                            (
+                                                3.0,
+                                                17..18,
+                                            ),
+                                        ),
+                                        17..18,
+                                    ),
+                                ),
+                                13..18,
+                            ),
+                        ),
+                        8..18,
                     ),
                 ),
+                0..18,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..18,
 )

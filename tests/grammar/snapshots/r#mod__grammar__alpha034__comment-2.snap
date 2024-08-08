@@ -3,21 +3,48 @@ source: tests/grammar/alpha034.rs
 expression: "parse(\"1 + 2 // This is a comment without a newline\")"
 ---
 Ok(
-    Statement(
-        [
-            Expression(
-                Add(
-                    Number(
-                        1.0,
+    (
+        Statement(
+            [
+                (
+                    Expression(
+                        (
+                            Add(
+                                (
+                                    Number(
+                                        (
+                                            1.0,
+                                            0..1,
+                                        ),
+                                    ),
+                                    0..1,
+                                ),
+                                (
+                                    Number(
+                                        (
+                                            2.0,
+                                            4..5,
+                                        ),
+                                    ),
+                                    4..5,
+                                ),
+                            ),
+                            0..5,
+                        ),
                     ),
-                    Number(
-                        2.0,
-                    ),
+                    0..5,
                 ),
-            ),
-            Comment(
-                "This is a comment without a newline",
-            ),
-        ],
+                (
+                    Comment(
+                        (
+                            " This is a comment without a newline",
+                            8..44,
+                        ),
+                    ),
+                    6..44,
+                ),
+            ],
+        ),
+        0..44,
     ),
 )

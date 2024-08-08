@@ -2,16 +2,31 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"foo()?\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            FunctionInvocation(
-                "foo",
-                [],
-                Some(
-                    Propagate,
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        FunctionInvocation(
+                            (
+                                "foo",
+                                0..3,
+                            ),
+                            [],
+                            Some(
+                                (
+                                    Propagate,
+                                    5..6,
+                                ),
+                            ),
+                        ),
+                        0..6,
+                    ),
                 ),
+                0..6,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..6,
 )

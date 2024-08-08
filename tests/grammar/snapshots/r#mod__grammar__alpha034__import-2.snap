@@ -2,9 +2,18 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"import {} \\\"path/to/module\\\"\").unwrap()"
 ---
-Import(
-    ImportSpecific(
-        [],
+(
+    Import(
+        (
+            ImportSpecific(
+                [],
+            ),
+            7..9,
+        ),
+        (
+            "path/to/module",
+            11..25,
+        ),
     ),
-    "path/to/module",
+    0..26,
 )

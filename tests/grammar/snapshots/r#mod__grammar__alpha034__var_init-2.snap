@@ -2,18 +2,42 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"let a = 10 + 2\").unwrap()"
 ---
-Statement(
-    [
-        VariableInit(
-            "a",
-            Add(
-                Number(
-                    10.0,
+(
+    Statement(
+        [
+            (
+                VariableInit(
+                    (
+                        "a",
+                        4..5,
+                    ),
+                    (
+                        Add(
+                            (
+                                Number(
+                                    (
+                                        10.0,
+                                        8..10,
+                                    ),
+                                ),
+                                8..10,
+                            ),
+                            (
+                                Number(
+                                    (
+                                        2.0,
+                                        13..14,
+                                    ),
+                                ),
+                                13..14,
+                            ),
+                        ),
+                        8..14,
+                    ),
                 ),
-                Number(
-                    2.0,
-                ),
+                0..14,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..14,
 )

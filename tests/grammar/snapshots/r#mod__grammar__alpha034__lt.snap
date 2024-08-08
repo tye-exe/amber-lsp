@@ -2,17 +2,38 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"1 < 2\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Lt(
-                Number(
-                    1.0,
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Lt(
+                            (
+                                Number(
+                                    (
+                                        1.0,
+                                        0..1,
+                                    ),
+                                ),
+                                0..1,
+                            ),
+                            (
+                                Number(
+                                    (
+                                        2.0,
+                                        4..5,
+                                    ),
+                                ),
+                                4..5,
+                            ),
+                        ),
+                        0..5,
+                    ),
                 ),
-                Number(
-                    2.0,
-                ),
+                0..5,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..5,
 )

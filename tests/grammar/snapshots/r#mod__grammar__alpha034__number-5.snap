@@ -2,14 +2,29 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"-5\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Neg(
-                Number(
-                    5.0,
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Neg(
+                            (
+                                Number(
+                                    (
+                                        5.0,
+                                        1..2,
+                                    ),
+                                ),
+                                1..2,
+                            ),
+                        ),
+                        1..2,
+                    ),
                 ),
+                0..2,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..2,
 )

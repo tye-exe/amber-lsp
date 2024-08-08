@@ -1,8 +1,12 @@
+use std::ops::Range;
+
 use chumsky::prelude::*;
+
+use crate::grammar::alpha034::Spanned;
 
 use super::Expression;
 
-pub fn number_parser() -> impl Parser<char, Expression, Error = Simple<char>> {
+pub fn number_parser() -> impl Parser<char, Spanned<Expression>, Error = Simple<char>> {
     filter::<_, _, Simple<char>>(|c: &char| c.is_ascii_digit())
         .repeated()
         .at_least(1)
@@ -26,5 +30,5 @@ pub fn number_parser() -> impl Parser<char, Expression, Error = Simple<char>> {
         })
         .from_str::<f32>()
         .unwrapped()
-        .map(Expression::Number)
+        .map_with_span(|num, span: Range<usize>| (Expression::Number((num, span.clone())), span))
 }

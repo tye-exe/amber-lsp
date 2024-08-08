@@ -2,14 +2,26 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"func()\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            FunctionInvocation(
-                "func",
-                [],
-                None,
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        FunctionInvocation(
+                            (
+                                "func",
+                                0..4,
+                            ),
+                            [],
+                            None,
+                        ),
+                        0..6,
+                    ),
+                ),
+                0..6,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..6,
 )

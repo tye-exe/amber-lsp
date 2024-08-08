@@ -2,83 +2,82 @@ use chumsky::prelude::*;
 use text::keyword;
 
 use crate::grammar::alpha034::{
-    expressions::parse_expr, ElseCondition, IfChainContent, IfCondition, Statement,
+    expressions::parse_expr, ElseCondition, IfChainContent, IfCondition, Spanned, Statement,
 };
 
 use super::block::block_parser;
 
 fn else_cond_parser(
-    stmnts: Recursive<char, Statement, Simple<char>>,
-) -> impl Parser<char, Option<ElseCondition>, Error = Simple<char>> + '_ {
+    stmnts: Recursive<char, Spanned<Statement>, Simple<char>>,
+) -> impl Parser<char, Spanned<ElseCondition>, Error = Simple<char>> + '_ {
     let else_condition = keyword("else")
-        .padded()
+        .ignore_then(filter(|c: &char| c.is_whitespace()).repeated())
         .ignore_then(block_parser(stmnts.clone()))
-        .padded()
-        .map(|body| ElseCondition::Else(body));
+        .map_with_span(|body, span| (ElseCondition::Else(body), span));
 
     let else_inline = keyword("else")
-        .padded()
-        .ignore_then(just(":"))
-        .padded()
+        .ignore_then(just(":").padded())
         .ignore_then(stmnts.clone())
-        .map(|body| ElseCondition::InlineElse(Box::new(body)));
+        .map_with_span(|body, span| (ElseCondition::InlineElse(Box::new(body)), span));
 
-    // else_condition
-    //     .or(else_inline)
-    //     .or_not()
-    else_inline.or(else_condition).or_not()
+    else_inline.or(else_condition)
 }
 
 fn cond_parser(
-    stmnts: Recursive<char, Statement, Simple<char>>,
-) -> impl Parser<char, IfCondition, Error = Simple<char>> + '_ {
+    stmnts: Recursive<char, Spanned<Statement>, Simple<char>>,
+) -> impl Parser<char, Spanned<IfCondition>, Error = Simple<char>> + '_ {
     let inline_if = parse_expr(stmnts.clone())
-        .padded()
-        .then_ignore(just(":"))
+        .then_ignore(just(":").padded())
         .then(stmnts.clone())
-        .map(|(condition, body)| {
-            IfCondition::InlineIfCondition(Box::new(condition), Box::new(body))
+        .map_with_span(|(condition, body), span| {
+            (
+                IfCondition::InlineIfCondition(Box::new(condition), Box::new(body)),
+                span,
+            )
         });
 
     let if_condition = parse_expr(stmnts.clone())
-        .padded()
+        .then_ignore(filter(|c: &char| c.is_whitespace()).repeated())
         .then(block_parser(stmnts))
-        .map(|(cond, body)| IfCondition::IfCondition(Box::new(cond), body));
+        .map_with_span(|(cond, body), span| (IfCondition::IfCondition(Box::new(cond), body), span));
 
-    // if_condition.or(inline_if)
     inline_if.or(if_condition)
 }
 
 pub fn if_cond_parser(
-    stmnts: Recursive<char, Statement, Simple<char>>,
-) -> impl Parser<char, Statement, Error = Simple<char>> + '_ {
+    stmnts: Recursive<char, Spanned<Statement>, Simple<char>>,
+) -> impl Parser<char, Spanned<Statement>, Error = Simple<char>> + '_ {
     just("if")
-        .padded()
+        .ignore_then(filter(|c: &char| c.is_whitespace()).repeated())
         .ignore_then(cond_parser(stmnts.clone()))
-        .then(else_cond_parser(stmnts))
-        .map(|(if_cond, else_cond)| Statement::IfCondition(if_cond, else_cond))
+        .then(
+            filter(|c: &char| c.is_whitespace())
+                .repeated()
+                .ignore_then(else_cond_parser(stmnts))
+                .or_not(),
+        )
+        .map_with_span(|(if_cond, else_cond), span| {
+            (Statement::IfCondition(if_cond, else_cond), span)
+        })
 }
 
 pub fn if_chain_parser(
-    stmnts: Recursive<char, Statement, Simple<char>>,
-) -> impl Parser<char, Statement, Error = Simple<char>> + '_ {
+    stmnts: Recursive<char, Spanned<Statement>, Simple<char>>,
+) -> impl Parser<char, Spanned<Statement>, Error = Simple<char>> + '_ {
     just("if")
-        .padded()
-        .ignore_then(just("{"))
-        .padded()
-        .ignore_then(cond_parser(stmnts.clone()).repeated())
-        .padded()
-        .then(else_cond_parser(stmnts))
-        .padded()
+        .ignore_then(just("{").padded())
+        .ignore_then(cond_parser(stmnts.clone()).padded().repeated())
+        .then(else_cond_parser(stmnts).padded().or_not())
         .then_ignore(just("}"))
-        .map(|(if_conds, else_cond)| {
-            let mut if_chain: Vec<IfChainContent> = if_conds
+        .map_with_span(|(if_conds, else_cond), span| {
+            let mut if_chain: Vec<Spanned<IfChainContent>> = if_conds
                 .into_iter()
-                .map(|if_cond| IfChainContent::IfCondition(if_cond))
+                .map(|if_cond| (IfChainContent::IfCondition(if_cond.clone()), if_cond.1))
                 .collect::<Vec<_>>();
             if let Some(else_cond) = else_cond {
-                if_chain.push(IfChainContent::Else(else_cond));
+                if_chain.push((IfChainContent::Else(else_cond.clone()), else_cond.1));
             }
-            Statement::IfChain(if_chain)
+
+            (Statement::IfChain(if_chain), span)
         })
 }

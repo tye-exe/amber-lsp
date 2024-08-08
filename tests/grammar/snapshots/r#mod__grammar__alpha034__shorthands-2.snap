@@ -2,13 +2,28 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"a -= 10\").unwrap()"
 ---
-Statement(
-    [
-        ShorthandSub(
-            "a",
-            Number(
-                10.0,
+(
+    Statement(
+        [
+            (
+                ShorthandSub(
+                    (
+                        "a",
+                        0..1,
+                    ),
+                    (
+                        Number(
+                            (
+                                10.0,
+                                5..7,
+                            ),
+                        ),
+                        5..7,
+                    ),
+                ),
+                0..7,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..7,
 )

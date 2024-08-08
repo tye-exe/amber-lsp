@@ -2,24 +2,54 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"\\\"Hello, {name}! How are you?\\\"\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Text(
-                [
-                    Text(
-                        "Hello, ",
-                    ),
-                    Expression(
-                        Var(
-                            "name",
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Text(
+                            [
+                                (
+                                    Text(
+                                        (
+                                            "Hello, ",
+                                            1..8,
+                                        ),
+                                    ),
+                                    1..8,
+                                ),
+                                (
+                                    Expression(
+                                        (
+                                            Var(
+                                                (
+                                                    "name",
+                                                    9..13,
+                                                ),
+                                            ),
+                                            9..13,
+                                        ),
+                                    ),
+                                    8..14,
+                                ),
+                                (
+                                    Text(
+                                        (
+                                            "! How are you?",
+                                            14..28,
+                                        ),
+                                    ),
+                                    14..28,
+                                ),
+                            ],
                         ),
+                        0..29,
                     ),
-                    Text(
-                        "! How are you?",
-                    ),
-                ],
+                ),
+                0..29,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..29,
 )

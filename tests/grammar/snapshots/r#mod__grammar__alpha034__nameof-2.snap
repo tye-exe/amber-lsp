@@ -2,16 +2,34 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"nameof nameof variable\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Nameof(
-                Nameof(
-                    Var(
-                        "variable",
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Nameof(
+                            (
+                                Nameof(
+                                    (
+                                        Var(
+                                            (
+                                                "variable",
+                                                14..22,
+                                            ),
+                                        ),
+                                        14..22,
+                                    ),
+                                ),
+                                14..22,
+                            ),
+                        ),
+                        14..22,
                     ),
                 ),
+                0..22,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..22,
 )

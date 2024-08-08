@@ -2,23 +2,56 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"a = 10 + 2 * 3\").unwrap()"
 ---
-Statement(
-    [
-        VariableSet(
-            "a",
-            Add(
-                Number(
-                    10.0,
-                ),
-                Multiply(
-                    Number(
-                        2.0,
+(
+    Statement(
+        [
+            (
+                VariableSet(
+                    (
+                        "a",
+                        0..1,
                     ),
-                    Number(
-                        3.0,
+                    (
+                        Add(
+                            (
+                                Number(
+                                    (
+                                        10.0,
+                                        4..6,
+                                    ),
+                                ),
+                                4..6,
+                            ),
+                            (
+                                Multiply(
+                                    (
+                                        Number(
+                                            (
+                                                2.0,
+                                                9..10,
+                                            ),
+                                        ),
+                                        9..10,
+                                    ),
+                                    (
+                                        Number(
+                                            (
+                                                3.0,
+                                                13..14,
+                                            ),
+                                        ),
+                                        13..14,
+                                    ),
+                                ),
+                                9..14,
+                            ),
+                        ),
+                        4..14,
                     ),
                 ),
+                0..14,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..14,
 )

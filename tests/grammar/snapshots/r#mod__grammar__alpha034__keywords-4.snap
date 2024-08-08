@@ -2,14 +2,26 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"fail 1\").unwrap()"
 ---
-Statement(
-    [
-        Fail(
-            Some(
-                Number(
-                    1.0,
+(
+    Statement(
+        [
+            (
+                Fail(
+                    Some(
+                        (
+                            Number(
+                                (
+                                    1.0,
+                                    5..6,
+                                ),
+                            ),
+                            5..6,
+                        ),
+                    ),
                 ),
+                0..6,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..6,
 )

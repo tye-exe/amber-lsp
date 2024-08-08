@@ -2,17 +2,47 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"$$ failed {}\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Command(
-                [],
-                Some(
-                    Handle(
-                        [],
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Command(
+                            [],
+                            None,
+                        ),
+                        0..2,
                     ),
                 ),
+                0..2,
             ),
-        ),
-    ],
+            (
+                Expression(
+                    (
+                        Var(
+                            (
+                                "failed",
+                                3..9,
+                            ),
+                        ),
+                        3..9,
+                    ),
+                ),
+                3..9,
+            ),
+            (
+                Block(
+                    (
+                        Block(
+                            [],
+                        ),
+                        10..12,
+                    ),
+                ),
+                10..12,
+            ),
+        ],
+    ),
+    0..12,
 )

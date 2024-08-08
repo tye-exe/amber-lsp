@@ -2,32 +2,80 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"true or false and true and true or false\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Or(
-                Or(
-                    Boolean(
-                        true,
-                    ),
-                    And(
-                        And(
-                            Boolean(
-                                false,
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Or(
+                            (
+                                Or(
+                                    (
+                                        Boolean(
+                                            (
+                                                true,
+                                                0..4,
+                                            ),
+                                        ),
+                                        0..4,
+                                    ),
+                                    (
+                                        And(
+                                            (
+                                                And(
+                                                    (
+                                                        Boolean(
+                                                            (
+                                                                false,
+                                                                8..13,
+                                                            ),
+                                                        ),
+                                                        8..13,
+                                                    ),
+                                                    (
+                                                        Boolean(
+                                                            (
+                                                                true,
+                                                                18..22,
+                                                            ),
+                                                        ),
+                                                        18..22,
+                                                    ),
+                                                ),
+                                                8..22,
+                                            ),
+                                            (
+                                                Boolean(
+                                                    (
+                                                        true,
+                                                        27..31,
+                                                    ),
+                                                ),
+                                                27..31,
+                                            ),
+                                        ),
+                                        8..31,
+                                    ),
+                                ),
+                                0..31,
                             ),
-                            Boolean(
-                                true,
+                            (
+                                Boolean(
+                                    (
+                                        false,
+                                        35..40,
+                                    ),
+                                ),
+                                35..40,
                             ),
                         ),
-                        Boolean(
-                            true,
-                        ),
+                        0..40,
                     ),
                 ),
-                Boolean(
-                    false,
-                ),
+                0..40,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..40,
 )

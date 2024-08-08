@@ -1,108 +1,108 @@
 use chumsky::{error::Simple, Parser};
 
 pub mod expressions;
-pub mod statements;
 pub mod global;
+pub mod statements;
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum InterpolatedText {
-    Escape(String),
-    Expression(Box<Expression>),
-    Text(String),
+    Escape(Spanned<String>),
+    Expression(Box<Spanned<Expression>>),
+    Text(Spanned<String>),
 }
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum Block {
-    Block(Vec<Statement>),
+    Block(Vec<Spanned<Statement>>),
 }
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum FailureHandler {
     Propagate,
-    Handle(Vec<Statement>),
+    Handle(Vec<Spanned<Statement>>),
 }
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum InterpolatedCommand {
-    Escape(String),
-    CommandOption(String),
-    Expression(Box<Expression>),
-    Text(String),
+    Escape(Spanned<String>),
+    CommandOption(Spanned<String>),
+    Expression(Box<Spanned<Expression>>),
+    Text(Spanned<String>),
 }
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum Expression {
-    Number(f32),
-    Boolean(bool),
-    Text(Vec<InterpolatedText>),
-    Parentheses(Box<Expression>),
-    Var(String),
-    Add(Box<Expression>, Box<Expression>),
-    Subtract(Box<Expression>, Box<Expression>),
-    Multiply(Box<Expression>, Box<Expression>),
-    Divide(Box<Expression>, Box<Expression>),
-    Modulo(Box<Expression>, Box<Expression>),
-    Neg(Box<Expression>),
-    And(Box<Expression>, Box<Expression>),
-    Or(Box<Expression>, Box<Expression>),
-    Gt(Box<Expression>, Box<Expression>),
-    Ge(Box<Expression>, Box<Expression>),
-    Lt(Box<Expression>, Box<Expression>),
-    Le(Box<Expression>, Box<Expression>),
-    Eq(Box<Expression>, Box<Expression>),
-    Neq(Box<Expression>, Box<Expression>),
-    Not(Box<Expression>),
-    Ternary(Box<Expression>, Box<Expression>, Box<Expression>),
-    FunctionInvocation(String, Vec<Expression>, Option<FailureHandler>),
-    Command(Vec<InterpolatedCommand>, Option<FailureHandler>),
-    Array(Vec<Expression>),
-    Range(Box<Expression>, Box<Expression>),
+    Number(Spanned<f32>),
+    Boolean(Spanned<bool>),
+    Text(Vec<Spanned<InterpolatedText>>),
+    Parentheses(Box<Spanned<Expression>>),
+    Var(Spanned<String>),
+    Add(Box<Spanned<Expression>>, Box<Spanned<Expression>>),
+    Subtract(Box<Spanned<Expression>>, Box<Spanned<Expression>>),
+    Multiply(Box<Spanned<Expression>>, Box<Spanned<Expression>>),
+    Divide(Box<Spanned<Expression>>, Box<Spanned<Expression>>),
+    Modulo(Box<Spanned<Expression>>, Box<Spanned<Expression>>),
+    Neg(Box<Spanned<Expression>>),
+    And(Box<Spanned<Expression>>, Box<Spanned<Expression>>),
+    Or(Box<Spanned<Expression>>, Box<Spanned<Expression>>),
+    Gt(Box<Spanned<Expression>>, Box<Spanned<Expression>>),
+    Ge(Box<Spanned<Expression>>, Box<Spanned<Expression>>),
+    Lt(Box<Spanned<Expression>>, Box<Spanned<Expression>>),
+    Le(Box<Spanned<Expression>>, Box<Spanned<Expression>>),
+    Eq(Box<Spanned<Expression>>, Box<Spanned<Expression>>),
+    Neq(Box<Spanned<Expression>>, Box<Spanned<Expression>>),
+    Not(Box<Spanned<Expression>>),
+    Ternary(Box<Spanned<Expression>>, Box<Spanned<Expression>>, Box<Spanned<Expression>>),
+    FunctionInvocation(Spanned<String>, Vec<Spanned<Expression>>, Option<Spanned<FailureHandler>>),
+    Command(Vec<Spanned<InterpolatedCommand>>, Option<Spanned<FailureHandler>>),
+    Array(Vec<Spanned<Expression>>),
+    Range(Box<Spanned<Expression>>, Box<Spanned<Expression>>),
     Null,
-    Cast(Box<Expression>, String),
+    Cast(Box<Spanned<Expression>>, Spanned<String>),
     Status,
-    Nameof(Box<Expression>),
-    Is(Box<Expression>, String),
+    Nameof(Box<Spanned<Expression>>),
+    Is(Box<Spanned<Expression>>, Spanned<String>),
 }
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum ImportContent {
     ImportAll,
-    ImportSpecific(Vec<String>),
+    ImportSpecific(Vec<Spanned<String>>),
 }
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum FunctionArgument {
-    Generic(String),
-    Typed(String, TypeAnnotation),
+    Generic(Spanned<String>),
+    Typed(Spanned<String>, Spanned<TypeAnnotation>),
 }
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum TypeAnnotation {
-    Type(String),
+    Type(Spanned<String>),
 }
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum IfCondition {
-    IfCondition(Box<Expression>, Block),
-    InlineIfCondition(Box<Expression>, Box<Statement>),
+    IfCondition(Box<Spanned<Expression>>, Spanned<Block>),
+    InlineIfCondition(Box<Spanned<Expression>>, Box<Spanned<Statement>>),
 }
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum ElseCondition {
-    Else(Block),
-    InlineElse(Box<Statement>),
+    Else(Spanned<Block>),
+    InlineElse(Box<Spanned<Statement>>),
 }
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum IfChainContent {
-    IfCondition(IfCondition),
-    Else(ElseCondition),
+    IfCondition(Spanned<IfCondition>),
+    Else(Spanned<ElseCondition>),
 }
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum IterLoopVars {
-    Single(String),
-    WithIndex(String, String),
+    Single(Spanned<String>),
+    WithIndex(Spanned<String>, Spanned<String>),
 }
 
 #[derive(PartialEq, Debug, Clone)]
@@ -113,36 +113,44 @@ pub enum CommandModifier {
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum Statement {
-    Expression(Box<Expression>),
-    VariableInit(String, Box<Expression>),
-    VariableSet(String, Box<Expression>),
-    IfCondition(IfCondition, Option<ElseCondition>),
-    IfChain(Vec<IfChainContent>),
-    ShorthandAdd(String, Box<Expression>),
-    ShorthandSub(String, Box<Expression>),
-    ShorthandMul(String, Box<Expression>),
-    ShorthandDiv(String, Box<Expression>),
-    ShorthandModulo(String, Box<Expression>),
-    InfiniteLoop(Block),
-    IterLoop(IterLoopVars, Box<Expression>, Block),
+    Expression(Box<Spanned<Expression>>),
+    VariableInit(Spanned<String>, Box<Spanned<Expression>>),
+    VariableSet(Spanned<String>, Box<Spanned<Expression>>),
+    IfCondition(Spanned<IfCondition>, Option<Spanned<ElseCondition>>),
+    IfChain(Vec<Spanned<IfChainContent>>),
+    ShorthandAdd(Spanned<String>, Box<Spanned<Expression>>),
+    ShorthandSub(Spanned<String>, Box<Spanned<Expression>>),
+    ShorthandMul(Spanned<String>, Box<Spanned<Expression>>),
+    ShorthandDiv(Spanned<String>, Box<Spanned<Expression>>),
+    ShorthandModulo(Spanned<String>, Box<Spanned<Expression>>),
+    InfiniteLoop(Spanned<Block>),
+    IterLoop(Spanned<IterLoopVars>, Box<Spanned<Expression>>, Spanned<Block>),
     Break,
     Continue,
-    Return(Option<Box<Expression>>),
-    Fail(Option<Box<Expression>>),
-    Echo(Box<Expression>),
-    CommandModifier(CommandModifier),
-    Block(Block),
-    Comment(String),
+    Return(Option<Box<Spanned<Expression>>>),
+    Fail(Option<Box<Spanned<Expression>>>),
+    Echo(Box<Spanned<Expression>>),
+    CommandModifier(Spanned<CommandModifier>),
+    Block(Spanned<Block>),
+    Comment(Spanned<String>),
 }
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum GlobalStatement {
-    Import(ImportContent, String),
-    FunctionDefinition(String, Vec<FunctionArgument>, Option<TypeAnnotation>, Vec<Statement>),
-    Main(Vec<Statement>),
-    Statement(Vec<Statement>),
+    Import(Spanned<ImportContent>, Spanned<String>),
+    FunctionDefinition(
+        Spanned<String>,
+        Vec<Spanned<FunctionArgument>>,
+        Option<Spanned<TypeAnnotation>>,
+        Vec<Spanned<Statement>>,
+    ),
+    Main(Vec<Spanned<Statement>>),
+    Statement(Vec<Spanned<Statement>>),
 }
 
-pub fn parse() -> impl Parser<char, GlobalStatement, Error = Simple<char>> {
+pub type Span = std::ops::Range<usize>;
+pub type Spanned<T> = (T, Span);
+
+pub fn parse() -> impl Parser<char, Spanned<GlobalStatement>, Error = Simple<char>> {
     global::global_statement_parser()
 }

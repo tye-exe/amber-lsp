@@ -2,16 +2,31 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"\\\"Hello, world!\\\"\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Text(
-                [
-                    Text(
-                        "Hello, world!",
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Text(
+                            [
+                                (
+                                    Text(
+                                        (
+                                            "Hello, world!",
+                                            1..14,
+                                        ),
+                                    ),
+                                    1..14,
+                                ),
+                            ],
+                        ),
+                        0..15,
                     ),
-                ],
+                ),
+                0..15,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..15,
 )

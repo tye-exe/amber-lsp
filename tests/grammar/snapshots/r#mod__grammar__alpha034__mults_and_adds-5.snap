@@ -2,31 +2,76 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"3 * 2 - --2 * 2\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Subtract(
-                Multiply(
-                    Number(
-                        3.0,
-                    ),
-                    Number(
-                        2.0,
-                    ),
-                ),
-                Multiply(
-                    Neg(
-                        Neg(
-                            Number(
-                                2.0,
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Subtract(
+                            (
+                                Multiply(
+                                    (
+                                        Number(
+                                            (
+                                                3.0,
+                                                0..1,
+                                            ),
+                                        ),
+                                        0..1,
+                                    ),
+                                    (
+                                        Number(
+                                            (
+                                                2.0,
+                                                4..5,
+                                            ),
+                                        ),
+                                        4..5,
+                                    ),
+                                ),
+                                0..5,
+                            ),
+                            (
+                                Multiply(
+                                    (
+                                        Neg(
+                                            (
+                                                Neg(
+                                                    (
+                                                        Number(
+                                                            (
+                                                                2.0,
+                                                                10..11,
+                                                            ),
+                                                        ),
+                                                        10..11,
+                                                    ),
+                                                ),
+                                                10..11,
+                                            ),
+                                        ),
+                                        10..11,
+                                    ),
+                                    (
+                                        Number(
+                                            (
+                                                2.0,
+                                                14..15,
+                                            ),
+                                        ),
+                                        14..15,
+                                    ),
+                                ),
+                                10..15,
                             ),
                         ),
-                    ),
-                    Number(
-                        2.0,
+                        0..15,
                     ),
                 ),
+                0..15,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..15,
 )

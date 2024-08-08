@@ -2,6 +2,8 @@ use amber_lsp::grammar::alpha034::{parse as parse_grammar, GlobalStatement};
 use chumsky::error::Simple;
 use chumsky::Parser as ChumskyParser;
 
+use crate::grammar::alpha034::Spanned;
+
 #[derive(Debug)]
 pub enum AmberVersion {
     Alpha034,
@@ -25,7 +27,7 @@ impl Parser {
         Self { version }
     }
 
-    pub fn parse(&self, input: &str) -> (Option<GlobalStatement>, Vec<Simple<char>>) {
+    pub fn parse(&self, input: &str) -> (Option<Spanned<GlobalStatement>>, Vec<Simple<char>>) {
         match self.version {
             AmberVersion::Alpha034 => {
                 parse_grammar().parse_recovery(input)

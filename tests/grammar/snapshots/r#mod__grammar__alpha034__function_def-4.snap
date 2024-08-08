@@ -2,29 +2,71 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"fun func(a: Num, b, c: Bool): Num {}\").unwrap()"
 ---
-FunctionDefinition(
-    "func",
-    [
-        Typed(
-            "a",
-            Type(
-                "Num",
+(
+    FunctionDefinition(
+        (
+            "func",
+            4..8,
+        ),
+        [
+            (
+                Typed(
+                    (
+                        "a",
+                        9..10,
+                    ),
+                    (
+                        Type(
+                            (
+                                "Num",
+                                12..15,
+                            ),
+                        ),
+                        10..15,
+                    ),
+                ),
+                9..15,
+            ),
+            (
+                Generic(
+                    (
+                        "b",
+                        17..18,
+                    ),
+                ),
+                17..18,
+            ),
+            (
+                Typed(
+                    (
+                        "c",
+                        20..21,
+                    ),
+                    (
+                        Type(
+                            (
+                                "Bool",
+                                23..27,
+                            ),
+                        ),
+                        21..27,
+                    ),
+                ),
+                20..27,
+            ),
+        ],
+        Some(
+            (
+                Type(
+                    (
+                        "Num",
+                        30..33,
+                    ),
+                ),
+                28..33,
             ),
         ),
-        Generic(
-            "b",
-        ),
-        Typed(
-            "c",
-            Type(
-                "Bool",
-            ),
-        ),
-    ],
-    Some(
-        Type(
-            "Num",
-        ),
+        [],
     ),
-    [],
+    0..36,
 )

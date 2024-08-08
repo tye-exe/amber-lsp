@@ -1,25 +1,35 @@
 use chumsky::prelude::*;
 use text::keyword;
 
-use crate::grammar::alpha034::{expressions::parse_expr, Statement};
+use crate::grammar::alpha034::{expressions::parse_expr, Spanned, Statement};
 
 pub fn keywords_parser(
-    stmnts: Recursive<char, Statement, Simple<char>>,
-) -> impl Parser<char, Statement, Error = Simple<char>> + '_ {
+    stmnts: Recursive<char, Spanned<Statement>, Simple<char>>,
+) -> impl Parser<char, Spanned<Statement>, Error = Simple<char>> + '_ {
     keyword("break")
-        .to(Statement::Break)
-        .or(keyword("continue").to(Statement::Continue))
+        .map_with_span(|_, span| (Statement::Break, span))
+        .or(keyword("continue").map_with_span(|_, span| (Statement::Continue, span)))
         .or(keyword("return")
-            .padded()
-            .ignore_then(parse_expr(stmnts.clone()).or_not())
-            .map(|expr| Statement::Return(expr.map(Box::new))))
+            .ignore_then(
+                filter(|c: &char| c.is_whitespace())
+                    .repeated()
+                    .ignore_then(parse_expr(stmnts.clone()))
+                    .or_not(),
+            )
+            .map_with_span(|expr, span| (Statement::Return(expr.map(Box::new)), span)))
         .or(keyword("fail")
-            .padded()
-            .ignore_then(parse_expr(stmnts.clone()).or_not())
-            .map(|expr| Statement::Fail(expr.map(Box::new))))
+            .ignore_then(
+                filter(|c: &char| c.is_whitespace())
+                    .repeated()
+                    .ignore_then(parse_expr(stmnts.clone()))
+                    .or_not(),
+            )
+            .map_with_span(|expr, span| (Statement::Fail(expr.map(Box::new)), span)))
         .or(keyword("echo")
-            .padded()
-            .ignore_then(parse_expr(stmnts))
-            .map(|expr| Statement::Echo(Box::new(expr))))
-        .padded()
+            .ignore_then(
+                filter(|c: &char| c.is_whitespace())
+                    .repeated()
+                    .ignore_then(parse_expr(stmnts)),
+            )
+            .map_with_span(|expr, span| (Statement::Echo(Box::new(expr)), span)))
 }

@@ -2,8 +2,14 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"continue\").unwrap()"
 ---
-Statement(
-    [
-        Continue,
-    ],
+(
+    Statement(
+        [
+            (
+                Continue,
+                0..8,
+            ),
+        ],
+    ),
+    0..8,
 )

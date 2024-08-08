@@ -2,18 +2,51 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"foo() failed {}\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            FunctionInvocation(
-                "foo",
-                [],
-                Some(
-                    Handle(
-                        [],
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        FunctionInvocation(
+                            (
+                                "foo",
+                                0..3,
+                            ),
+                            [],
+                            None,
+                        ),
+                        0..5,
                     ),
                 ),
+                0..5,
             ),
-        ),
-    ],
+            (
+                Expression(
+                    (
+                        Var(
+                            (
+                                "failed",
+                                6..12,
+                            ),
+                        ),
+                        6..12,
+                    ),
+                ),
+                6..12,
+            ),
+            (
+                Block(
+                    (
+                        Block(
+                            [],
+                        ),
+                        13..15,
+                    ),
+                ),
+                13..15,
+            ),
+        ],
+    ),
+    0..15,
 )

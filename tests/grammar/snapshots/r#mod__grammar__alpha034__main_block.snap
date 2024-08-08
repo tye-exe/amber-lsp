@@ -2,12 +2,24 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"\n        main {\n            echo 10\n        }\n    \").unwrap()"
 ---
-Main(
-    [
-        Echo(
-            Number(
-                10.0,
+(
+    Main(
+        [
+            (
+                Echo(
+                    (
+                        Number(
+                            (
+                                10.0,
+                                33..35,
+                            ),
+                        ),
+                        33..35,
+                    ),
+                ),
+                28..35,
             ),
-        ),
-    ],
+        ],
+    ),
+    9..45,
 )

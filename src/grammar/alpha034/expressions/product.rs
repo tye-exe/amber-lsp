@@ -1,13 +1,13 @@
 use chumsky::prelude::*;
 
-use crate::grammar::alpha034::{Expression, Statement};
+use crate::grammar::alpha034::{Expression, Spanned, Statement};
 
 use super::is::is_parser;
 
 pub fn product_parser<'a>(
-    stmnts: Recursive<'a, char, Statement, Simple<char>>,
-    expr: Recursive<'a, char, Expression, Simple<char>>,
-) -> impl Parser<char, Expression, Error = Simple<char>> + 'a {
+    stmnts: Recursive<'a, char, Spanned<Statement>, Simple<char>>,
+    expr: Recursive<'a, char, Spanned<Expression>, Simple<char>>,
+) -> impl Parser<char, Spanned<Expression>, Error = Simple<char>> + 'a {
     is_parser(stmnts.clone(), expr.clone())
         .then(
             just('*')
@@ -18,5 +18,9 @@ pub fn product_parser<'a>(
                 .then(is_parser(stmnts, expr))
                 .repeated(),
         )
-        .foldl(|lhs, (op, rhs)| op(Box::new(lhs), Box::new(rhs)))
+        .foldl(|lhs, (op, rhs)| {
+            let span = lhs.1.start..rhs.1.end;
+
+            (op(Box::new(lhs), Box::new(rhs)), span)
+        })
 }

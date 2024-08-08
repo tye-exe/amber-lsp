@@ -2,30 +2,63 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"if true { echo 10 } else {}\").unwrap()"
 ---
-Statement(
-    [
-        IfCondition(
-            IfCondition(
-                Boolean(
-                    true,
-                ),
-                Block(
-                    [
-                        Echo(
-                            Number(
-                                10.0,
+(
+    Statement(
+        [
+            (
+                IfCondition(
+                    (
+                        IfCondition(
+                            (
+                                Boolean(
+                                    (
+                                        true,
+                                        3..7,
+                                    ),
+                                ),
+                                3..7,
+                            ),
+                            (
+                                Block(
+                                    [
+                                        (
+                                            Echo(
+                                                (
+                                                    Number(
+                                                        (
+                                                            10.0,
+                                                            15..17,
+                                                        ),
+                                                    ),
+                                                    15..17,
+                                                ),
+                                            ),
+                                            10..17,
+                                        ),
+                                    ],
+                                ),
+                                8..19,
                             ),
                         ),
-                    ],
-                ),
-            ),
-            Some(
-                Else(
-                    Block(
-                        [],
+                        3..19,
+                    ),
+                    Some(
+                        (
+                            Else(
+                                (
+                                    Block(
+                                        [],
+                                    ),
+                                    25..27,
+                                ),
+                            ),
+                            20..27,
+                        ),
                     ),
                 ),
+                0..27,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..27,
 )

@@ -1,9 +1,9 @@
 use chumsky::{error::Simple, Parser};
 use insta::assert_debug_snapshot;
 
-use amber_lsp::grammar::alpha034::{parse as parse_grammar, FunctionArgument, TypeAnnotation};
+use amber_lsp::grammar::alpha034::{parse as parse_grammar, FunctionArgument, Spanned, TypeAnnotation};
 
-fn parse(input: &str) -> Result<amber_lsp::grammar::alpha034::GlobalStatement, Vec<Simple<char>>> {
+fn parse(input: &str) -> Result<Spanned<amber_lsp::grammar::alpha034::GlobalStatement>, Vec<Simple<char>>> {
     parse_grammar().parse(input)
 }
 
@@ -166,7 +166,7 @@ fn test_not() {
 
 #[test]
 fn test_ternary() {
-    assert_debug_snapshot!(parse("true then 1 else 2").unwrap());
+    assert_debug_snapshot!(parse("   true then 1 else 2   ").unwrap());
     assert_debug_snapshot!(parse("true then 1 + 2 else 2 + 1").unwrap());
     assert_debug_snapshot!(parse("true then 1 + 2 else false then 5 else 6").unwrap());
 }

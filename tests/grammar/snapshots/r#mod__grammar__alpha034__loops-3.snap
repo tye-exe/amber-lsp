@@ -2,24 +2,57 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"loop var1, var2 in 1..2 {}\").unwrap()"
 ---
-Statement(
-    [
-        IterLoop(
-            WithIndex(
-                "var1",
-                "var2",
-            ),
-            Range(
-                Number(
-                    1.0,
+(
+    Statement(
+        [
+            (
+                IterLoop(
+                    (
+                        WithIndex(
+                            (
+                                "var1",
+                                5..9,
+                            ),
+                            (
+                                "var2",
+                                11..15,
+                            ),
+                        ),
+                        5..15,
+                    ),
+                    (
+                        Range(
+                            (
+                                Number(
+                                    (
+                                        1.0,
+                                        19..20,
+                                    ),
+                                ),
+                                19..20,
+                            ),
+                            (
+                                Number(
+                                    (
+                                        2.0,
+                                        22..23,
+                                    ),
+                                ),
+                                22..23,
+                            ),
+                        ),
+                        19..23,
+                    ),
+                    (
+                        Block(
+                            [],
+                        ),
+                        24..26,
+                    ),
                 ),
-                Number(
-                    2.0,
-                ),
+                0..26,
             ),
-            Block(
-                [],
-            ),
-        ),
-    ],
+        ],
+    ),
+    0..26,
 )

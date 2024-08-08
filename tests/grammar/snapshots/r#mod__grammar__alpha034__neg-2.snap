@@ -2,21 +2,48 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"-(1 - 2)\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Neg(
-                Parentheses(
-                    Subtract(
-                        Number(
-                            1.0,
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Neg(
+                            (
+                                Parentheses(
+                                    (
+                                        Subtract(
+                                            (
+                                                Number(
+                                                    (
+                                                        1.0,
+                                                        2..3,
+                                                    ),
+                                                ),
+                                                2..3,
+                                            ),
+                                            (
+                                                Number(
+                                                    (
+                                                        2.0,
+                                                        6..7,
+                                                    ),
+                                                ),
+                                                6..7,
+                                            ),
+                                        ),
+                                        2..7,
+                                    ),
+                                ),
+                                1..8,
+                            ),
                         ),
-                        Number(
-                            2.0,
-                        ),
+                        1..8,
                     ),
                 ),
+                0..8,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..8,
 )

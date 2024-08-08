@@ -2,12 +2,24 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"echo 1\").unwrap()"
 ---
-Statement(
-    [
-        Echo(
-            Number(
-                1.0,
+(
+    Statement(
+        [
+            (
+                Echo(
+                    (
+                        Number(
+                            (
+                                1.0,
+                                5..6,
+                            ),
+                        ),
+                        5..6,
+                    ),
+                ),
+                0..6,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..6,
 )

@@ -2,23 +2,53 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"loop var1 in 1..2 {}\").unwrap()"
 ---
-Statement(
-    [
-        IterLoop(
-            Single(
-                "var1",
-            ),
-            Range(
-                Number(
-                    1.0,
+(
+    Statement(
+        [
+            (
+                IterLoop(
+                    (
+                        Single(
+                            (
+                                "var1",
+                                5..9,
+                            ),
+                        ),
+                        5..9,
+                    ),
+                    (
+                        Range(
+                            (
+                                Number(
+                                    (
+                                        1.0,
+                                        13..14,
+                                    ),
+                                ),
+                                13..14,
+                            ),
+                            (
+                                Number(
+                                    (
+                                        2.0,
+                                        16..17,
+                                    ),
+                                ),
+                                16..17,
+                            ),
+                        ),
+                        13..17,
+                    ),
+                    (
+                        Block(
+                            [],
+                        ),
+                        18..20,
+                    ),
                 ),
-                Number(
-                    2.0,
-                ),
+                0..20,
             ),
-            Block(
-                [],
-            ),
-        ),
-    ],
+        ],
+    ),
+    0..20,
 )

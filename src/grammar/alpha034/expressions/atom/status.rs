@@ -1,7 +1,7 @@
+use crate::grammar::alpha034::{Expression, Spanned};
 use chumsky::prelude::*;
 use text::keyword;
-use crate::grammar::alpha034::Expression;
 
-pub fn status_var_parser() -> impl Parser<char, Expression, Error = Simple<char>> {
-    keyword("status").to(Expression::Status)
+pub fn status_var_parser() -> impl Parser<char, Spanned<Expression>, Error = Simple<char>> {
+    keyword("status").map_with_span(|_, span| (Expression::Status, span))
 }

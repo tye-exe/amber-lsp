@@ -2,35 +2,74 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"\n        {\n            echo 10\n        }\n        {\n            {\n                echo 20\n            }\n        }\n    \").unwrap()"
 ---
-Statement(
-    [
-        Block(
-            Block(
-                [
-                    Echo(
-                        Number(
-                            10.0,
-                        ),
-                    ),
-                ],
-            ),
-        ),
-        Block(
-            Block(
-                [
-                    Block(
+(
+    Statement(
+        [
+            (
+                Block(
+                    (
                         Block(
                             [
-                                Echo(
-                                    Number(
-                                        20.0,
+                                (
+                                    Echo(
+                                        (
+                                            Number(
+                                                (
+                                                    10.0,
+                                                    28..30,
+                                                ),
+                                            ),
+                                            28..30,
+                                        ),
                                     ),
+                                    23..30,
                                 ),
                             ],
                         ),
+                        9..40,
                     ),
-                ],
+                ),
+                9..40,
             ),
-        ),
-    ],
+            (
+                Block(
+                    (
+                        Block(
+                            [
+                                (
+                                    Block(
+                                        (
+                                            Block(
+                                                [
+                                                    (
+                                                        Echo(
+                                                            (
+                                                                Number(
+                                                                    (
+                                                                        20.0,
+                                                                        86..88,
+                                                                    ),
+                                                                ),
+                                                                86..88,
+                                                            ),
+                                                        ),
+                                                        81..88,
+                                                    ),
+                                                ],
+                                            ),
+                                            63..102,
+                                        ),
+                                    ),
+                                    63..102,
+                                ),
+                            ],
+                        ),
+                        49..112,
+                    ),
+                ),
+                49..112,
+            ),
+        ],
+    ),
+    9..112,
 )

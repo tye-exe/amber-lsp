@@ -2,12 +2,24 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"false\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Boolean(
-                false,
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Boolean(
+                            (
+                                false,
+                                0..5,
+                            ),
+                        ),
+                        0..5,
+                    ),
+                ),
+                0..5,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..5,
 )

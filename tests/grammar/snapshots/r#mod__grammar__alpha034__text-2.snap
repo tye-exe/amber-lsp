@@ -2,24 +2,54 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"\\\"Hello, {name}!\\\"\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Text(
-                [
-                    Text(
-                        "Hello, ",
-                    ),
-                    Expression(
-                        Var(
-                            "name",
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Text(
+                            [
+                                (
+                                    Text(
+                                        (
+                                            "Hello, ",
+                                            1..8,
+                                        ),
+                                    ),
+                                    1..8,
+                                ),
+                                (
+                                    Expression(
+                                        (
+                                            Var(
+                                                (
+                                                    "name",
+                                                    9..13,
+                                                ),
+                                            ),
+                                            9..13,
+                                        ),
+                                    ),
+                                    8..14,
+                                ),
+                                (
+                                    Text(
+                                        (
+                                            "!",
+                                            14..15,
+                                        ),
+                                    ),
+                                    14..15,
+                                ),
+                            ],
                         ),
+                        0..16,
                     ),
-                    Text(
-                        "!",
-                    ),
-                ],
+                ),
+                0..16,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..16,
 )

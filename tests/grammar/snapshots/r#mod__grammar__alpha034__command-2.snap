@@ -2,25 +2,55 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"$echo \\\"Hello, {name}!\\\"$\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Command(
-                [
-                    Text(
-                        "echo \"Hello, ",
-                    ),
-                    Expression(
-                        Var(
-                            "name",
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Command(
+                            [
+                                (
+                                    Text(
+                                        (
+                                            "echo \"Hello, ",
+                                            1..14,
+                                        ),
+                                    ),
+                                    1..14,
+                                ),
+                                (
+                                    Expression(
+                                        (
+                                            Var(
+                                                (
+                                                    "name",
+                                                    15..19,
+                                                ),
+                                            ),
+                                            15..19,
+                                        ),
+                                    ),
+                                    14..20,
+                                ),
+                                (
+                                    Text(
+                                        (
+                                            "!\"",
+                                            20..22,
+                                        ),
+                                    ),
+                                    20..22,
+                                ),
+                            ],
+                            None,
                         ),
+                        0..23,
                     ),
-                    Text(
-                        "!\"",
-                    ),
-                ],
-                None,
+                ),
+                0..23,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..23,
 )

@@ -2,26 +2,59 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(r#\"$echo \\\"Hello, world!\\\"$\"#).unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Command(
-                [
-                    Text(
-                        "echo ",
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Command(
+                            [
+                                (
+                                    Text(
+                                        (
+                                            "echo ",
+                                            1..6,
+                                        ),
+                                    ),
+                                    1..6,
+                                ),
+                                (
+                                    Escape(
+                                        (
+                                            "\"",
+                                            6..8,
+                                        ),
+                                    ),
+                                    6..8,
+                                ),
+                                (
+                                    Text(
+                                        (
+                                            "Hello, world!",
+                                            8..21,
+                                        ),
+                                    ),
+                                    8..21,
+                                ),
+                                (
+                                    Escape(
+                                        (
+                                            "\"",
+                                            21..23,
+                                        ),
+                                    ),
+                                    21..23,
+                                ),
+                            ],
+                            None,
+                        ),
+                        0..24,
                     ),
-                    Escape(
-                        "\"",
-                    ),
-                    Text(
-                        "Hello, world!",
-                    ),
-                    Escape(
-                        "\"",
-                    ),
-                ],
-                None,
+                ),
+                0..24,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..24,
 )

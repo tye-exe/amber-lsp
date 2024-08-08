@@ -2,85 +2,99 @@ use chumsky::prelude::*;
 use text::{ident, keyword};
 
 use super::{
-    statements::statement_parser, FunctionArgument, GlobalStatement, ImportContent, TypeAnnotation,
+    statements::statement_parser, FunctionArgument, GlobalStatement, ImportContent, Span, Spanned,
+    TypeAnnotation,
 };
 
-pub fn import_parser() -> impl Parser<char, GlobalStatement, Error = Simple<char>> {
-    let import_all_parser = just("*").padded().map(|_| ImportContent::ImportAll);
+pub fn import_parser() -> impl Parser<char, Spanned<GlobalStatement>, Error = Simple<char>> {
+    let import_all_parser = just("*").map_with_span(|_, span| (ImportContent::ImportAll, span));
 
     let import_specific_parser = just("{")
-        .ignore_then(ident().padded().separated_by(just(",")))
+        .ignore_then(
+            ident()
+                .map_with_span(|name, span| (name, span))
+                .padded()
+                .separated_by(just(",")),
+        )
         .then_ignore(just("}"))
-        .map(ImportContent::ImportSpecific);
+        .map_with_span(|vars, span| (ImportContent::ImportSpecific(vars), span));
 
     let path_parser = just('"')
-        .ignore_then(filter(|c: &char| *c != '"').repeated().collect())
-        .then_ignore(just('"'))
-        .padded();
+        .ignore_then(
+            filter(|c: &char| *c != '"')
+                .repeated()
+                .map_with_span(|name, span| (name.iter().collect(), span)),
+        )
+        .then_ignore(just('"'));
 
     just("import")
-        .padded()
-        .ignore_then(import_all_parser.or(import_specific_parser))
+        .ignore_then(import_all_parser.or(import_specific_parser).padded())
         .then(path_parser)
-        .map(|(vars, path)| GlobalStatement::Import(vars, path))
+        .map_with_span(|(vars, path), span| (GlobalStatement::Import(vars, path), span))
 }
 
-pub fn function_parser() -> impl Parser<char, GlobalStatement, Error = Simple<char>> {
+pub fn function_parser() -> impl Parser<char, Spanned<GlobalStatement>, Error = Simple<char>> {
     let type_parser = just(':')
-        .padded()
-        .ignore_then(ident().padded())
-        .padded()
-        .map(TypeAnnotation::Type);
+        .ignore_then(filter(|c: &char| c.is_whitespace()).repeated())
+        .ignore_then(ident().map_with_span(|name, span| (name, span)))
+        .map_with_span(|name, span| (TypeAnnotation::Type(name), span));
 
-    let generic_arg_parser = ident().padded().map(FunctionArgument::Generic);
+    let generic_arg_parser = ident()
+        .map_with_span(|name, span: Span| (FunctionArgument::Generic((name, span.clone())), span));
+
     let typed_arg_parser = ident()
-        .padded()
-        .then(type_parser.padded())
-        .map(|(name, ty)| FunctionArgument::Typed(name, ty));
+        .map_with_span(|name, span| (name, span))
+        .then_ignore(filter(|c: &char| c.is_whitespace()).repeated())
+        .then(type_parser)
+        .map_with_span(|(name, ty), span| (FunctionArgument::Typed(name, ty), span));
 
     let arg_parser = typed_arg_parser.or(generic_arg_parser);
 
     let args_parser = just("(")
-        .padded()
-        .ignore_then(arg_parser.separated_by(just(",")))
-        .then_ignore(just(")").padded());
+        .ignore_then(arg_parser.padded().separated_by(just(",")))
+        .then_ignore(just(")"));
 
-    let ret_parser = type_parser.or_not().padded().then(
+    let ret_parser = type_parser.or_not().then(
         just("{")
             .padded()
             .ignore_then(statement_parser().padded().repeated())
-            .then_ignore(just("}"))
-            .padded(),
+            .then_ignore(just("}")),
     );
 
     keyword("fun")
-        .padded()
-        .ignore_then(ident().padded())
-        .then(args_parser)
+        .ignore_then(ident().map_with_span(|name, span| (name, span)).padded())
+        .then(args_parser.padded())
         .then(ret_parser)
-        .map(|((name, args), (ty, body))| GlobalStatement::FunctionDefinition(name, args, ty, body))
+        .map_with_span(|((name, args), (ty, body)), span| {
+            (
+                GlobalStatement::FunctionDefinition(name, args, ty, body),
+                span,
+            )
+        })
 }
 
-pub fn main_parser() -> impl Parser<char, GlobalStatement, Error = Simple<char>> {
+pub fn main_parser() -> impl Parser<char, Spanned<GlobalStatement>, Error = Simple<char>> {
     keyword("main")
-        .padded()
-        .then(
+        .ignore_then(
             just("{")
                 .padded()
-                .ignore_then(statement_parser().repeated())
-                .then_ignore(just("}"))
-                .padded(),
+                .ignore_then(statement_parser().padded().repeated())
+                .then_ignore(just("}")),
         )
-        .map(|(_, body)| GlobalStatement::Main(body))
+        .map_with_span(|body, span| (GlobalStatement::Main(body), span))
 }
 
-pub fn global_statement_parser() -> impl Parser<char, GlobalStatement, Error = Simple<char>> {
-    let statement = statement_parser()
-        .repeated()
-        .map(GlobalStatement::Statement);
+pub fn global_statement_parser() -> impl Parser<char, Spanned<GlobalStatement>, Error = Simple<char>>
+{
+    let statement = statement_parser().padded().repeated().map(|stmnt| {
+        let span = stmnt.first().map(|s| s.1.start).unwrap_or(0)
+            ..stmnt.last().map(|s| s.1.end).unwrap_or(0);
+        (GlobalStatement::Statement(stmnt), span)
+    });
 
     import_parser()
         .or(function_parser())
         .or(main_parser())
         .or(statement)
+        .padded()
 }

@@ -2,36 +2,78 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"if true { echo 10 } else { echo 20 }\").unwrap()"
 ---
-Statement(
-    [
-        IfCondition(
-            IfCondition(
-                Boolean(
-                    true,
-                ),
-                Block(
-                    [
-                        Echo(
-                            Number(
-                                10.0,
+(
+    Statement(
+        [
+            (
+                IfCondition(
+                    (
+                        IfCondition(
+                            (
+                                Boolean(
+                                    (
+                                        true,
+                                        3..7,
+                                    ),
+                                ),
+                                3..7,
+                            ),
+                            (
+                                Block(
+                                    [
+                                        (
+                                            Echo(
+                                                (
+                                                    Number(
+                                                        (
+                                                            10.0,
+                                                            15..17,
+                                                        ),
+                                                    ),
+                                                    15..17,
+                                                ),
+                                            ),
+                                            10..17,
+                                        ),
+                                    ],
+                                ),
+                                8..19,
                             ),
                         ),
-                    ],
-                ),
-            ),
-            Some(
-                Else(
-                    Block(
-                        [
-                            Echo(
-                                Number(
-                                    20.0,
+                        3..19,
+                    ),
+                    Some(
+                        (
+                            Else(
+                                (
+                                    Block(
+                                        [
+                                            (
+                                                Echo(
+                                                    (
+                                                        Number(
+                                                            (
+                                                                20.0,
+                                                                32..34,
+                                                            ),
+                                                        ),
+                                                        32..34,
+                                                    ),
+                                                ),
+                                                27..34,
+                                            ),
+                                        ],
+                                    ),
+                                    25..36,
                                 ),
                             ),
-                        ],
+                            20..36,
+                        ),
                     ),
                 ),
+                0..36,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..36,
 )

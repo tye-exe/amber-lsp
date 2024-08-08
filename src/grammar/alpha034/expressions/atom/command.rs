@@ -1,16 +1,16 @@
 use chumsky::prelude::*;
 
 use crate::grammar::alpha034::{
-    statements::failed::failure_parser, Expression, InterpolatedCommand, Statement,
+    statements::failed::failure_parser, Expression, InterpolatedCommand, Spanned, Statement,
 };
 
 pub fn command_parser<'a>(
-    stmnts: Recursive<'a, char, Statement, Simple<char>>,
-    expr: Recursive<'a, char, Expression, Simple<char>>,
-) -> impl Parser<char, Expression, Error = Simple<char>> + 'a {
+    stmnts: Recursive<'a, char, Spanned<Statement>, Simple<char>>,
+    expr: Recursive<'a, char, Spanned<Expression>, Simple<char>>,
+) -> impl Parser<char, Spanned<Expression>, Error = Simple<char>> + 'a {
     let escape = just('\\')
         .ignore_then(any())
-        .map(|char| InterpolatedCommand::Escape(char.to_string()));
+        .map_with_span(|char, span| InterpolatedCommand::Escape((char.to_string(), span)));
 
     let command_option = just("--")
         .or(just("-"))
@@ -22,18 +22,16 @@ pub fn command_parser<'a>(
                 )
                 .collect::<String>(),
         )
-        .map(|(dashes, option)| {
-            InterpolatedCommand::CommandOption(format!("{}{}", dashes, option))
+        .map_with_span(|(dashes, option), span| {
+            InterpolatedCommand::CommandOption((format!("{}{}", dashes, option), span))
         });
 
     let interpolated = expr
-        .clone()
         .padded()
         .delimited_by(just('{'), just('}'))
         .map(|expr| InterpolatedCommand::Expression(Box::new(expr)));
 
     just('$')
-        .padded()
         .ignore_then(
             filter::<_, _, Simple<char>>(|c: &char| {
                 *c != '$' && *c != '{' && *c != '}' && *c != '\\' && *c != '-'
@@ -41,14 +39,14 @@ pub fn command_parser<'a>(
             .repeated()
             .at_least(1)
             .collect::<String>()
-            .map(InterpolatedCommand::Text)
+            .map_with_span(|text, span| InterpolatedCommand::Text((text, span)))
             .or(escape)
             .or(command_option)
             .or(interpolated)
+            .map_with_span(|cmd, span| (cmd, span))
             .repeated(),
         )
         .then_ignore(just('$'))
-        .padded()
         .then(failure_parser(stmnts).or_not())
-        .map(|(expr, handler)| Expression::Command(expr, handler))
+        .map_with_span(|(expr, handler), span| (Expression::Command(expr, handler), span))
 }

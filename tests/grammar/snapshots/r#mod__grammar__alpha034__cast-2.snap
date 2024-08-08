@@ -2,18 +2,42 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"1 as Num as Text\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Cast(
-                Cast(
-                    Number(
-                        1.0,
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Cast(
+                            (
+                                Cast(
+                                    (
+                                        Number(
+                                            (
+                                                1.0,
+                                                0..1,
+                                            ),
+                                        ),
+                                        0..1,
+                                    ),
+                                    (
+                                        "Num",
+                                        5..8,
+                                    ),
+                                ),
+                                0..8,
+                            ),
+                            (
+                                "Text",
+                                12..16,
+                            ),
+                        ),
+                        0..16,
                     ),
-                    "Num",
                 ),
-                "Text",
+                0..16,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..16,
 )

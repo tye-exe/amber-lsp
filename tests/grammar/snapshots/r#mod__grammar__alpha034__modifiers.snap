@@ -2,10 +2,19 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"unsafe\").unwrap()"
 ---
-Statement(
-    [
-        CommandModifier(
-            Unsafe,
-        ),
-    ],
+(
+    Statement(
+        [
+            (
+                CommandModifier(
+                    (
+                        Unsafe,
+                        0..6,
+                    ),
+                ),
+                0..6,
+            ),
+        ],
+    ),
+    0..6,
 )

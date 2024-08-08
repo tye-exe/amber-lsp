@@ -2,14 +2,26 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"return 1\").unwrap()"
 ---
-Statement(
-    [
-        Return(
-            Some(
-                Number(
-                    1.0,
+(
+    Statement(
+        [
+            (
+                Return(
+                    Some(
+                        (
+                            Number(
+                                (
+                                    1.0,
+                                    7..8,
+                                ),
+                            ),
+                            7..8,
+                        ),
+                    ),
                 ),
+                0..8,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..8,
 )

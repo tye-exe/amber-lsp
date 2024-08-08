@@ -2,16 +2,34 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"not not true\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Not(
-                Not(
-                    Boolean(
-                        true,
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Not(
+                            (
+                                Not(
+                                    (
+                                        Boolean(
+                                            (
+                                                true,
+                                                8..12,
+                                            ),
+                                        ),
+                                        8..12,
+                                    ),
+                                ),
+                                8..12,
+                            ),
+                        ),
+                        8..12,
                     ),
                 ),
+                0..12,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..12,
 )

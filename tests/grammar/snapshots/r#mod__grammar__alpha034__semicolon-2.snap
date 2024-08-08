@@ -2,17 +2,38 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"1; 2;\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Number(
-                1.0,
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Number(
+                            (
+                                1.0,
+                                0..1,
+                            ),
+                        ),
+                        0..1,
+                    ),
+                ),
+                0..2,
             ),
-        ),
-        Expression(
-            Number(
-                2.0,
+            (
+                Expression(
+                    (
+                        Number(
+                            (
+                                2.0,
+                                3..4,
+                            ),
+                        ),
+                        3..4,
+                    ),
+                ),
+                3..5,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..5,
 )

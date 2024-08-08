@@ -1,13 +1,12 @@
 use chumsky::prelude::*;
 
-use crate::grammar::alpha034::Expression;
+use crate::grammar::alpha034::{Expression, Spanned};
 
 pub fn array_parser(
-    expr: Recursive<char, Expression, Simple<char>>,
-) -> impl Parser<char, Expression, Error = Simple<char>> + '_ {
+    expr: Recursive<char, Spanned<Expression>, Simple<char>>,
+) -> impl Parser<char, Spanned<Expression>, Error = Simple<char>> + '_ {
     just('[')
-        .padded()
-        .ignore_then(expr.clone().padded().separated_by(just(',')))
-        .then_ignore(just(']').padded())
-        .map(Expression::Array)
+        .ignore_then(expr.padded().separated_by(just(',')))
+        .then_ignore(just(']'))
+        .map_with_span(|arr, span| (Expression::Array(arr), span))
 }

@@ -2,33 +2,81 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"true as Bool as Text as Num * 2 / foo()\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Divide(
-                Multiply(
-                    Cast(
-                        Cast(
-                            Cast(
-                                Boolean(
-                                    true,
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Divide(
+                            (
+                                Multiply(
+                                    (
+                                        Cast(
+                                            (
+                                                Cast(
+                                                    (
+                                                        Cast(
+                                                            (
+                                                                Boolean(
+                                                                    (
+                                                                        true,
+                                                                        0..4,
+                                                                    ),
+                                                                ),
+                                                                0..4,
+                                                            ),
+                                                            (
+                                                                "Bool",
+                                                                8..12,
+                                                            ),
+                                                        ),
+                                                        0..12,
+                                                    ),
+                                                    (
+                                                        "Text",
+                                                        16..20,
+                                                    ),
+                                                ),
+                                                0..20,
+                                            ),
+                                            (
+                                                "Num",
+                                                24..27,
+                                            ),
+                                        ),
+                                        0..27,
+                                    ),
+                                    (
+                                        Number(
+                                            (
+                                                2.0,
+                                                30..31,
+                                            ),
+                                        ),
+                                        30..31,
+                                    ),
                                 ),
-                                "Bool",
+                                0..31,
                             ),
-                            "Text",
+                            (
+                                FunctionInvocation(
+                                    (
+                                        "foo",
+                                        34..37,
+                                    ),
+                                    [],
+                                    None,
+                                ),
+                                34..39,
+                            ),
                         ),
-                        "Num",
-                    ),
-                    Number(
-                        2.0,
+                        0..39,
                     ),
                 ),
-                FunctionInvocation(
-                    "foo",
-                    [],
-                    None,
-                ),
+                0..39,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..39,
 )

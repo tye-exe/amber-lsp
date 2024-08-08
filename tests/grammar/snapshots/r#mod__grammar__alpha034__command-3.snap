@@ -2,26 +2,59 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"$command --arg1 -v$\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Command(
-                [
-                    Text(
-                        "command ",
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Command(
+                            [
+                                (
+                                    Text(
+                                        (
+                                            "command ",
+                                            1..9,
+                                        ),
+                                    ),
+                                    1..9,
+                                ),
+                                (
+                                    CommandOption(
+                                        (
+                                            "--arg1",
+                                            9..15,
+                                        ),
+                                    ),
+                                    9..15,
+                                ),
+                                (
+                                    Text(
+                                        (
+                                            " ",
+                                            15..16,
+                                        ),
+                                    ),
+                                    15..16,
+                                ),
+                                (
+                                    CommandOption(
+                                        (
+                                            "-v",
+                                            16..18,
+                                        ),
+                                    ),
+                                    16..18,
+                                ),
+                            ],
+                            None,
+                        ),
+                        0..19,
                     ),
-                    CommandOption(
-                        "--arg1",
-                    ),
-                    Text(
-                        " ",
-                    ),
-                    CommandOption(
-                        "-v",
-                    ),
-                ],
-                None,
+                ),
+                0..19,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..19,
 )

@@ -2,16 +2,34 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"fun func(a : Num) {}\").unwrap()"
 ---
-FunctionDefinition(
-    "func",
-    [
-        Typed(
-            "a",
-            Type(
-                "Num",
-            ),
+(
+    FunctionDefinition(
+        (
+            "func",
+            4..8,
         ),
-    ],
-    None,
-    [],
+        [
+            (
+                Typed(
+                    (
+                        "a",
+                        9..10,
+                    ),
+                    (
+                        Type(
+                            (
+                                "Num",
+                                13..16,
+                            ),
+                        ),
+                        11..16,
+                    ),
+                ),
+                9..16,
+            ),
+        ],
+        None,
+        [],
+    ),
+    0..20,
 )

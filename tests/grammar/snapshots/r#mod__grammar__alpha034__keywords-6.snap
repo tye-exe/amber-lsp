@@ -2,10 +2,16 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"return\").unwrap()"
 ---
-Statement(
-    [
-        Return(
-            None,
-        ),
-    ],
+(
+    Statement(
+        [
+            (
+                Return(
+                    None,
+                ),
+                0..6,
+            ),
+        ],
+    ),
+    0..6,
 )

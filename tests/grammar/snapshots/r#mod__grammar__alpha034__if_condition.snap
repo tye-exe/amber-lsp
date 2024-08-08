@@ -2,18 +2,36 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"if true {}\").unwrap()"
 ---
-Statement(
-    [
-        IfCondition(
-            IfCondition(
-                Boolean(
-                    true,
+(
+    Statement(
+        [
+            (
+                IfCondition(
+                    (
+                        IfCondition(
+                            (
+                                Boolean(
+                                    (
+                                        true,
+                                        3..7,
+                                    ),
+                                ),
+                                3..7,
+                            ),
+                            (
+                                Block(
+                                    [],
+                                ),
+                                8..10,
+                            ),
+                        ),
+                        3..10,
+                    ),
+                    None,
                 ),
-                Block(
-                    [],
-                ),
+                0..10,
             ),
-            None,
-        ),
-    ],
+        ],
+    ),
+    0..10,
 )

@@ -1,9 +1,13 @@
-use chumsky::prelude::*;
-use super::super::Expression;
+use crate::grammar::alpha034::Spanned;
 
-pub fn parentheses_parser(expr: Recursive<char, Expression, Simple<char>>) -> impl Parser<char, Expression, Error = Simple<char>> + '_ {
+use super::super::Expression;
+use chumsky::prelude::*;
+
+pub fn parentheses_parser(
+    expr: Recursive<char, Spanned<Expression>, Simple<char>>,
+) -> impl Parser<char, Spanned<Expression>, Error = Simple<char>> + '_ {
     just('(')
         .ignore_then(expr)
         .then_ignore(just(')'))
-        .map(|expr| Expression::Parentheses(Box::new(expr)))
+        .map_with_span(|expr, span| (Expression::Parentheses(Box::new(expr)), span))
 }

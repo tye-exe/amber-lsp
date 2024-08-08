@@ -2,15 +2,33 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"1 as Num\").unwrap()"
 ---
-Statement(
-    [
-        Expression(
-            Cast(
-                Number(
-                    1.0,
+(
+    Statement(
+        [
+            (
+                Expression(
+                    (
+                        Cast(
+                            (
+                                Number(
+                                    (
+                                        1.0,
+                                        0..1,
+                                    ),
+                                ),
+                                0..1,
+                            ),
+                            (
+                                "Num",
+                                5..8,
+                            ),
+                        ),
+                        0..8,
+                    ),
                 ),
-                "Num",
+                0..8,
             ),
-        ),
-    ],
+        ],
+    ),
+    0..8,
 )
