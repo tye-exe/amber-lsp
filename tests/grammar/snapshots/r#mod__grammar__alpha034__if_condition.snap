@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"if true {}\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 IfCondition(
                     (
@@ -31,7 +31,7 @@ expression: "parse(\"if true {}\").unwrap()"
                 ),
                 0..10,
             ),
-        ],
+        ),
+        0..10,
     ),
-    0..10,
-)
+]

@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"fail 1\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Fail(
                     Some(
@@ -21,7 +21,7 @@ expression: "parse(\"fail 1\").unwrap()"
                 ),
                 0..6,
             ),
-        ],
+        ),
+        0..6,
     ),
-    0..6,
-)
+]

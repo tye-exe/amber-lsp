@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"1 as Num\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Expression(
                     (
@@ -28,7 +28,7 @@ expression: "parse(\"1 as Num\").unwrap()"
                 ),
                 0..8,
             ),
-        ],
+        ),
+        0..8,
     ),
-    0..8,
-)
+]

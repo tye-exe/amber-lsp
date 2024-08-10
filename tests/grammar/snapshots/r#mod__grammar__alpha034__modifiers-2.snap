@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"silent\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 CommandModifier(
                     (
@@ -14,7 +14,7 @@ expression: "parse(\"silent\").unwrap()"
                 ),
                 0..6,
             ),
-        ],
+        ),
+        0..6,
     ),
-    0..6,
-)
+]

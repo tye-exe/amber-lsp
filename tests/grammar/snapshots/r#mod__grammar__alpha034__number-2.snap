@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"1.0\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Expression(
                     (
@@ -19,7 +19,7 @@ expression: "parse(\"1.0\").unwrap()"
                 ),
                 0..3,
             ),
-        ],
+        ),
+        0..3,
     ),
-    0..3,
-)
+]

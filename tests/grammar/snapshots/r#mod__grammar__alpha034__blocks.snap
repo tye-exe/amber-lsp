@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"\n        {\n            echo 10\n        }\n        {\n            {\n                echo 20\n            }\n        }\n    \").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Block(
                     (
@@ -31,6 +31,11 @@ expression: "parse(\"\n        {\n            echo 10\n        }\n        {\n   
                 ),
                 9..40,
             ),
+        ),
+        9..40,
+    ),
+    (
+        Statement(
             (
                 Block(
                     (
@@ -69,7 +74,7 @@ expression: "parse(\"\n        {\n            echo 10\n        }\n        {\n   
                 ),
                 49..112,
             ),
-        ],
+        ),
+        49..112,
     ),
-    9..112,
-)
+]

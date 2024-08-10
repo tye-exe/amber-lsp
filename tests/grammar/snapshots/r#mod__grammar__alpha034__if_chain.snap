@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"\n        if {\n            2 == 3 {\n                echo 10\n            }\n            true: echo 10\n            else {\n                echo 20\n            }\n        }\n    \").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 IfChain(
                     [
@@ -130,7 +130,7 @@ expression: "parse(\"\n        if {\n            2 == 3 {\n                echo 
                 ),
                 9..165,
             ),
-        ],
+        ),
+        9..165,
     ),
-    9..165,
-)
+]

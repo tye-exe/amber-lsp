@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"\n            2 + 5 > 3 + 4\n                then 15 + 10\n                else 5 - 4 <= 1/2\n                    then 3 * 4\n                    else 2\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Expression(
                     (
@@ -177,7 +177,7 @@ expression: "parse(\"\n            2 + 5 > 3 + 4\n                then 15 + 10\n
                 ),
                 13..147,
             ),
-        ],
+        ),
+        13..147,
     ),
-    13..147,
-)
+]

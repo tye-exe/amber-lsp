@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"true or false and true and true or false\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Expression(
                     (
@@ -75,7 +75,7 @@ expression: "parse(\"true or false and true and true or false\").unwrap()"
                 ),
                 0..40,
             ),
-        ],
+        ),
+        0..40,
     ),
-    0..40,
-)
+]

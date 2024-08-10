@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"$$?\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Expression(
                     (
@@ -22,7 +22,7 @@ expression: "parse(\"$$?\").unwrap()"
                 ),
                 0..3,
             ),
-        ],
+        ),
+        0..3,
     ),
-    0..3,
-)
+]

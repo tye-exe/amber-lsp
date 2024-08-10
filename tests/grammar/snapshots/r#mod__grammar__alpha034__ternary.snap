@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"   true then 1 else 2   \").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Expression(
                     (
@@ -42,7 +42,7 @@ expression: "parse(\"   true then 1 else 2   \").unwrap()"
                 ),
                 3..21,
             ),
-        ],
+        ),
+        3..21,
     ),
-    3..21,
-)
+]

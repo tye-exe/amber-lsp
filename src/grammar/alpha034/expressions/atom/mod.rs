@@ -29,7 +29,7 @@ pub fn atom_parser<'a>(
         .or(number::number_parser())
         .or(parentheses::parentheses_parser(expr))
         .then_ignore(
-            filter(|c: &char| c.is_whitespace())
+            filter( |c: &char| c.is_whitespace())
                 .repeated()
                 .then(just(';'))
                 .or_not(),

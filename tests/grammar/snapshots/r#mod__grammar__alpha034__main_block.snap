@@ -1,25 +1,48 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"\n        main {\n            echo 10\n        }\n    \").unwrap()"
+expression: "parse(\"\n        main {\n            echo 10\n        }\n\n        main {\n            echo 3;\n        }\n    \").unwrap()"
 ---
-(
-    Main(
-        [
-            (
-                Echo(
-                    (
-                        Number(
-                            (
-                                10.0,
-                                33..35,
+[
+    (
+        Main(
+            [
+                (
+                    Echo(
+                        (
+                            Number(
+                                (
+                                    10.0,
+                                    33..35,
+                                ),
                             ),
+                            33..35,
                         ),
-                        33..35,
                     ),
+                    28..35,
                 ),
-                28..35,
-            ),
-        ],
+            ],
+        ),
+        9..45,
     ),
-    9..45,
-)
+    (
+        Main(
+            [
+                (
+                    Echo(
+                        (
+                            Number(
+                                (
+                                    3.0,
+                                    79..80,
+                                ),
+                            ),
+                            79..80,
+                        ),
+                    ),
+                    74..81,
+                ),
+            ],
+        ),
+        55..91,
+    ),
+]

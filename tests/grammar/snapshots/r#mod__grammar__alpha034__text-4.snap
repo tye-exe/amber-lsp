@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(r#\"\"\\\"text in quotes\\\" \\\\\"\"#).unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Expression(
                     (
@@ -62,7 +62,7 @@ expression: "parse(r#\"\"\\\"text in quotes\\\" \\\\\"\"#).unwrap()"
                 ),
                 0..23,
             ),
-        ],
+        ),
+        0..23,
     ),
-    0..23,
-)
+]

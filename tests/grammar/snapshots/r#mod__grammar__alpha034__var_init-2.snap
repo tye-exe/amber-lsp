@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"let a = 10 + 2\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 VariableInit(
                     (
@@ -37,7 +37,7 @@ expression: "parse(\"let a = 10 + 2\").unwrap()"
                 ),
                 0..14,
             ),
-        ],
+        ),
+        0..14,
     ),
-    0..14,
-)
+]

@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"3 * 2 - --2 * 2\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Expression(
                     (
@@ -71,7 +71,7 @@ expression: "parse(\"3 * 2 - --2 * 2\").unwrap()"
                 ),
                 0..15,
             ),
-        ],
+        ),
+        0..15,
     ),
-    0..15,
-)
+]

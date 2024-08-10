@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"a -= 10\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 ShorthandSub(
                     (
@@ -23,7 +23,7 @@ expression: "parse(\"a -= 10\").unwrap()"
                 ),
                 0..7,
             ),
-        ],
+        ),
+        0..7,
     ),
-    0..7,
-)
+]

@@ -2,25 +2,27 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"fun func(a) {}\").unwrap()"
 ---
-(
-    FunctionDefinition(
-        (
-            "func",
-            4..8,
-        ),
-        [
+[
+    (
+        FunctionDefinition(
             (
-                Generic(
-                    (
-                        "a",
-                        9..10,
-                    ),
-                ),
-                9..10,
+                "func",
+                4..8,
             ),
-        ],
-        None,
-        [],
+            [
+                (
+                    Generic(
+                        (
+                            "a",
+                            9..10,
+                        ),
+                    ),
+                    9..10,
+                ),
+            ],
+            None,
+            [],
+        ),
+        0..14,
     ),
-    0..14,
-)
+]

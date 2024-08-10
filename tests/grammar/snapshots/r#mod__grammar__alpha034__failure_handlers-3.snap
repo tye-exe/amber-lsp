@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"foo()?\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Expression(
                     (
@@ -26,7 +26,7 @@ expression: "parse(\"foo()?\").unwrap()"
                 ),
                 0..6,
             ),
-        ],
+        ),
+        0..6,
     ),
-    0..6,
-)
+]

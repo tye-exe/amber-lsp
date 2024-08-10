@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"name\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Expression(
                     (
@@ -19,7 +19,7 @@ expression: "parse(\"name\").unwrap()"
                 ),
                 0..4,
             ),
-        ],
+        ),
+        0..4,
     ),
-    0..4,
-)
+]

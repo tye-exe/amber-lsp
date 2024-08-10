@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"unsafe silent $command$\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 CommandModifier(
                     (
@@ -14,6 +14,11 @@ expression: "parse(\"unsafe silent $command$\").unwrap()"
                 ),
                 0..6,
             ),
+        ),
+        0..6,
+    ),
+    (
+        Statement(
             (
                 CommandModifier(
                     (
@@ -23,6 +28,11 @@ expression: "parse(\"unsafe silent $command$\").unwrap()"
                 ),
                 7..13,
             ),
+        ),
+        7..13,
+    ),
+    (
+        Statement(
             (
                 Expression(
                     (
@@ -45,7 +55,7 @@ expression: "parse(\"unsafe silent $command$\").unwrap()"
                 ),
                 14..23,
             ),
-        ],
+        ),
+        14..23,
     ),
-    0..23,
-)
+]

@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"2 - (3 - 4)\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Expression(
                     (
@@ -52,7 +52,7 @@ expression: "parse(\"2 - (3 - 4)\").unwrap()"
                 ),
                 0..11,
             ),
-        ],
+        ),
+        0..11,
     ),
-    0..11,
-)
+]

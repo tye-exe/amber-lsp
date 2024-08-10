@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"not true\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Expression(
                     (
@@ -24,7 +24,7 @@ expression: "parse(\"not true\").unwrap()"
                 ),
                 0..8,
             ),
-        ],
+        ),
+        0..8,
     ),
-    0..8,
-)
+]

@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"25 / 5 * 3 + 7 - 2 * 4\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Expression(
                     (
@@ -89,7 +89,7 @@ expression: "parse(\"25 / 5 * 3 + 7 - 2 * 4\").unwrap()"
                 ),
                 0..22,
             ),
-        ],
+        ),
+        0..22,
     ),
-    0..22,
-)
+]

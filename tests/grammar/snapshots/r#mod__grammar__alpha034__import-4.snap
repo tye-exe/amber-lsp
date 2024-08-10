@@ -2,27 +2,29 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"import { var1, var2 } \\\"path/to/module\\\"\").unwrap()"
 ---
-(
-    Import(
-        (
-            ImportSpecific(
-                [
-                    (
-                        "var1",
-                        9..13,
-                    ),
-                    (
-                        "var2",
-                        15..19,
-                    ),
-                ],
+[
+    (
+        Import(
+            (
+                ImportSpecific(
+                    [
+                        (
+                            "var1",
+                            9..13,
+                        ),
+                        (
+                            "var2",
+                            15..19,
+                        ),
+                    ],
+                ),
+                7..21,
             ),
-            7..21,
+            (
+                "path/to/module",
+                23..37,
+            ),
         ),
-        (
-            "path/to/module",
-            23..37,
-        ),
+        0..38,
     ),
-    0..38,
-)
+]

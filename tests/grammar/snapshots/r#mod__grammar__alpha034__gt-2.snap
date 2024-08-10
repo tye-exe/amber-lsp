@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"1 + 2 > 2 + 1\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Expression(
                     (
@@ -61,7 +61,7 @@ expression: "parse(\"1 + 2 > 2 + 1\").unwrap()"
                 ),
                 0..13,
             ),
-        ],
+        ),
+        0..13,
     ),
-    0..13,
-)
+]

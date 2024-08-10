@@ -1,0 +1,99 @@
+---
+source: tests/grammar/alpha034.rs
+assertion_line: 437
+expression: "parse_recover(\"\n    5 + 5 +;\n    echo 10\")"
+---
+(
+    Some(
+        [
+            (
+                Statement(
+                    (
+                        Expression(
+                            (
+                                Add(
+                                    (
+                                        Number(
+                                            (
+                                                5.0,
+                                                5..6,
+                                            ),
+                                        ),
+                                        5..6,
+                                    ),
+                                    (
+                                        Number(
+                                            (
+                                                5.0,
+                                                9..10,
+                                            ),
+                                        ),
+                                        9..10,
+                                    ),
+                                ),
+                                5..10,
+                            ),
+                        ),
+                        5..10,
+                    ),
+                ),
+                5..10,
+            ),
+            (
+                Statement(
+                    (
+                        Echo(
+                            (
+                                Number(
+                                    (
+                                        10.0,
+                                        23..25,
+                                    ),
+                                ),
+                                23..25,
+                            ),
+                        ),
+                        18..25,
+                    ),
+                ),
+                18..25,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 11..12,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    '[',
+                ),
+                Some(
+                    '(',
+                ),
+                Some(
+                    '{',
+                ),
+                Some(
+                    '-',
+                ),
+                Some(
+                    '/',
+                ),
+                Some(
+                    'i',
+                ),
+                Some(
+                    '"',
+                ),
+                Some(
+                    '$',
+                ),
+            },
+            found: Some(
+                '+',
+            ),
+            label: None,
+        },
+    ],
+)

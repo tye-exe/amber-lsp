@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"loop var1 in 1..2 {}\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 IterLoop(
                     (
@@ -48,7 +48,7 @@ expression: "parse(\"loop var1 in 1..2 {}\").unwrap()"
                 ),
                 0..20,
             ),
-        ],
+        ),
+        0..20,
     ),
-    0..20,
-)
+]

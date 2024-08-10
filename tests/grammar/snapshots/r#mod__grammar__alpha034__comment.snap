@@ -3,9 +3,9 @@ source: tests/grammar/alpha034.rs
 expression: "parse(\"\n        // This is a comment\n        1 + 2\n    \")"
 ---
 Ok(
-    (
-        Statement(
-            [
+    [
+        (
+            Statement(
                 (
                     Comment(
                         (
@@ -15,6 +15,11 @@ Ok(
                     ),
                     9..29,
                 ),
+            ),
+            9..29,
+        ),
+        (
+            Statement(
                 (
                     Expression(
                         (
@@ -43,8 +48,8 @@ Ok(
                     ),
                     38..43,
                 ),
-            ],
+            ),
+            38..43,
         ),
-        9..43,
-    ),
+    ],
 )

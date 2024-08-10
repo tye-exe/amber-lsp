@@ -1,13 +1,15 @@
-use chumsky::prelude::*;
+use chumsky::{error::SimpleReason, prelude::*};
 
-use crate::grammar::alpha034::{Block, Spanned, Statement};
+use crate::grammar::alpha034::{Block, Expression, Spanned, Statement};
 
 pub fn block_parser(
     stmnts: Recursive<char, Spanned<Statement>, Simple<char>>,
 ) -> impl Parser<char, Spanned<Block>, Error = Simple<char>> + '_ {
-    just("{")
-        .ignore_then(stmnts.clone().padded().repeated())
-        .then_ignore(just("}"))
+    stmnts
+        .clone()
+        .padded()
+        .repeated()
+        .delimited_by(just('{'), just('}'))
         .map_with_span(|body, span| (Block::Block(body), span))
 }
 

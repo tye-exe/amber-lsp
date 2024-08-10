@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"$$ failed {}\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Expression(
                     (
@@ -17,6 +17,11 @@ expression: "parse(\"$$ failed {}\").unwrap()"
                 ),
                 0..2,
             ),
+        ),
+        0..2,
+    ),
+    (
+        Statement(
             (
                 Expression(
                     (
@@ -31,6 +36,11 @@ expression: "parse(\"$$ failed {}\").unwrap()"
                 ),
                 3..9,
             ),
+        ),
+        3..9,
+    ),
+    (
+        Statement(
             (
                 Block(
                     (
@@ -42,7 +52,7 @@ expression: "parse(\"$$ failed {}\").unwrap()"
                 ),
                 10..12,
             ),
-        ],
+        ),
+        10..12,
     ),
-    0..12,
-)
+]

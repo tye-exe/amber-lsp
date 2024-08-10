@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"echo 1\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Echo(
                     (
@@ -19,7 +19,7 @@ expression: "parse(\"echo 1\").unwrap()"
                 ),
                 0..6,
             ),
-        ],
+        ),
+        0..6,
     ),
-    0..6,
-)
+]

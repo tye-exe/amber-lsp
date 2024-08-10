@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"func(1, 2)\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Expression(
                     (
@@ -40,7 +40,7 @@ expression: "parse(\"func(1, 2)\").unwrap()"
                 ),
                 0..10,
             ),
-        ],
+        ),
+        0..10,
     ),
-    0..10,
-)
+]

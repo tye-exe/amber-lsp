@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"loop {}\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 InfiniteLoop(
                     (
@@ -16,7 +16,7 @@ expression: "parse(\"loop {}\").unwrap()"
                 ),
                 0..7,
             ),
-        ],
+        ),
+        0..7,
     ),
-    0..7,
-)
+]

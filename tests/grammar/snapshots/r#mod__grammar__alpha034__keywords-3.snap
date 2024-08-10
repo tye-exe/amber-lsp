@@ -2,16 +2,16 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"fail\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Fail(
                     None,
                 ),
                 0..4,
             ),
-        ],
+        ),
+        0..4,
     ),
-    0..4,
-)
+]

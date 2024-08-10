@@ -1,10 +1,21 @@
 use chumsky::{error::Simple, Parser};
 use insta::assert_debug_snapshot;
 
-use amber_lsp::grammar::alpha034::{parse as parse_grammar, FunctionArgument, Spanned, TypeAnnotation};
+use amber_lsp::grammar::alpha034::{
+    global::global_statement_parser, parse as parse_grammar, FunctionArgument, Spanned,
+    TypeAnnotation,
+};
 
-fn parse(input: &str) -> Result<Spanned<amber_lsp::grammar::alpha034::GlobalStatement>, Vec<Simple<char>>> {
-    parse_grammar().parse(input)
+fn parse(
+    input: &str,
+) -> Result<Vec<Spanned<amber_lsp::grammar::alpha034::GlobalStatement>>, Vec<Simple<char>>> {
+    global_statement_parser().parse(input)
+}
+
+fn parse_recover(
+    input: &str,
+) -> (Option<Vec<Spanned<amber_lsp::grammar::alpha034::GlobalStatement>>>, Vec<Simple<char>>) {
+    global_statement_parser().parse_recovery_verbose(input)
 }
 
 #[test]
@@ -240,10 +251,12 @@ fn test_expr_precedence() {
 
 #[test]
 fn test_comment() {
-    assert_debug_snapshot!(parse("
+    assert_debug_snapshot!(parse(
+        "
         // This is a comment
         1 + 2
-    "));
+    "
+    ));
     assert_debug_snapshot!(parse("1 + 2 // This is a comment without a newline"));
 }
 
@@ -261,22 +274,32 @@ fn test_function_def() {
     assert_debug_snapshot!(parse("fun func(a) {}").unwrap());
     assert_debug_snapshot!(parse("fun func(a : Num) {}").unwrap());
     assert_debug_snapshot!(parse("fun func(a: Num, b, c: Bool): Num {}").unwrap());
-    assert_debug_snapshot!(parse("
+    assert_debug_snapshot!(parse(
+        "
         fun func(a: Num, b: Text, c: Bool): Num {
             echo 10
 
             return 10
         }
-    ").unwrap());
+    "
+    )
+    .unwrap());
 }
 
 #[test]
 fn test_main_block() {
-    assert_debug_snapshot!(parse("
+    assert_debug_snapshot!(parse(
+        "
         main {
             echo 10
         }
-    ").unwrap());
+
+        main {
+            echo 3;
+        }
+    "
+    )
+    .unwrap());
 }
 
 #[test]
@@ -299,15 +322,19 @@ fn test_if_condition() {
     assert_debug_snapshot!(parse("if true { echo 10 }").unwrap());
     assert_debug_snapshot!(parse("if true { echo 10 } else {}").unwrap());
     assert_debug_snapshot!(parse("if true { echo 10 } else { echo 20 }").unwrap());
-    assert_debug_snapshot!(parse("
+    assert_debug_snapshot!(parse(
+        "
         if true: echo 10
         else: echo 20
-    ").unwrap());
+    "
+    )
+    .unwrap());
 }
 
 #[test]
 fn test_if_chain() {
-    assert_debug_snapshot!(parse("
+    assert_debug_snapshot!(parse(
+        "
         if {
             2 == 3 {
                 echo 10
@@ -317,14 +344,17 @@ fn test_if_chain() {
                 echo 20
             }
         }
-    ").unwrap());
+    "
+    )
+    .unwrap());
 }
 
 #[test]
 fn test_semicolon() {
     assert_debug_snapshot!(parse("1;").unwrap());
     assert_debug_snapshot!(parse("1; 2;").unwrap());
-    assert_debug_snapshot!(parse("
+    assert_debug_snapshot!(parse(
+        "
         main {
             echo 10;
             echo 20
@@ -333,7 +363,9 @@ fn test_semicolon() {
 
             10 20 30
         }
-    ").unwrap());
+    "
+    )
+    .unwrap());
 }
 
 #[test]
@@ -382,7 +414,8 @@ fn test_failure_handlers() {
 
 #[test]
 fn test_blocks() {
-    assert_debug_snapshot!(parse("
+    assert_debug_snapshot!(parse(
+        "
         {
             echo 10
         }
@@ -391,5 +424,17 @@ fn test_blocks() {
                 echo 20
             }
         }
-    ").unwrap());
+    "
+    )
+    .unwrap());
+}
+
+#[test]
+fn test_recovery() {
+    // TODO: Add more tests
+    assert_debug_snapshot!(parse_recover("fun foo(abc!) {}"));
+    assert_debug_snapshot!(parse_recover("
+    5 + 5 +;
+    echo 10"));
+
 }

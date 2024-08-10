@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"(8+2)*(7-3)/2\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Expression(
                     (
@@ -85,7 +85,7 @@ expression: "parse(\"(8+2)*(7-3)/2\").unwrap()"
                 ),
                 0..13,
             ),
-        ],
+        ),
+        0..13,
     ),
-    0..13,
-)
+]

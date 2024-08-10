@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(r#\"$echo \\\"Hello, world!\\\"$\"#).unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Expression(
                     (
@@ -54,7 +54,7 @@ expression: "parse(r#\"$echo \\\"Hello, world!\\\"$\"#).unwrap()"
                 ),
                 0..24,
             ),
-        ],
+        ),
+        0..24,
     ),
-    0..24,
-)
+]

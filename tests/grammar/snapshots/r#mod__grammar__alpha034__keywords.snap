@@ -2,14 +2,14 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"break\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Break,
                 0..5,
             ),
-        ],
+        ),
+        0..5,
     ),
-    0..5,
-)
+]

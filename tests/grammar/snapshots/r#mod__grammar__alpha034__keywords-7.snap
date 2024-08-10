@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"return 1\").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 Return(
                     Some(
@@ -21,7 +21,7 @@ expression: "parse(\"return 1\").unwrap()"
                 ),
                 0..8,
             ),
-        ],
+        ),
+        0..8,
     ),
-    0..8,
-)
+]

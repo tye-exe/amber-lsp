@@ -2,9 +2,9 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"\n        if true: echo 10\n        else: echo 20\n    \").unwrap()"
 ---
-(
-    Statement(
-        [
+[
+    (
+        Statement(
             (
                 IfCondition(
                     (
@@ -59,7 +59,7 @@ expression: "parse(\"\n        if true: echo 10\n        else: echo 20\n    \").
                 ),
                 9..47,
             ),
-        ],
+        ),
+        9..47,
     ),
-    9..47,
-)
+]

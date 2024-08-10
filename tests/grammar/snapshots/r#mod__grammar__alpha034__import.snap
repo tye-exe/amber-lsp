@@ -2,16 +2,18 @@
 source: tests/grammar/alpha034.rs
 expression: "parse(\"import * \\\"path/to/module\\\"\").unwrap()"
 ---
-(
-    Import(
-        (
-            ImportAll,
-            7..8,
+[
+    (
+        Import(
+            (
+                ImportAll,
+                7..8,
+            ),
+            (
+                "path/to/module",
+                10..24,
+            ),
         ),
-        (
-            "path/to/module",
-            10..24,
-        ),
+        0..25,
     ),
-    0..25,
-)
+]

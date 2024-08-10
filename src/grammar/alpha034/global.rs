@@ -50,21 +50,26 @@ pub fn function_parser() -> impl Parser<char, Spanned<GlobalStatement>, Error = 
 
     let arg_parser = typed_arg_parser.or(generic_arg_parser);
 
-    let args_parser = just("(")
-        .ignore_then(arg_parser.padded().separated_by(just(",")))
-        .then_ignore(just(")"));
+    let args_parser = arg_parser
+        .padded()
+        .separated_by(just(",").recover_with(skip_then_retry_until([')'])))
+        .delimited_by(
+            just('('),
+            just(')').recover_with(skip_then_retry_until(['{', '}', ']'])),
+        );
 
     let ret_parser = type_parser.or_not().then(
         just("{")
             .padded()
             .ignore_then(statement_parser().padded().repeated())
-            .then_ignore(just("}")),
+            .then_ignore(just("}").recover_with(skip_then_retry_until([]))),
     );
 
     keyword("fun")
         .ignore_then(ident().map_with_span(|name, span| (name, span)).padded())
         .then(args_parser.padded())
         .then(ret_parser)
+        .recover_with(skip_then_retry_until(['}']))
         .map_with_span(|((name, args), (ty, body)), span| {
             (
                 GlobalStatement::FunctionDefinition(name, args, ty, body),
@@ -84,17 +89,18 @@ pub fn main_parser() -> impl Parser<char, Spanned<GlobalStatement>, Error = Simp
         .map_with_span(|body, span| (GlobalStatement::Main(body), span))
 }
 
-pub fn global_statement_parser() -> impl Parser<char, Spanned<GlobalStatement>, Error = Simple<char>>
-{
-    let statement = statement_parser().padded().repeated().map(|stmnt| {
-        let span = stmnt.first().map(|s| s.1.start).unwrap_or(0)
-            ..stmnt.last().map(|s| s.1.end).unwrap_or(0);
-        (GlobalStatement::Statement(stmnt), span)
-    });
+pub fn global_statement_parser(
+) -> impl Parser<char, Vec<Spanned<GlobalStatement>>, Error = Simple<char>> {
+    let statement = statement_parser()
+        .padded()
+        .map(|stmnt| (GlobalStatement::Statement(stmnt.clone()), stmnt.1));
 
     import_parser()
         .or(function_parser())
         .or(main_parser())
         .or(statement)
         .padded()
+        .recover_with(skip_then_retry_until([]))
+        .separated_by(just(';').or(just('\n')).padded().or_not())
+        .then_ignore(end())
 }

@@ -145,12 +145,39 @@ pub enum GlobalStatement {
         Vec<Spanned<Statement>>,
     ),
     Main(Vec<Spanned<Statement>>),
-    Statement(Vec<Spanned<Statement>>),
+    Statement(Spanned<Statement>),
 }
 
 pub type Span = std::ops::Range<usize>;
 pub type Spanned<T> = (T, Span);
 
-pub fn parse() -> impl Parser<char, Spanned<GlobalStatement>, Error = Simple<char>> {
-    global::global_statement_parser()
+pub type SpannedSemanticToken = Spanned<usize>;
+
+pub fn parse(input: &str) -> (Option<Vec<Spanned<GlobalStatement>>>, Vec<Simple<char>>) {
+    global::global_statement_parser().parse_recovery(input)
+}
+
+fn semantic_tokens_from_ast(ast: &Option<Vec<Spanned<GlobalStatement>>>) -> Vec<SpannedSemanticToken> {
+    ast.as_ref().map_or(vec![], |ast| {
+        let mut tokens = vec![];
+
+        for (statement, span) in ast {
+            match statement {
+                GlobalStatement::Import(_, _) => {
+                    tokens.push((0, span.clone()));
+                }
+                GlobalStatement::FunctionDefinition(_, _, _, _) => {
+                    tokens.push((0, span.clone()));
+                }
+                GlobalStatement::Main(_) => {
+                    tokens.push((0, span.clone()));
+                }
+                GlobalStatement::Statement(_) => {
+                    tokens.push((0, span.clone()));
+                }
+            }
+        }
+        
+        tokens
+    })
 }
