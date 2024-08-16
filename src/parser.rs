@@ -1,6 +1,6 @@
-use amber_lsp::grammar::alpha034::{parse as parse_grammar, GlobalStatement};
+use amber_lsp::grammar::alpha034::GlobalStatement;
+use amber_lsp::grammar::alpha034::parser::parse as parse_grammar;
 use chumsky::error::Simple;
-use chumsky::Parser as ChumskyParser;
 use tower_lsp::lsp_types::SemanticTokenType;
 
 use crate::grammar::alpha034::Spanned;

@@ -1,0 +1,23 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "compiler.tokenize(r#\"\n        let x = \"my \\\"interpolated\\\" string {name} end\";\n        \"unclosed string\n\n        abcd {let x = 10\n    \"#)"
+---
+[
+    Tok[let 2:9],
+    Tok[x 2:13],
+    Tok[= 2:15],
+    Tok["my \"interpolated\" string  2:17],
+    Tok[<symbol: { > 2:45],
+    Tok[name 2:46],
+    Tok[<symbol: } > 2:50],
+    Tok[ end" 2:51],
+    Tok[<symbol: ; > 2:56],
+    Tok["unclosed string
+    
+            abcd  3:9],
+    Tok[<symbol: { > 5:14],
+    Tok[let 5:15],
+    Tok[x 5:19],
+    Tok[= 5:21],
+    Tok[10 5:23],
+]

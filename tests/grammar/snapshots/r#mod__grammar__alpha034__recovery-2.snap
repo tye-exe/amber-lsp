@@ -1,6 +1,5 @@
 ---
 source: tests/grammar/alpha034.rs
-assertion_line: 437
 expression: "parse_recover(\"\n    5 + 5 +;\n    echo 10\")"
 ---
 (

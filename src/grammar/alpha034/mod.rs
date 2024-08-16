@@ -1,7 +1,11 @@
 use chumsky::{error::Simple, Parser};
+use heraclitus_compiler::prelude::*;
+use lexer::get_rules;
 
 pub mod expressions;
 pub mod global;
+pub mod lexer;
+pub mod parser;
 pub mod statements;
 
 #[derive(PartialEq, Debug, Clone)]
@@ -52,9 +56,20 @@ pub enum Expression {
     Eq(Box<Spanned<Expression>>, Box<Spanned<Expression>>),
     Neq(Box<Spanned<Expression>>, Box<Spanned<Expression>>),
     Not(Box<Spanned<Expression>>),
-    Ternary(Box<Spanned<Expression>>, Box<Spanned<Expression>>, Box<Spanned<Expression>>),
-    FunctionInvocation(Spanned<String>, Vec<Spanned<Expression>>, Option<Spanned<FailureHandler>>),
-    Command(Vec<Spanned<InterpolatedCommand>>, Option<Spanned<FailureHandler>>),
+    Ternary(
+        Box<Spanned<Expression>>,
+        Box<Spanned<Expression>>,
+        Box<Spanned<Expression>>,
+    ),
+    FunctionInvocation(
+        Spanned<String>,
+        Vec<Spanned<Expression>>,
+        Option<Spanned<FailureHandler>>,
+    ),
+    Command(
+        Vec<Spanned<InterpolatedCommand>>,
+        Option<Spanned<FailureHandler>>,
+    ),
     Array(Vec<Spanned<Expression>>),
     Range(Box<Spanned<Expression>>, Box<Spanned<Expression>>),
     Null,
@@ -124,7 +139,11 @@ pub enum Statement {
     ShorthandDiv(Spanned<String>, Box<Spanned<Expression>>),
     ShorthandModulo(Spanned<String>, Box<Spanned<Expression>>),
     InfiniteLoop(Spanned<Block>),
-    IterLoop(Spanned<IterLoopVars>, Box<Spanned<Expression>>, Spanned<Block>),
+    IterLoop(
+        Spanned<IterLoopVars>,
+        Box<Spanned<Expression>>,
+        Spanned<Block>,
+    ),
     Break,
     Continue,
     Return(Option<Box<Spanned<Expression>>>),
@@ -153,31 +172,27 @@ pub type Spanned<T> = (T, Span);
 
 pub type SpannedSemanticToken = Spanned<usize>;
 
-pub fn parse(input: &str) -> (Option<Vec<Spanned<GlobalStatement>>>, Vec<Simple<char>>) {
-    global::global_statement_parser().parse_recovery(input)
+pub struct AmberCompiler {
+    lexer: Compiler,
+    parser: Box<dyn Parser<char, Vec<Spanned<GlobalStatement>>, Error = Simple<char>>>,
 }
 
-fn semantic_tokens_from_ast(ast: &Option<Vec<Spanned<GlobalStatement>>>) -> Vec<SpannedSemanticToken> {
-    ast.as_ref().map_or(vec![], |ast| {
-        let mut tokens = vec![];
+impl AmberCompiler {
+    pub fn new() -> Self {
+        let lexer = Compiler::new("Amber", get_rules());
 
-        for (statement, span) in ast {
-            match statement {
-                GlobalStatement::Import(_, _) => {
-                    tokens.push((0, span.clone()));
-                }
-                GlobalStatement::FunctionDefinition(_, _, _, _) => {
-                    tokens.push((0, span.clone()));
-                }
-                GlobalStatement::Main(_) => {
-                    tokens.push((0, span.clone()));
-                }
-                GlobalStatement::Statement(_) => {
-                    tokens.push((0, span.clone()));
-                }
-            }
-        }
-        
-        tokens
-    })
+        let parser = global::global_statement_parser();
+
+        AmberCompiler { lexer, parser: Box::new(parser) }
+    }
+
+    pub fn tokenize(&mut self, input: &str) -> Vec<Token> {
+        self.lexer.load(input);
+
+        self.lexer.tokenize().unwrap()
+    }
+
+    pub fn parse(&self, input: &str) -> (Option<Vec<Spanned<GlobalStatement>>>, Vec<Simple<char>>) {
+        self.parser.parse_recovery(input)
+    }
 }

@@ -1,10 +1,7 @@
 use chumsky::{error::Simple, Parser};
 use insta::assert_debug_snapshot;
 
-use amber_lsp::grammar::alpha034::{
-    global::global_statement_parser, parse as parse_grammar, FunctionArgument, Spanned,
-    TypeAnnotation,
-};
+use amber_lsp::grammar::alpha034::{global::global_statement_parser, AmberCompiler, Spanned};
 
 fn parse(
     input: &str,
@@ -14,7 +11,10 @@ fn parse(
 
 fn parse_recover(
     input: &str,
-) -> (Option<Vec<Spanned<amber_lsp::grammar::alpha034::GlobalStatement>>>, Vec<Simple<char>>) {
+) -> (
+    Option<Vec<Spanned<amber_lsp::grammar::alpha034::GlobalStatement>>>,
+    Vec<Simple<char>>,
+) {
     global_statement_parser().parse_recovery_verbose(input)
 }
 
@@ -433,8 +433,21 @@ fn test_blocks() {
 fn test_recovery() {
     // TODO: Add more tests
     assert_debug_snapshot!(parse_recover("fun foo(abc!) {}"));
-    assert_debug_snapshot!(parse_recover("
+    assert_debug_snapshot!(parse_recover(
+        "
     5 + 5 +;
-    echo 10"));
+    echo 10"
+    ));
+}
 
+#[test]
+fn test_lexer() {
+    let mut compiler = AmberCompiler::new();
+
+    assert_debug_snapshot!(compiler.tokenize(r#"
+        let x = "my \"interpolated\" string {name} end";
+        "unclosed string
+
+        abcd {let x = 10
+    "#));
 }
