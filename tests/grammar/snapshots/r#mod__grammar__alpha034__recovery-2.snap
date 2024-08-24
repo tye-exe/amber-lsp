@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse_recover(\"\n    5 + 5 +;\n    echo 10\")"
+expression: "parse(\"\n    5 + 5 +;\n    echo 10\")"
 ---
 (
     Some(
@@ -65,32 +65,135 @@ expression: "parse_recover(\"\n    5 + 5 +;\n    echo 10\")"
             reason: Unexpected,
             expected: {
                 Some(
-                    '[',
+                    Token(
+                        "true",
+                    ),
                 ),
                 Some(
-                    '(',
+                    Token(
+                        "not",
+                    ),
                 ),
                 Some(
-                    '{',
+                    Token(
+                        "unsafe",
+                    ),
                 ),
                 Some(
-                    '-',
+                    Token(
+                        "continue",
+                    ),
                 ),
                 Some(
-                    '/',
+                    Token(
+                        "false",
+                    ),
                 ),
                 Some(
-                    'i',
+                    Token(
+                        "echo",
+                    ),
                 ),
                 Some(
-                    '"',
+                    Token(
+                        "return",
+                    ),
                 ),
                 Some(
-                    '$',
+                    Token(
+                        "import",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "nameof",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "(",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "let",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "status",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "break",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "{",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "\"",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "main",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "-",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "$",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "silent",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "if",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "fail",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "loop",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "fun",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "[",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "null",
+                    ),
                 ),
             },
             found: Some(
-                '+',
+                Token(
+                    "+",
+                ),
             ),
             label: None,
         },

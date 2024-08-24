@@ -1,6 +1,6 @@
 use chumsky::prelude::*;
 
-use super::{Expression, Spanned, Statement};
+use super::{lexer::Token, Expression, Spanned, Statement};
 
 mod and;
 mod atom;
@@ -15,9 +15,11 @@ mod ternary;
 mod unary;
 
 pub fn parse_expr(
-    stmnts: Recursive<char, Spanned<Statement>, Simple<char>>,
-) -> impl Parser<char, Spanned<Expression>, Error = Simple<char>> + '_ {
-    recursive(|expr: Recursive<char, Spanned<Expression>, Simple<char>>| {
-        ternary::ternary_parser(stmnts, expr)
-    })
+    stmnts: Recursive<Token, Spanned<Statement>, Simple<Token>>,
+) -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> + '_ {
+    recursive(
+        |expr: Recursive<Token, Spanned<Expression>, Simple<Token>>| {
+            ternary::ternary_parser(stmnts, expr)
+        },
+    )
 }

@@ -1,5 +1,4 @@
 use amber_lsp::grammar::alpha034::GlobalStatement;
-use amber_lsp::grammar::alpha034::parser::parse as parse_grammar;
 use chumsky::error::Simple;
 use tower_lsp::lsp_types::SemanticTokenType;
 
@@ -41,10 +40,11 @@ impl Parser {
     }
 
     pub fn parse(&self, input: &str) -> (Option<Vec<Spanned<GlobalStatement>>>, Vec<Simple<char>>) {
-        let parsing_result = match self.version {
-            AmberVersion::Alpha034 => parse_grammar(input),
-        };
+        // let parsing_result = match self.version {
+        //     AmberVersion::Alpha034 => parse_grammar(input),
+        // };
 
-        parsing_result
+        // parsing_result
+        (None, vec![])
     }
 }

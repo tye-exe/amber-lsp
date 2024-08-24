@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"\n        main {\n            echo 10;\n            echo 20\n\n            echo 30;\n\n            10 20 30\n        }\n    \").unwrap()"
+expression: "parse_unwrap(\"\n        main {\n            echo 10;\n            echo 20\n\n            echo 30;\n\n            10 20 30\n        }\n    \")"
 ---
 [
     (

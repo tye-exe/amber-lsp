@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"\\\"Hello, {name}! How are you?\\\"\").unwrap()"
+expression: "parse_unwrap(\"\\\"Hello, {name}! How are you?\\\"\")"
 ---
 [
     (
@@ -13,11 +13,20 @@ expression: "parse(\"\\\"Hello, {name}! How are you?\\\"\").unwrap()"
                                 (
                                     Text(
                                         (
-                                            "Hello, ",
-                                            1..8,
+                                            "Hello",
+                                            1..6,
                                         ),
                                     ),
-                                    1..8,
+                                    1..6,
+                                ),
+                                (
+                                    Text(
+                                        (
+                                            ",",
+                                            6..7,
+                                        ),
+                                    ),
+                                    6..7,
                                 ),
                                 (
                                     Expression(
@@ -36,11 +45,47 @@ expression: "parse(\"\\\"Hello, {name}! How are you?\\\"\").unwrap()"
                                 (
                                     Text(
                                         (
-                                            "! How are you?",
-                                            14..28,
+                                            "!",
+                                            14..15,
                                         ),
                                     ),
-                                    14..28,
+                                    14..15,
+                                ),
+                                (
+                                    Text(
+                                        (
+                                            "How",
+                                            16..19,
+                                        ),
+                                    ),
+                                    16..19,
+                                ),
+                                (
+                                    Text(
+                                        (
+                                            "are",
+                                            20..23,
+                                        ),
+                                    ),
+                                    20..23,
+                                ),
+                                (
+                                    Text(
+                                        (
+                                            "you",
+                                            24..27,
+                                        ),
+                                    ),
+                                    24..27,
+                                ),
+                                (
+                                    Text(
+                                        (
+                                            "?",
+                                            27..28,
+                                        ),
+                                    ),
+                                    27..28,
                                 ),
                             ],
                         ),

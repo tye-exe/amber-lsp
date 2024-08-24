@@ -1,22 +1,24 @@
 use chumsky::prelude::*;
-use text::keyword;
 
-use crate::grammar::alpha034::{
-    expressions::parse_expr, ElseCondition, IfChainContent, IfCondition, Spanned, Statement,
+use crate::{
+    grammar::alpha034::{
+        expressions::parse_expr, lexer::Token, ElseCondition, IfChainContent, IfCondition, Spanned,
+        Statement,
+    },
+    T,
 };
 
 use super::block::block_parser;
 
 fn else_cond_parser(
-    stmnts: Recursive<char, Spanned<Statement>, Simple<char>>,
-) -> impl Parser<char, Spanned<ElseCondition>, Error = Simple<char>> + '_ {
-    let else_condition = keyword("else")
-        .ignore_then(filter(|c: &char| c.is_whitespace()).repeated())
+    stmnts: Recursive<Token, Spanned<Statement>, Simple<Token>>,
+) -> impl Parser<Token, Spanned<ElseCondition>, Error = Simple<Token>> + '_ {
+    let else_condition = just(T!["else"])
         .ignore_then(block_parser(stmnts.clone()))
         .map_with_span(|body, span| (ElseCondition::Else(body), span));
 
-    let else_inline = keyword("else")
-        .ignore_then(just(":").padded())
+    let else_inline = just(T!["else"])
+        .ignore_then(just(T![":"]))
         .ignore_then(stmnts.clone())
         .map_with_span(|body, span| (ElseCondition::InlineElse(Box::new(body)), span));
 
@@ -24,10 +26,10 @@ fn else_cond_parser(
 }
 
 fn cond_parser(
-    stmnts: Recursive<char, Spanned<Statement>, Simple<char>>,
-) -> impl Parser<char, Spanned<IfCondition>, Error = Simple<char>> + '_ {
+    stmnts: Recursive<Token, Spanned<Statement>, Simple<Token>>,
+) -> impl Parser<Token, Spanned<IfCondition>, Error = Simple<Token>> + '_ {
     let inline_if = parse_expr(stmnts.clone())
-        .then_ignore(just(":").padded())
+        .then_ignore(just(T![":"]))
         .then(stmnts.clone())
         .map_with_span(|(condition, body), span| {
             (
@@ -37,7 +39,6 @@ fn cond_parser(
         });
 
     let if_condition = parse_expr(stmnts.clone())
-        .then_ignore(filter(|c: &char| c.is_whitespace()).repeated())
         .then(block_parser(stmnts))
         .map_with_span(|(cond, body), span| (IfCondition::IfCondition(Box::new(cond), body), span));
 
@@ -45,30 +46,24 @@ fn cond_parser(
 }
 
 pub fn if_cond_parser(
-    stmnts: Recursive<char, Spanned<Statement>, Simple<char>>,
-) -> impl Parser<char, Spanned<Statement>, Error = Simple<char>> + '_ {
-    just("if")
-        .ignore_then(filter(|c: &char| c.is_whitespace()).repeated())
+    stmnts: Recursive<Token, Spanned<Statement>, Simple<Token>>,
+) -> impl Parser<Token, Spanned<Statement>, Error = Simple<Token>> + '_ {
+    just(T!["if"])
         .ignore_then(cond_parser(stmnts.clone()))
-        .then(
-            filter(|c: &char| c.is_whitespace())
-                .repeated()
-                .ignore_then(else_cond_parser(stmnts))
-                .or_not(),
-        )
+        .then(else_cond_parser(stmnts).or_not())
         .map_with_span(|(if_cond, else_cond), span| {
             (Statement::IfCondition(if_cond, else_cond), span)
         })
 }
 
 pub fn if_chain_parser(
-    stmnts: Recursive<char, Spanned<Statement>, Simple<char>>,
-) -> impl Parser<char, Spanned<Statement>, Error = Simple<char>> + '_ {
-    just("if")
-        .ignore_then(just("{").padded())
-        .ignore_then(cond_parser(stmnts.clone()).padded().repeated())
-        .then(else_cond_parser(stmnts).padded().or_not())
-        .then_ignore(just("}"))
+    stmnts: Recursive<Token, Spanned<Statement>, Simple<Token>>,
+) -> impl Parser<Token, Spanned<Statement>, Error = Simple<Token>> + '_ {
+    just(T!["if"])
+        .ignore_then(just(T!["{"]))
+        .ignore_then(cond_parser(stmnts.clone()).repeated())
+        .then(else_cond_parser(stmnts).or_not())
+        .then_ignore(just(T!["}"]))
         .map_with_span(|(if_conds, else_cond), span| {
             let mut if_chain: Vec<Spanned<IfChainContent>> = if_conds
                 .into_iter()

@@ -1,18 +1,17 @@
 use chumsky::prelude::*;
-use text::keyword;
 
-use crate::grammar::alpha034::{FailureHandler, Spanned, Statement};
+use crate::{grammar::alpha034::{lexer::Token, FailureHandler, Spanned, Statement}, T};
 
 pub fn failure_parser(
-    stmnts: Recursive<char, Spanned<Statement>, Simple<char>>,
-) -> impl Parser<char, Spanned<FailureHandler>, Error = Simple<char>> + '_ {
-    let handle_parser = keyword("failed")
-        .ignore_then(just("{").padded())
-        .ignore_then(stmnts.padded().repeated())
-        .then_ignore(just("}"))
+    stmnts: Recursive<Token, Spanned<Statement>, Simple<Token>>,
+) -> impl Parser<Token, Spanned<FailureHandler>, Error = Simple<Token>> + '_ {
+    let handle_parser = just(T!["failed"])
+        .ignore_then(just(T!["{"]))
+        .ignore_then(stmnts.repeated())
+        .then_ignore(just(T!["}"]))
         .map(|block| FailureHandler::Handle(block));
 
-    let prop_parser = just('?').map(|_| FailureHandler::Propagate);
+    let prop_parser = just(T!['?']).map(|_| FailureHandler::Propagate);
 
     handle_parser
         .or(prop_parser)

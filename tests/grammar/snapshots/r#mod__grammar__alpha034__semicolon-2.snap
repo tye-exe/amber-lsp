@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"1; 2;\").unwrap()"
+expression: "parse_unwrap(\"1; 2;\")"
 ---
 [
     (

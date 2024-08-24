@@ -1,21 +1,21 @@
 use chumsky::prelude::*;
-use text::keyword;
 
+use crate::grammar::alpha034::lexer::Token;
 use crate::grammar::alpha034::{Spanned, Statement};
+use crate::T;
 
 use super::range::range_parser;
 use super::Expression;
 
 pub fn ternary_parser<'a>(
-    stmnts: Recursive<'a, char, Spanned<Statement>, Simple<char>>,
-    expr: Recursive<'a, char, Spanned<Expression>, Simple<char>>,
-) -> impl Parser<char, Spanned<Expression>, Error = Simple<char>> + 'a {
+    stmnts: Recursive<'a, Token, Spanned<Statement>, Simple<Token>>,
+    expr: Recursive<'a, Token, Spanned<Expression>, Simple<Token>>,
+) -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> + 'a {
     range_parser(stmnts, expr.clone())
         .then(
-            keyword("then")
-                .padded()
+            just(T!["then"])
                 .ignore_then(expr.clone())
-                .then_ignore(keyword("else").padded())
+                .then_ignore(just(T!["else"]))
                 .then(expr)
                 .repeated(),
         )

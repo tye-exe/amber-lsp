@@ -1,19 +1,20 @@
 use chumsky::prelude::*;
-use text::{ident, keyword};
 
-use crate::grammar::alpha034::{Expression, Spanned, Statement};
+use crate::{
+    grammar::alpha034::{lexer::Token, parser::ident, Expression, Spanned, Statement},
+    T,
+};
 
 use super::unary::unary_parser;
 
 pub fn cast_parser<'a>(
-    stmnts: Recursive<'a, char, Spanned<Statement>, Simple<char>>,
-    expr: Recursive<'a, char, Spanned<Expression>, Simple<char>>,
-) -> impl Parser<char, Spanned<Expression>, Error = Simple<char>> + 'a {
+    stmnts: Recursive<'a, Token, Spanned<Statement>, Simple<Token>>,
+    expr: Recursive<'a, Token, Spanned<Expression>, Simple<Token>>,
+) -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> + 'a {
     unary_parser(stmnts, expr)
         .then(
-            keyword("as")
-                .padded()
-                .ignore_then(ident::<_, Simple<char>>().map_with_span(|txt, span| (txt, span)))
+            just(T!["as"])
+                .ignore_then(ident().map_with_span(|txt, span| (txt, span)))
                 .repeated(),
         )
         .foldl(|expr, cast| {

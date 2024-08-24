@@ -1,17 +1,19 @@
 use chumsky::prelude::*;
-use text::keyword;
 
-use crate::grammar::alpha034::{Expression, Spanned, Statement};
+use crate::{
+    grammar::alpha034::{lexer::Token, Expression, Spanned, Statement},
+    T,
+};
 
 use super::comparison::comparison_parser;
 
 pub fn and_parser<'a>(
-    stmnts: Recursive<'a, char, Spanned<Statement>, Simple<char>>,
-    expr: Recursive<'a, char, Spanned<Expression>, Simple<char>>,
-) -> impl Parser<char, Spanned<Expression>, Error = Simple<char>> + 'a {
+    stmnts: Recursive<'a, Token, Spanned<Statement>, Simple<Token>>,
+    expr: Recursive<'a, Token, Spanned<Expression>, Simple<Token>>,
+) -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> + 'a {
     comparison_parser(stmnts.clone(), expr.clone())
         .then(
-            keyword("and")
+            just(T!["and"])
                 .ignore_then(comparison_parser(stmnts, expr))
                 .repeated(),
         )

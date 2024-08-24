@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"unsafe silent $command$\").unwrap()"
+expression: "parse_unwrap(\"unsafe silent $command$\")"
 ---
 [
     (
@@ -40,10 +40,7 @@ expression: "parse(\"unsafe silent $command$\").unwrap()"
                             [
                                 (
                                     Text(
-                                        (
-                                            "command",
-                                            15..22,
-                                        ),
+                                        "command",
                                     ),
                                     15..22,
                                 ),

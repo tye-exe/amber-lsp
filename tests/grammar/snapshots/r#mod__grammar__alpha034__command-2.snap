@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"$echo \\\"Hello, {name}!\\\"$\").unwrap()"
+expression: "parse_unwrap(\"$echo \\\"Hello, {name}!\\\"$\")"
 ---
 [
     (
@@ -12,12 +12,27 @@ expression: "parse(\"$echo \\\"Hello, {name}!\\\"$\").unwrap()"
                             [
                                 (
                                     Text(
-                                        (
-                                            "echo \"Hello, ",
-                                            1..14,
-                                        ),
+                                        "echo",
                                     ),
-                                    1..14,
+                                    1..5,
+                                ),
+                                (
+                                    Text(
+                                        "\"",
+                                    ),
+                                    6..7,
+                                ),
+                                (
+                                    Text(
+                                        "Hello",
+                                    ),
+                                    7..12,
+                                ),
+                                (
+                                    Text(
+                                        ",",
+                                    ),
+                                    12..13,
                                 ),
                                 (
                                     Expression(
@@ -35,12 +50,15 @@ expression: "parse(\"$echo \\\"Hello, {name}!\\\"$\").unwrap()"
                                 ),
                                 (
                                     Text(
-                                        (
-                                            "!\"",
-                                            20..22,
-                                        ),
+                                        "!",
                                     ),
-                                    20..22,
+                                    20..21,
+                                ),
+                                (
+                                    Text(
+                                        "\"",
+                                    ),
+                                    21..22,
                                 ),
                             ],
                             None,

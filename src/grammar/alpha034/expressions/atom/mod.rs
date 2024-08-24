@@ -1,4 +1,7 @@
-use crate::grammar::alpha034::{Spanned, Statement};
+use crate::{
+    grammar::alpha034::{lexer::Token, Spanned, Statement},
+    T,
+};
 
 use super::super::Expression;
 use chumsky::prelude::*;
@@ -15,9 +18,9 @@ mod text;
 mod var;
 
 pub fn atom_parser<'a>(
-    stmnts: Recursive<'a, char, Spanned<Statement>, Simple<char>>,
-    expr: Recursive<'a, char, Spanned<Expression>, Simple<char>>,
-) -> impl Parser<char, Spanned<Expression>, Error = Simple<char>> + 'a {
+    stmnts: Recursive<'a, Token, Spanned<Statement>, Simple<Token>>,
+    expr: Recursive<'a, Token, Spanned<Expression>, Simple<Token>>,
+) -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> + 'a {
     bool::bool_parser()
         .or(null::null_parser())
         .or(status::status_var_parser())
@@ -28,10 +31,5 @@ pub fn atom_parser<'a>(
         .or(command::command_parser(stmnts, expr.clone()))
         .or(number::number_parser())
         .or(parentheses::parentheses_parser(expr))
-        .then_ignore(
-            filter( |c: &char| c.is_whitespace())
-                .repeated()
-                .then(just(';'))
-                .or_not(),
-        )
+        .then_ignore(just(T![';']).or_not())
 }

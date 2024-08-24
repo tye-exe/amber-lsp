@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"$$ failed {}\").unwrap()"
+expression: "parse_unwrap(\"$$ failed {}\")"
 ---
 [
     (
@@ -10,49 +10,21 @@ expression: "parse(\"$$ failed {}\").unwrap()"
                     (
                         Command(
                             [],
-                            None,
-                        ),
-                        0..2,
-                    ),
-                ),
-                0..2,
-            ),
-        ),
-        0..2,
-    ),
-    (
-        Statement(
-            (
-                Expression(
-                    (
-                        Var(
-                            (
-                                "failed",
-                                3..9,
+                            Some(
+                                (
+                                    Handle(
+                                        [],
+                                    ),
+                                    3..12,
+                                ),
                             ),
                         ),
-                        3..9,
+                        0..12,
                     ),
                 ),
-                3..9,
+                0..12,
             ),
         ),
-        3..9,
-    ),
-    (
-        Statement(
-            (
-                Block(
-                    (
-                        Block(
-                            [],
-                        ),
-                        10..12,
-                    ),
-                ),
-                10..12,
-            ),
-        ),
-        10..12,
+        0..12,
     ),
 ]

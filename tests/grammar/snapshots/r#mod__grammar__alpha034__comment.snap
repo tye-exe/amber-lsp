@@ -1,55 +1,50 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"\n        // This is a comment\n        1 + 2\n    \")"
+expression: "parse_unwrap(\"\n        // This is a comment\n        1 + 2\n    \")"
 ---
-Ok(
-    [
-        (
-            Statement(
-                (
-                    Comment(
-                        (
-                            " This is a comment",
-                            11..29,
-                        ),
-                    ),
-                    9..29,
+[
+    (
+        Statement(
+            (
+                Comment(
+                    " This is a comment\n",
                 ),
+                9..30,
             ),
-            9..29,
         ),
-        (
-            Statement(
-                (
-                    Expression(
-                        (
-                            Add(
-                                (
-                                    Number(
-                                        (
-                                            1.0,
-                                            38..39,
-                                        ),
+        9..30,
+    ),
+    (
+        Statement(
+            (
+                Expression(
+                    (
+                        Add(
+                            (
+                                Number(
+                                    (
+                                        1.0,
+                                        38..39,
                                     ),
-                                    38..39,
                                 ),
-                                (
-                                    Number(
-                                        (
-                                            2.0,
-                                            42..43,
-                                        ),
-                                    ),
-                                    42..43,
-                                ),
+                                38..39,
                             ),
-                            38..43,
+                            (
+                                Number(
+                                    (
+                                        2.0,
+                                        42..43,
+                                    ),
+                                ),
+                                42..43,
+                            ),
                         ),
+                        38..43,
                     ),
-                    38..43,
                 ),
+                38..43,
             ),
-            38..43,
         ),
-    ],
-)
+        38..43,
+    ),
+]

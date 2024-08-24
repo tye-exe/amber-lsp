@@ -1,12 +1,9 @@
-use chumsky::prelude::*;
-
 use heraclitus_compiler::prelude::*;
 
 pub fn get_rules() -> Rules {
     let symbols = vec![
-        '+', '-', '*', '/', '%', '\n', ';', ':',
-        '(', ')', '[', ']', '{', '}', ',', '.',
-        '<', '>', '=', '!', '?'
+        '+', '-', '*', '/', '%', '\n', ';', ':', '(', ')', '[', ']', '{', '}', ',', '.', '<', '>',
+        '=', '!', '?', '\\', '"', '$'
     ];
     let compounds = vec![
         ('<', '='),
@@ -19,12 +16,13 @@ pub fn get_rules() -> Rules {
         ('/', '='),
         ('%', '='),
         ('.', '.'),
-        ('/', '/')
+        ('/', '/'),
     ];
     let region = reg![
         reg!(string as "string literal" => {
             begin: "\"",
             end: "\"",
+            tokenize: true,
             allow_left_open: true
         } => [
             reg!(str_interp as "string interpolation" => {
@@ -37,6 +35,7 @@ pub fn get_rules() -> Rules {
         reg!(command as "command literal" => {
             begin: "$",
             end: "$",
+            tokenize: true,
             allow_left_open: true
         } => [
             reg!(com_interp as "command interpolation" => {
@@ -66,11 +65,24 @@ pub fn get_rules() -> Rules {
     Rules::new(symbols, compounds, region)
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct Token(pub String);
 
-pub fn lexer(input: &str) -> Vec<Token> {
-    let mut compiler = Compiler::new("Amber", get_rules());
+impl ToString for Token {
+    fn to_string(&self) -> String {
+        self.0.clone()
+    }
+}
 
-    compiler.load(input);
+impl FromIterator<Token> for String {
+    fn from_iter<I: IntoIterator<Item = Token>>(iter: I) -> Self {
+        iter.into_iter().map(|t| t.0).collect()
+    }
+}
 
-    compiler.tokenize().unwrap() // It should never fail
+#[macro_export]
+macro_rules! T {
+    [$text:expr] => {
+        Token($text.to_string())
+    };
 }

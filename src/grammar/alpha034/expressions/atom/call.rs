@@ -1,18 +1,17 @@
-use crate::grammar::alpha034::{
-    statements::failed::failure_parser, Expression, Spanned, Statement,
-};
+use crate::{grammar::alpha034::{
+    lexer::Token, parser::ident, statements::failed::failure_parser, Expression, Spanned, Statement
+}, T};
 use chumsky::prelude::*;
-use text::ident;
 
 pub fn function_call_parser<'a>(
-    stmnts: Recursive<'a, char, Spanned<Statement>, Simple<char>>,
-    expr: Recursive<'a, char, Spanned<Expression>, Simple<char>>,
-) -> impl Parser<char, Spanned<Expression>, Error = Simple<char>> + 'a {
-    ident::<_, Simple<char>>()
+    stmnts: Recursive<'a, Token, Spanned<Statement>, Simple<Token>>,
+    expr: Recursive<'a, Token, Spanned<Expression>, Simple<Token>>,
+) -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> + 'a {
+    ident()
         .map_with_span(|name, span| (name, span))
-        .then_ignore(just('(').padded())
-        .then(expr.padded().separated_by(just(',')))
-        .then_ignore(just(')'))
+        .then_ignore(just(T!['(']))
+        .then(expr.separated_by(just(T![','])))
+        .then_ignore(just(T![')']))
         .then(failure_parser(stmnts).or_not())
         .map_with_span(|((name, args), handler), span| {
             (Expression::FunctionInvocation(name, args, handler), span)

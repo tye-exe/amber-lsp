@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(r#\"\"\\\"text in quotes\\\" \\\\\"\"#).unwrap()"
+expression: "parse_unwrap(r#\"\"\\\"text in quotes\\\" \\\\\"\"#)"
 ---
 [
     (
@@ -22,11 +22,29 @@ expression: "parse(r#\"\"\\\"text in quotes\\\" \\\\\"\"#).unwrap()"
                                 (
                                     Text(
                                         (
-                                            "text in quotes",
-                                            3..17,
+                                            "text",
+                                            3..7,
                                         ),
                                     ),
-                                    3..17,
+                                    3..7,
+                                ),
+                                (
+                                    Text(
+                                        (
+                                            "in",
+                                            8..10,
+                                        ),
+                                    ),
+                                    8..10,
+                                ),
+                                (
+                                    Text(
+                                        (
+                                            "quotes",
+                                            11..17,
+                                        ),
+                                    ),
+                                    11..17,
                                 ),
                                 (
                                     Escape(
@@ -36,15 +54,6 @@ expression: "parse(r#\"\"\\\"text in quotes\\\" \\\\\"\"#).unwrap()"
                                         ),
                                     ),
                                     17..19,
-                                ),
-                                (
-                                    Text(
-                                        (
-                                            " ",
-                                            19..20,
-                                        ),
-                                    ),
-                                    19..20,
                                 ),
                                 (
                                     Escape(

@@ -1,6 +1,6 @@
-use chumsky::{error::Simple, Parser};
+use chumsky::{error::Simple, Parser, Stream};
 use heraclitus_compiler::prelude::*;
-use lexer::get_rules;
+use lexer::{get_rules, Token};
 
 pub mod expressions;
 pub mod global;
@@ -28,10 +28,10 @@ pub enum FailureHandler {
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum InterpolatedCommand {
-    Escape(Spanned<String>),
-    CommandOption(Spanned<String>),
+    Escape(String),
+    CommandOption(String),
     Expression(Box<Spanned<Expression>>),
-    Text(Spanned<String>),
+    Text(String),
 }
 
 #[derive(PartialEq, Debug, Clone)]
@@ -151,7 +151,7 @@ pub enum Statement {
     Echo(Box<Spanned<Expression>>),
     CommandModifier(Spanned<CommandModifier>),
     Block(Spanned<Block>),
-    Comment(Spanned<String>),
+    Comment(String),
 }
 
 #[derive(PartialEq, Debug, Clone)]
@@ -174,7 +174,7 @@ pub type SpannedSemanticToken = Spanned<usize>;
 
 pub struct AmberCompiler {
     lexer: Compiler,
-    parser: Box<dyn Parser<char, Vec<Spanned<GlobalStatement>>, Error = Simple<char>>>,
+    parser: Box<dyn Parser<Token, Vec<Spanned<GlobalStatement>>, Error = Simple<Token>>>,
 }
 
 impl AmberCompiler {
@@ -183,16 +183,27 @@ impl AmberCompiler {
 
         let parser = global::global_statement_parser();
 
-        AmberCompiler { lexer, parser: Box::new(parser) }
+        AmberCompiler {
+            lexer,
+            parser: Box::new(parser),
+        }
     }
 
-    pub fn tokenize(&mut self, input: &str) -> Vec<Token> {
+    pub fn tokenize(&mut self, input: &str) -> Vec<Spanned<Token>> {
         self.lexer.load(input);
 
-        self.lexer.tokenize().unwrap()
+        // It should never fail
+        self.lexer
+            .tokenize()
+            .unwrap()
+            .iter()
+            .map(|t| (Token(t.word.clone()), t.start..(t.start + t.word.len())))
+            .collect()
     }
 
-    pub fn parse(&self, input: &str) -> (Option<Vec<Spanned<GlobalStatement>>>, Vec<Simple<char>>) {
-        self.parser.parse_recovery(input)
+    pub fn parse(&mut self, input: &str) -> (Option<Vec<Spanned<GlobalStatement>>>, Vec<Simple<Token>>) {
+        let tokens = self.tokenize(input);
+        let len = input.chars().count();
+        self.parser.parse_recovery(Stream::from_iter(len..len + 1, tokens.into_iter()))
     }
 }

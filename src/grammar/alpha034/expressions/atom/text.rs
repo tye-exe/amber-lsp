@@ -1,32 +1,31 @@
-use crate::grammar::alpha034::{Expression, InterpolatedText, Spanned};
+use crate::{
+    grammar::alpha034::{lexer::Token, Expression, InterpolatedText, Spanned},
+    T,
+};
 use chumsky::prelude::*;
 
 pub fn text_parser(
-    expr: Recursive<char, Spanned<Expression>, Simple<char>>,
-) -> impl Parser<char, Spanned<Expression>, Error = Simple<char>> + '_ {
-    let escaped = just::<_, _, Simple<char>>('\\')
+    expr: Recursive<Token, Spanned<Expression>, Simple<Token>>,
+) -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> + '_ {
+    let escaped = just(T!['\\'])
         .ignore_then(any())
         .map_with_span(|char, span| InterpolatedText::Escape((char.to_string(), span)));
 
     let interpolated = expr
-        .padded()
-        .delimited_by(just('{'), just('}'))
+        .delimited_by(just(T!['{']), just(T!['}']))
         .map(|expr| InterpolatedText::Expression(Box::new(expr)));
 
-    just('"')
+    just(T!['"'])
         .ignore_then(
-            filter::<_, _, Simple<char>>(|c: &char| {
-                *c != '"' && *c != '{' && *c != '}' && *c != '\\'
+            filter::<_, _, Simple<Token>>(|c: &Token| {
+                *c != T!['"'] && *c != T!['{'] && *c != T!['}'] && *c != T!['\\']
             })
-            .repeated()
-            .at_least(1)
-            .collect::<String>()
-            .map_with_span(|text, span| InterpolatedText::Text((text, span)))
+            .map_with_span(|text, span| InterpolatedText::Text((text.to_string(), span)))
             .or(escaped)
             .or(interpolated)
             .map_with_span(|expr, span| (expr, span))
             .repeated(),
         )
-        .then_ignore(just('"'))
+        .then_ignore(just(T!['"']))
         .map_with_span(|expr, span| (Expression::Text(expr), span))
 }

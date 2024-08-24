@@ -1,7 +1,9 @@
-use crate::grammar::alpha034::{Expression, Spanned};
+use crate::{
+    grammar::alpha034::{lexer::Token, Expression, Spanned},
+    T,
+};
 use chumsky::prelude::*;
-use text::keyword;
 
-pub fn status_var_parser() -> impl Parser<char, Spanned<Expression>, Error = Simple<char>> {
-    keyword("status").map_with_span(|_, span| (Expression::Status, span))
+pub fn status_var_parser() -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> {
+    just(T!["status"]).map_with_span(|_, span| (Expression::Status, span))
 }

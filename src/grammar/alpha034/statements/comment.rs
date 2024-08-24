@@ -1,14 +1,8 @@
 use chumsky::prelude::*;
 
-use crate::grammar::alpha034::{Spanned, Statement};
+use crate::grammar::alpha034::{lexer::Token, Spanned, Statement};
 
-pub fn comment_parser() -> impl Parser<char, Spanned<Statement>, Error = Simple<char>> {
-    just("//")
-        .ignore_then(
-            filter(|c: &char| *c != '\n')
-                .repeated()
-                .collect()
-                .map_with_span(|text, span| (text, span)),
-        )
-        .map_with_span(|com, span| (Statement::Comment(com), span))
+pub fn comment_parser() -> impl Parser<Token, Spanned<Statement>, Error = Simple<Token>> {
+    filter(|t: &Token| t.to_string().starts_with("//"))
+        .map_with_span(|com, span| (Statement::Comment(com.to_string()[2..].to_string()), span))
 }

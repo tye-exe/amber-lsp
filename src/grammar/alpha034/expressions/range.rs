@@ -1,17 +1,20 @@
 use chumsky::prelude::*;
 
-use crate::grammar::alpha034::{Expression, Spanned, Statement};
+use crate::{
+    grammar::alpha034::{lexer::Token, Expression, Spanned, Statement},
+    T,
+};
 
 use super::or::or_parser;
 
 pub fn range_parser<'a>(
-    stmnts: Recursive<'a, char, Spanned<Statement>, Simple<char>>,
-    expr: Recursive<'a, char, Spanned<Expression>, Simple<char>>,
-) -> impl Parser<char, Spanned<Expression>, Error = Simple<char>> + 'a {
+    stmnts: Recursive<'a, Token, Spanned<Statement>, Simple<Token>>,
+    expr: Recursive<'a, Token, Spanned<Expression>, Simple<Token>>,
+) -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> + 'a {
     or_parser(stmnts.clone(), expr.clone())
         .then(
-            just("..")
-                .ignore_then(just("=").or_not())
+            just(T![".."])
+                .ignore_then(just(T!["="]).or_not())
                 .ignore_then(or_parser(stmnts, expr))
                 .repeated(),
         )

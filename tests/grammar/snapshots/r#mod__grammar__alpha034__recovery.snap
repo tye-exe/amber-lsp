@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse_recover(\"fun foo(abc!) {}\")"
+expression: "parse(\"fun foo(abc!) {}\")"
 ---
 (
     Some(
@@ -35,11 +35,15 @@ expression: "parse_recover(\"fun foo(abc!) {}\")"
             reason: Unexpected,
             expected: {
                 Some(
-                    ')',
+                    Token(
+                        ")",
+                    ),
                 ),
             },
             found: Some(
-                '!',
+                Token(
+                    "!",
+                ),
             ),
             label: None,
         },

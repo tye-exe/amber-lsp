@@ -2,31 +2,35 @@ use std::ops::Range;
 
 use chumsky::prelude::*;
 
-use crate::grammar::alpha034::Spanned;
+use crate::{
+    grammar::alpha034::{lexer::Token, Spanned},
+    T,
+};
 
 use super::Expression;
 
-pub fn number_parser() -> impl Parser<char, Spanned<Expression>, Error = Simple<char>> {
-    filter::<_, _, Simple<char>>(|c: &char| c.is_ascii_digit())
-        .repeated()
-        .at_least(1)
-        .then(
-            just('.')
-                .chain(
-                    filter::<_, _, Simple<char>>(|c: &char| c.is_ascii_digit())
-                        .repeated()
-                        .at_least(1),
-                )
-                .or_not(),
-        )
-        .map(|(int, float)| {
-            let int = int.into_iter().collect::<String>();
-            let float = float
-                .unwrap_or(vec!['.', '0'])
-                .into_iter()
-                .collect::<String>();
+pub fn number_parser() -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> {
+    let int = filter_map(|span, token: Token| {
+        let word = token.to_string();
 
-            format!("{}{}", int, float)
+        if word.is_empty() {
+            return Err(Simple::expected_input_found(span, Vec::new(), Some(token)));
+        }
+
+        for char in word.chars() {
+            if !char.is_ascii_digit() {
+                return Err(Simple::expected_input_found(span, Vec::new(), Some(token)));
+            }
+        }
+
+        Ok(word)
+    });
+
+    int.then(just(T!['.']).ignore_then(int).or_not())
+        .map(|(int, float)| {
+            let float = float.unwrap_or('0'.to_string());
+
+            format!("{}.{}", int, float)
         })
         .from_str::<f32>()
         .unwrapped()

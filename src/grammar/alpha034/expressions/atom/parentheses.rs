@@ -1,12 +1,14 @@
-use crate::grammar::alpha034::Spanned;
+use crate::{
+    grammar::alpha034::{lexer::Token, Spanned},
+    T,
+};
 
 use super::super::Expression;
 use chumsky::prelude::*;
 
 pub fn parentheses_parser(
-    expr: Recursive<char, Spanned<Expression>, Simple<char>>,
-) -> impl Parser<char, Spanned<Expression>, Error = Simple<char>> + '_ {
-    expr
-        .delimited_by(just('('), just(')'))
+    expr: Recursive<Token, Spanned<Expression>, Simple<Token>>,
+) -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> + '_ {
+    expr.delimited_by(just(T!['(']), just(T![')']))
         .map_with_span(|expr, span| (Expression::Parentheses(Box::new(expr)), span))
 }

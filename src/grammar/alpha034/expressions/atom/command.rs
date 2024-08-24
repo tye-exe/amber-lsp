@@ -1,52 +1,47 @@
 use chumsky::prelude::*;
 
-use crate::grammar::alpha034::{
-    statements::failed::failure_parser, Expression, InterpolatedCommand, Spanned, Statement,
+use crate::{
+    grammar::alpha034::{
+        lexer::Token, statements::failed::failure_parser, Expression, InterpolatedCommand, Spanned,
+        Statement,
+    },
+    T,
 };
 
 pub fn command_parser<'a>(
-    stmnts: Recursive<'a, char, Spanned<Statement>, Simple<char>>,
-    expr: Recursive<'a, char, Spanned<Expression>, Simple<char>>,
-) -> impl Parser<char, Spanned<Expression>, Error = Simple<char>> + 'a {
-    let escape = just('\\')
+    stmnts: Recursive<'a, Token, Spanned<Statement>, Simple<Token>>,
+    expr: Recursive<'a, Token, Spanned<Expression>, Simple<Token>>,
+) -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> + 'a {
+    let escape = just(T!['\\'])
         .ignore_then(any())
-        .map_with_span(|char, span| InterpolatedCommand::Escape((char.to_string(), span)));
+        .map(|token| InterpolatedCommand::Escape(token.to_string()));
 
-    let command_option = just("--")
-        .or(just("-"))
-        .then(
-            filter(|c: &char| c.is_ascii_alphabetic())
-                .chain(
-                    filter(|c: &char| c.is_ascii_alphanumeric() || *c == '_' || *c == '-')
-                        .repeated(),
-                )
-                .collect::<String>(),
-        )
-        .map_with_span(|(dashes, option), span| {
-            InterpolatedCommand::CommandOption((format!("{}{}", dashes, option), span))
+    let command_option = just(T!["-"])
+        .then(just(T!["-"]).or_not())
+        .then(any())
+        .map(|((_, second_dash), option)| {
+            let dashes = if second_dash.is_some() { "--" } else { "-" };
+
+            InterpolatedCommand::CommandOption(format!("{}{}", dashes, option.to_string()))
         });
-
+    
     let interpolated = expr
-        .padded()
-        .delimited_by(just('{'), just('}'))
+        .delimited_by(just(T!['{']), just(T!['}']))
         .map(|expr| InterpolatedCommand::Expression(Box::new(expr)));
 
-    just('$')
+    just(T!['$'])
         .ignore_then(
-            filter::<_, _, Simple<char>>(|c: &char| {
-                *c != '$' && *c != '{' && *c != '}' && *c != '\\' && *c != '-'
+            filter::<_, _, Simple<Token>>(|c: &Token| {
+                *c != T!["$"] && *c != T!["{"] && *c != T!["}"] && *c != T!["\\"] && *c != T!["-"]
             })
-            .repeated()
-            .at_least(1)
-            .collect::<String>()
-            .map_with_span(|text, span| InterpolatedCommand::Text((text, span)))
+            .map(|text| InterpolatedCommand::Text(text.to_string()))
             .or(escape)
             .or(command_option)
             .or(interpolated)
             .map_with_span(|cmd, span| (cmd, span))
             .repeated(),
         )
-        .then_ignore(just('$'))
+        .then_ignore(just(T!['$']))
         .then(failure_parser(stmnts).or_not())
         .map_with_span(|(expr, handler), span| (Expression::Command(expr, handler), span))
 }

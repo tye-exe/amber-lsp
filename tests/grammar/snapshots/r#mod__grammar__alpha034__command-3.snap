@@ -1,60 +1,47 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"$command --arg1 -v$\").unwrap()"
+expression: "parse(\"$command --arg1 -v$\")"
 ---
-[
-    (
-        Statement(
+(
+    Some(
+        [
             (
-                Expression(
+                Statement(
                     (
-                        Command(
-                            [
-                                (
-                                    Text(
+                        Expression(
+                            (
+                                Command(
+                                    [
                                         (
-                                            "command ",
-                                            1..9,
+                                            Text(
+                                                "command",
+                                            ),
+                                            1..8,
                                         ),
-                                    ),
-                                    1..9,
-                                ),
-                                (
-                                    CommandOption(
                                         (
-                                            "--arg1",
+                                            CommandOption(
+                                                "--arg1",
+                                            ),
                                             9..15,
                                         ),
-                                    ),
-                                    9..15,
-                                ),
-                                (
-                                    Text(
                                         (
-                                            " ",
-                                            15..16,
-                                        ),
-                                    ),
-                                    15..16,
-                                ),
-                                (
-                                    CommandOption(
-                                        (
-                                            "-v",
+                                            CommandOption(
+                                                "-v",
+                                            ),
                                             16..18,
                                         ),
-                                    ),
-                                    16..18,
+                                    ],
+                                    None,
                                 ),
-                            ],
-                            None,
+                                0..19,
+                            ),
                         ),
                         0..19,
                     ),
                 ),
                 0..19,
             ),
-        ),
-        0..19,
+        ],
     ),
-]
+    [],
+)

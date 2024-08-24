@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"\\\"Hello, world!\\\"\").unwrap()"
+expression: "parse_unwrap(\"\\\"Hello, world!\\\"\")"
 ---
 [
     (
@@ -13,11 +13,38 @@ expression: "parse(\"\\\"Hello, world!\\\"\").unwrap()"
                                 (
                                     Text(
                                         (
-                                            "Hello, world!",
-                                            1..14,
+                                            "Hello",
+                                            1..6,
                                         ),
                                     ),
-                                    1..14,
+                                    1..6,
+                                ),
+                                (
+                                    Text(
+                                        (
+                                            ",",
+                                            6..7,
+                                        ),
+                                    ),
+                                    6..7,
+                                ),
+                                (
+                                    Text(
+                                        (
+                                            "world",
+                                            8..13,
+                                        ),
+                                    ),
+                                    8..13,
+                                ),
+                                (
+                                    Text(
+                                        (
+                                            "!",
+                                            13..14,
+                                        ),
+                                    ),
+                                    13..14,
                                 ),
                             ],
                         ),

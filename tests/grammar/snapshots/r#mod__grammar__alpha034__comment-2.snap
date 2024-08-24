@@ -1,55 +1,50 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"1 + 2 // This is a comment without a newline\")"
+expression: "parse_unwrap(\"1 + 2 // This is a comment without a newline\")"
 ---
-Ok(
-    [
-        (
-            Statement(
-                (
-                    Expression(
-                        (
-                            Add(
-                                (
-                                    Number(
-                                        (
-                                            1.0,
-                                            0..1,
-                                        ),
+[
+    (
+        Statement(
+            (
+                Expression(
+                    (
+                        Add(
+                            (
+                                Number(
+                                    (
+                                        1.0,
+                                        0..1,
                                     ),
-                                    0..1,
                                 ),
-                                (
-                                    Number(
-                                        (
-                                            2.0,
-                                            4..5,
-                                        ),
-                                    ),
-                                    4..5,
-                                ),
+                                0..1,
                             ),
-                            0..5,
+                            (
+                                Number(
+                                    (
+                                        2.0,
+                                        4..5,
+                                    ),
+                                ),
+                                4..5,
+                            ),
                         ),
+                        0..5,
                     ),
-                    0..5,
                 ),
+                0..5,
             ),
-            0..5,
         ),
-        (
-            Statement(
-                (
-                    Comment(
-                        (
-                            " This is a comment without a newline",
-                            8..44,
-                        ),
-                    ),
-                    6..44,
+        0..5,
+    ),
+    (
+        Statement(
+            (
+                Comment(
+                    " This is a comment without a newline",
                 ),
+                6..44,
             ),
-            6..44,
         ),
-    ],
-)
+        6..44,
+    ),
+]
