@@ -2,7 +2,7 @@ use chumsky::prelude::*;
 
 use crate::{
     grammar::alpha034::{
-        expressions::parse_expr, lexer::Token, parser::ident, IterLoopVars, Span, Spanned, Statement
+        expressions::parse_expr, lexer::Token, parser::ident, IterLoopVars, Spanned, Statement
     },
     T,
 };
@@ -21,7 +21,7 @@ pub fn iter_loop_parser(
     stmnts: Recursive<Token, Spanned<Statement>, Simple<Token>>,
 ) -> impl Parser<Token, Spanned<Statement>, Error = Simple<Token>> + '_ {
     let single_var =
-        ident().map_with_span(|txt, span: Span| (IterLoopVars::Single((txt, span.clone())), span));
+        ident().map_with_span(|txt, span| (IterLoopVars::Single((txt, span.clone())), span));
     let with_index_var = ident()
         .map_with_span(|txt, span| (txt, span))
         .then_ignore(just(T![","]))

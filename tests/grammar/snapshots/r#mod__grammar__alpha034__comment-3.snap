@@ -1,0 +1,19 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse_unwrap(\"\n        main {\n            // abc\n        }\n        \")"
+---
+[
+    (
+        Main(
+            [
+                (
+                    Comment(
+                        " abc\n",
+                    ),
+                    28..35,
+                ),
+            ],
+        ),
+        9..44,
+    ),
+]

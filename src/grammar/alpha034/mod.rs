@@ -1,11 +1,16 @@
-use chumsky::{error::Simple, Parser, Stream};
+pub use super::Spanned;
+use super::{Grammar, LSPAnalysis, ParserResponse};
+use chumsky::{Parser, Stream};
 use heraclitus_compiler::prelude::*;
 use lexer::{get_rules, Token};
+use prelude::lexer::Lexer;
+use semantic_tokens::semantic_tokens_from_ast;
 
 pub mod expressions;
 pub mod global;
 pub mod lexer;
 pub mod parser;
+pub mod semantic_tokens;
 pub mod statements;
 
 #[derive(PartialEq, Debug, Clone)]
@@ -167,43 +172,54 @@ pub enum GlobalStatement {
     Statement(Spanned<Statement>),
 }
 
-pub type Span = std::ops::Range<usize>;
-pub type Spanned<T> = (T, Span);
-
-pub type SpannedSemanticToken = Spanned<usize>;
-
 pub struct AmberCompiler {
-    lexer: Compiler,
-    parser: Box<dyn Parser<Token, Vec<Spanned<GlobalStatement>>, Error = Simple<Token>>>,
+    lexer: Lexer,
 }
 
 impl AmberCompiler {
     pub fn new() -> Self {
-        let lexer = Compiler::new("Amber", get_rules());
+        let lexer = Lexer::new(get_rules());
 
-        let parser = global::global_statement_parser();
-
-        AmberCompiler {
-            lexer,
-            parser: Box::new(parser),
-        }
+        AmberCompiler { lexer }
     }
 
-    pub fn tokenize(&mut self, input: &str) -> Vec<Spanned<Token>> {
-        self.lexer.load(input);
-
+    pub fn tokenize(&self, input: &str) -> Vec<Spanned<Token>> {
         // It should never fail
         self.lexer
-            .tokenize()
+            .tokenize(input)
             .unwrap()
             .iter()
-            .map(|t| (Token(t.word.clone()), t.start..(t.start + t.word.len())))
+            .filter_map(|t| {
+                if t.word == "\n" {
+                    return None;
+                }
+
+                return Some((
+                    Token(t.word.clone()),
+                    t.start..(t.start + t.word.chars().count()),
+                ));
+            })
             .collect()
     }
+}
 
-    pub fn parse(&mut self, input: &str) -> (Option<Vec<Spanned<GlobalStatement>>>, Vec<Simple<Token>>) {
+impl LSPAnalysis for AmberCompiler {
+    fn parse(&self, input: &str) -> ParserResponse {
+        let parser = global::global_statement_parser();
+
         let tokens = self.tokenize(input);
         let len = input.chars().count();
-        self.parser.parse_recovery(Stream::from_iter(len..len + 1, tokens.into_iter()))
+        let (ast, errors) =
+            parser.parse_recovery(Stream::from_iter(len..len + 1, tokens.into_iter()));
+
+        let semantic_tokens = semantic_tokens_from_ast(&ast);
+
+        let string_errors = errors.into_iter().map(|e| e.map(|t| t.0)).collect();
+
+        ParserResponse {
+            ast: Grammar::Alpha034(ast),
+            errors: string_errors,
+            semantic_tokens,
+        }
     }
 }

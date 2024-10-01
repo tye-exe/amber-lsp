@@ -1,6 +1,6 @@
-use chumsky::{error::Simple, prelude::filter_map, Error, Parser};
+use chumsky::{error::Simple, prelude::filter_map, Parser};
 
-use super::{global, lexer::Token, GlobalStatement, Spanned, SpannedSemanticToken};
+use super::lexer::Token;
 
 pub fn ident() -> impl Parser<Token, String, Error = Simple<Token>> {
     filter_map(|span, token: Token| {
@@ -10,40 +10,21 @@ pub fn ident() -> impl Parser<Token, String, Error = Simple<Token>> {
         let first_char = chars.next().unwrap();
 
         if !first_char.is_ascii_alphabetic() && first_char != '_' {
-            return Err(Simple::expected_input_found(span, Vec::new(), Some(token)));
+            return Err(Simple::custom(
+                span,
+                "identifier must start with a letter or an underscore",
+            ));
         }
 
         for char in chars {
             if !char.is_ascii_alphanumeric() && char != '_' {
-                return Err(Simple::expected_input_found(span, Vec::new(), Some(token)));
+                return Err(Simple::custom(
+                    span,
+                    "identifier must contain only alphanumeric characters or underscores",
+                ));
             }
         }
 
         Ok(word)
-    })
-}
-
-fn semantic_tokens_from_ast(ast: &Option<Vec<Spanned<GlobalStatement>>>) -> Vec<SpannedSemanticToken> {
-    ast.as_ref().map_or(vec![], |ast| {
-        let mut tokens = vec![];
-
-        for (statement, span) in ast {
-            match statement {
-                GlobalStatement::Import(_, _) => {
-                    tokens.push((0, span.clone()));
-                }
-                GlobalStatement::FunctionDefinition(_, _, _, _) => {
-                    tokens.push((0, span.clone()));
-                }
-                GlobalStatement::Main(_) => {
-                    tokens.push((0, span.clone()));
-                }
-                GlobalStatement::Statement(_) => {
-                    tokens.push((0, span.clone()));
-                }
-            }
-        }
-        
-        tokens
     })
 }

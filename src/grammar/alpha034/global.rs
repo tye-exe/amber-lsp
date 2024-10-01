@@ -4,7 +4,7 @@ use crate::T;
 
 use super::{
     lexer::Token, parser::ident, statements::statement_parser, FunctionArgument, GlobalStatement,
-    ImportContent, Span, Spanned, TypeAnnotation,
+    ImportContent, Spanned, TypeAnnotation,
 };
 
 pub fn import_parser() -> impl Parser<Token, Spanned<GlobalStatement>, Error = Simple<Token>> {
@@ -40,8 +40,8 @@ fn type_parser() -> impl Parser<Token, Spanned<TypeAnnotation>, Error = Simple<T
 }
 
 pub fn function_parser() -> impl Parser<Token, Spanned<GlobalStatement>, Error = Simple<Token>> {
-    let generic_arg_parser = ident()
-        .map_with_span(|name, span: Span| (FunctionArgument::Generic((name, span.clone())), span));
+    let generic_arg_parser =
+        ident().map_with_span(|name, span| (FunctionArgument::Generic((name, span.clone())), span));
 
     let typed_arg_parser = ident()
         .map_with_span(|name, span| (name, span))
@@ -83,6 +83,7 @@ pub fn main_parser() -> impl Parser<Token, Spanned<GlobalStatement>, Error = Sim
                 .ignore_then(statement_parser().repeated())
                 .then_ignore(just(T!["}"])),
         )
+        .recover_with(skip_then_retry_until([]))
         .map_with_span(|body, span| (GlobalStatement::Main(body), span))
 }
 

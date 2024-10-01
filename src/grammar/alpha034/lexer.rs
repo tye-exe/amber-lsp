@@ -1,9 +1,11 @@
 use heraclitus_compiler::prelude::*;
 
+pub use crate::grammar::Token;
+
 pub fn get_rules() -> Rules {
     let symbols = vec![
-        '+', '-', '*', '/', '%', '\n', ';', ':', '(', ')', '[', ']', '{', '}', ',', '.', '<', '>',
-        '=', '!', '?', '\\', '"', '$'
+        '+', '-', '*', '/', '%', ';', ':', '(', ')', '[', ']', '{', '}', ',', '.', '<', '>',
+        '=', '!', '?', '\\', '"', '$',
     ];
     let compounds = vec![
         ('<', '='),
@@ -63,26 +65,4 @@ pub fn get_rules() -> Rules {
         } ref global)
     ];
     Rules::new(symbols, compounds, region)
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct Token(pub String);
-
-impl ToString for Token {
-    fn to_string(&self) -> String {
-        self.0.clone()
-    }
-}
-
-impl FromIterator<Token> for String {
-    fn from_iter<I: IntoIterator<Item = Token>>(iter: I) -> Self {
-        iter.into_iter().map(|t| t.0).collect()
-    }
-}
-
-#[macro_export]
-macro_rules! T {
-    [$text:expr] => {
-        Token($text.to_string())
-    };
 }

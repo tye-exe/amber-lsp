@@ -1,7 +1,10 @@
 use chumsky::error::Simple;
 use insta::assert_debug_snapshot;
 
-use amber_lsp::grammar::alpha034::{lexer::Token, AmberCompiler, Spanned};
+use amber_lsp::grammar::{
+    alpha034::{lexer::Token, semantic_tokens::semantic_tokens_from_ast, AmberCompiler, Spanned},
+    LSPAnalysis, ParserResponse,
+};
 
 fn parse(
     input: &str,
@@ -9,7 +12,23 @@ fn parse(
     Option<Vec<Spanned<amber_lsp::grammar::alpha034::GlobalStatement>>>,
     Vec<Simple<Token>>,
 ) {
-    AmberCompiler::new().parse(input)
+    let ParserResponse {
+        ast,
+        errors,
+        semantic_tokens: _,
+    } = AmberCompiler::new().parse(input);
+
+    let as_ = match ast {
+        amber_lsp::grammar::Grammar::Alpha034(as_) => as_,
+    };
+
+    (
+        as_,
+        errors
+            .iter()
+            .map(|e| e.clone().map(|text| Token(text)))
+            .collect(),
+    )
 }
 
 fn parse_unwrap(input: &str) -> Vec<Spanned<amber_lsp::grammar::alpha034::GlobalStatement>> {
@@ -255,6 +274,13 @@ fn test_comment() {
     "
     ));
     assert_debug_snapshot!(parse_unwrap("1 + 2 // This is a comment without a newline"));
+    assert_debug_snapshot!(parse_unwrap(
+        "
+        main {
+            // abc
+        }
+        "
+    ));
 }
 
 #[test]
@@ -322,6 +348,17 @@ fn test_if_condition() {
         if true: echo 10
         else: echo 20
     "
+    ));
+    assert_debug_snapshot!(semantic_tokens_from_ast(
+        &parse(
+            r#"
+fun bar(a: Text) {
+    if true {
+    }
+}
+    "#
+        )
+        .0
     ));
 }
 
@@ -433,7 +470,7 @@ fn test_recovery() {
 
 #[test]
 fn test_lexer() {
-    let mut compiler = AmberCompiler::new();
+    let compiler = AmberCompiler::new();
 
     assert_debug_snapshot!(compiler.tokenize(
         r#"

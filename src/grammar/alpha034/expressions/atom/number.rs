@@ -13,13 +13,9 @@ pub fn number_parser() -> impl Parser<Token, Spanned<Expression>, Error = Simple
     let int = filter_map(|span, token: Token| {
         let word = token.to_string();
 
-        if word.is_empty() {
-            return Err(Simple::expected_input_found(span, Vec::new(), Some(token)));
-        }
-
         for char in word.chars() {
             if !char.is_ascii_digit() {
-                return Err(Simple::expected_input_found(span, Vec::new(), Some(token)));
+                return Err(Simple::custom(span, "int must contain only digits"));
             }
         }
 

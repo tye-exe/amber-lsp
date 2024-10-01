@@ -1,0 +1,27 @@
+---
+source: tests/grammar/alpha034.rs
+assertion_line: 353
+expression: "semantic_tokens_from_ast(&parse(r#\"\nfun bar(a: Text) {\n    if true {\n    }\n}\n    \"#).0)"
+---
+[
+    (
+        0,
+        5..8,
+    ),
+    (
+        7,
+        9..10,
+    ),
+    (
+        8,
+        10..16,
+    ),
+    (
+        5,
+        27..29,
+    ),
+    (
+        5,
+        27..31,
+    ),
+]

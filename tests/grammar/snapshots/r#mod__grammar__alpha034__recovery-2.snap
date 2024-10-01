@@ -76,7 +76,7 @@ expression: "parse(\"\n    5 + 5 +;\n    echo 10\")"
                 ),
                 Some(
                     Token(
-                        "unsafe",
+                        "null",
                     ),
                 ),
                 Some(
@@ -91,7 +91,7 @@ expression: "parse(\"\n    5 + 5 +;\n    echo 10\")"
                 ),
                 Some(
                     Token(
-                        "echo",
+                        "unsafe",
                     ),
                 ),
                 Some(
@@ -186,7 +186,7 @@ expression: "parse(\"\n    5 + 5 +;\n    echo 10\")"
                 ),
                 Some(
                     Token(
-                        "null",
+                        "echo",
                     ),
                 ),
             },

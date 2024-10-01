@@ -1,50 +1,28 @@
-use amber_lsp::grammar::alpha034::GlobalStatement;
-use chumsky::error::Simple;
-use tower_lsp::lsp_types::SemanticTokenType;
-
-use crate::grammar::alpha034::Spanned;
+use amber_lsp::grammar::{alpha034::AmberCompiler, LSPAnalysis, ParserResponse};
 
 #[derive(Debug)]
 pub enum AmberVersion {
     Alpha034,
 }
 
-#[derive(Debug)]
-pub struct ParserResult {
-    // pub ast: Option<HashMap<String, Func>>,
-    // pub parse_errors: Vec<Simple<String>>,
-    // pub semantic_tokens: Vec<ImCompleteSemanticToken>,
-}
-
-pub const LEGEND_TYPE: &[SemanticTokenType] = &[
-    SemanticTokenType::FUNCTION,
-    SemanticTokenType::VARIABLE,
-    SemanticTokenType::STRING,
-    SemanticTokenType::COMMENT,
-    SemanticTokenType::NUMBER,
-    SemanticTokenType::KEYWORD,
-    SemanticTokenType::OPERATOR,
-    SemanticTokenType::PARAMETER,
-    SemanticTokenType::TYPE,
-    SemanticTokenType::MODIFIER,
-];
-
-#[derive(Debug)]
 pub struct Parser {
     pub version: AmberVersion,
+    lsp_analysis: Box<dyn LSPAnalysis>,
 }
 
 impl Parser {
     pub fn new(version: AmberVersion) -> Self {
-        Self { version }
+        let lsp_analysis = match version {
+            AmberVersion::Alpha034 => AmberCompiler::new(),
+        };
+
+        Self {
+            version,
+            lsp_analysis: Box::new(lsp_analysis),
+        }
     }
 
-    pub fn parse(&self, input: &str) -> (Option<Vec<Spanned<GlobalStatement>>>, Vec<Simple<char>>) {
-        // let parsing_result = match self.version {
-        //     AmberVersion::Alpha034 => parse_grammar(input),
-        // };
-
-        // parsing_result
-        (None, vec![])
+    pub fn parse(&mut self, input: &str) -> ParserResponse {
+        self.lsp_analysis.parse(input)
     }
 }
