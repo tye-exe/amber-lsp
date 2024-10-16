@@ -1,0 +1,183 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"true then\")"
+---
+(
+    Some(
+        [
+            (
+                Statement(
+                    (
+                        Expression(
+                            (
+                                Ternary(
+                                    (
+                                        Boolean(
+                                            (
+                                                true,
+                                                0..4,
+                                            ),
+                                        ),
+                                        0..4,
+                                    ),
+                                    (
+                                        Error,
+                                        9..10,
+                                    ),
+                                    (
+                                        Error,
+                                        9..10,
+                                    ),
+                                ),
+                                0..10,
+                            ),
+                        ),
+                        0..9,
+                    ),
+                ),
+                0..9,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 9..10,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "true",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "\"",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "not",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "(",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "false",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "nameof",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "[",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "status",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "$",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "-",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "null",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+        Simple {
+            span: 9..10,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "else",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+        Simple {
+            span: 9..10,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "true",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "\"",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "not",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "(",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "false",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "nameof",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "[",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "status",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "$",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "-",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "null",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+    ],
+)

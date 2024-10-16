@@ -1,4 +1,4 @@
-use chumsky::error::Simple;
+use chumsky::{error::Simple, Parser};
 use insta::assert_debug_snapshot;
 
 use amber_lsp::grammar::{
@@ -41,6 +41,11 @@ fn test_text() {
     assert_debug_snapshot!(parse_unwrap("\"Hello, {name}!\""));
     assert_debug_snapshot!(parse_unwrap("\"Hello, {name}! How are you?\""));
     assert_debug_snapshot!(parse_unwrap(r#""\"text in quotes\" \\""#));
+    assert_debug_snapshot!(parse(r#""{unclosed""#));
+    assert_debug_snapshot!(parse(r#""{""#));
+    assert_debug_snapshot!(parse(r#"""#));
+    assert_debug_snapshot!(parse(r#""\""#));
+    assert_debug_snapshot!(parse(r#""\"#));
 }
 
 #[test]
@@ -79,6 +84,13 @@ fn test_bool() {
 fn test_add() {
     assert_debug_snapshot!(parse_unwrap("1 + 2"));
     assert_debug_snapshot!(parse_unwrap("1 + 2 + 3"));
+    assert_debug_snapshot!(parse("1 +"));
+    assert_debug_snapshot!(parse(
+        "
+        1 +
+        let x = 10
+    "
+    ));
 }
 
 #[test]
@@ -97,6 +109,7 @@ fn test_add_and_subtract() {
 fn test_multiply() {
     assert_debug_snapshot!(parse_unwrap("1 * 2"));
     assert_debug_snapshot!(parse_unwrap("1 * 2 * 3"));
+    assert_debug_snapshot!(parse("1 * 2 *"));
 }
 
 #[test]
@@ -124,6 +137,7 @@ fn test_mults_and_adds() {
 fn test_modulo() {
     assert_debug_snapshot!(parse_unwrap("1 % 2"));
     assert_debug_snapshot!(parse_unwrap("1 % 2 % 3"));
+    assert_debug_snapshot!(parse("1 % 2 %"));
 }
 
 #[test]
@@ -136,6 +150,7 @@ fn test_neg() {
 fn test_and() {
     assert_debug_snapshot!(parse_unwrap("true and false"));
     assert_debug_snapshot!(parse_unwrap("true and false and true"));
+    assert_debug_snapshot!(parse("true and false and"));
 }
 
 #[test]
@@ -149,6 +164,7 @@ fn test_gt() {
     assert_debug_snapshot!(parse_unwrap("1 > 2"));
     assert_debug_snapshot!(parse_unwrap("1 + 2 > 2 + 1"));
     assert_debug_snapshot!(parse_unwrap("1 + 2 > 2 + 1 > 5"));
+    assert_debug_snapshot!(parse("1 + 2 > "));
 }
 
 #[test]
@@ -197,6 +213,9 @@ fn test_ternary() {
     assert_debug_snapshot!(parse_unwrap("   true then 1 else 2   "));
     assert_debug_snapshot!(parse_unwrap("true then 1 + 2 else 2 + 1"));
     assert_debug_snapshot!(parse_unwrap("true then 1 + 2 else false then 5 else 6"));
+    assert_debug_snapshot!(parse("true then"));
+    assert_debug_snapshot!(parse("true then 1"));
+    assert_debug_snapshot!(parse("true then 1 else"));
 }
 
 #[test]
@@ -204,12 +223,34 @@ fn test_command() {
     assert_debug_snapshot!(parse_unwrap(r#"$echo \"Hello, world!\"$"#));
     assert_debug_snapshot!(parse_unwrap("$echo \"Hello, {name}!\"$"));
     assert_debug_snapshot!(parse("$command --arg1 -v$"));
+    assert_debug_snapshot!(parse("$command -$"));
+    assert_debug_snapshot!(parse("$command --arg1 -v"));
+    assert_debug_snapshot!(parse("$command {unclosed"));
+    assert_debug_snapshot!(parse("$command {unclosed interpolation$ let x = 10"));
+    assert_debug_snapshot!(parse("$command {"));
 }
 
 #[test]
 fn test_array() {
     assert_debug_snapshot!(parse_unwrap("[1, 2, 3]"));
     assert_debug_snapshot!(parse_unwrap("[1]"));
+    assert_debug_snapshot!(parse_unwrap("[]"));
+    assert_debug_snapshot!(parse("["));
+    assert_debug_snapshot!(parse("[1"));
+    assert_debug_snapshot!(parse("[,"));
+    assert_debug_snapshot!(parse("[1,"));
+    assert_debug_snapshot!(parse("[1, 2"));
+    assert_debug_snapshot!(parse("[1, 2 3"));
+    assert_debug_snapshot!(parse("[1, 2 3 let"));
+    assert_debug_snapshot!(parse("[1, 2 3] 4"));
+}
+
+#[test]
+fn test_parentheses() {
+    assert_debug_snapshot!(parse("()"));
+    assert_debug_snapshot!(parse("("));
+    assert_debug_snapshot!(parse("(1"));
+    assert_debug_snapshot!(parse("(1,)"));
 }
 
 #[test]
@@ -222,6 +263,8 @@ fn test_range() {
     assert_debug_snapshot!(parse_unwrap("1..2"));
     assert_debug_snapshot!(parse_unwrap("1..=2"));
     assert_debug_snapshot!(parse_unwrap("1..2..3"));
+    assert_debug_snapshot!(parse("1.."));
+    assert_debug_snapshot!(parse("1..="));
 }
 
 #[test]
@@ -229,12 +272,19 @@ fn test_function_invocation() {
     assert_debug_snapshot!(parse_unwrap("func()"));
     assert_debug_snapshot!(parse_unwrap("func(1)"));
     assert_debug_snapshot!(parse_unwrap("func(1, 2)"));
+    assert_debug_snapshot!(parse("func("));
+    assert_debug_snapshot!(parse("func(1"));
+    assert_debug_snapshot!(parse("func(,)"));
+    assert_debug_snapshot!(parse("func(1 2"));
+    assert_debug_snapshot!(parse("func(1 2 let"));
+    assert_debug_snapshot!(parse("func(1 2) 3"));
 }
 
 #[test]
 fn test_cast() {
     assert_debug_snapshot!(parse_unwrap("1 as Num"));
     assert_debug_snapshot!(parse_unwrap("1 as Num as Text"));
+    assert_debug_snapshot!(parse("1 as "));
 }
 
 #[test]
@@ -289,6 +339,12 @@ fn test_import() {
     assert_debug_snapshot!(parse_unwrap("import {} \"path/to/module\""));
     assert_debug_snapshot!(parse_unwrap("import { var1 } \"path/to/module\""));
     assert_debug_snapshot!(parse_unwrap("import { var1, var2 } \"path/to/module\""));
+    assert_debug_snapshot!(parse("import { var1 var2  \"unclosed"));
+    assert_debug_snapshot!(parse("import  \"unclosed"));
+    assert_debug_snapshot!(parse("import"));
+    assert_debug_snapshot!(parse("import {"));
+    assert_debug_snapshot!(parse("import { var1"));
+    assert_debug_snapshot!(parse("import { var1 \"path\""));
 }
 
 #[test]
@@ -306,6 +362,19 @@ fn test_function_def() {
         }
     "
     ));
+    assert_debug_snapshot!(parse("fun"));
+    assert_debug_snapshot!(parse("fun foo {
+        echo 10
+    }"));
+    assert_debug_snapshot!(parse("fun foo(abc! {
+        echo 10
+    }"));
+    assert_debug_snapshot!(parse("fun foo(abc:  {
+        echo 10
+    }"));
+    assert_debug_snapshot!(parse("fun foo(abc: !WrongType {
+        echo 10
+    }"));
 }
 
 #[test]
@@ -321,6 +390,8 @@ fn test_main_block() {
         }
     "
     ));
+
+    assert_debug_snapshot!(parse("main"));
 }
 
 #[test]
@@ -466,6 +537,14 @@ fn test_recovery() {
     5 + 5 +;
     echo 10"
     ));
+    assert_debug_snapshot!(parse(r#"
+        fun foo(a) {
+
+            return "echo \"{5 + 5}\"";
+        }
+
+        unsafe {
+    "#))
 }
 
 #[test]

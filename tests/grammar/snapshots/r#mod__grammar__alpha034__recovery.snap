@@ -21,6 +21,10 @@ expression: "parse(\"fun foo(abc!) {}\")"
                             ),
                             8..11,
                         ),
+                        (
+                            Error,
+                            11..12,
+                        ),
                     ],
                     None,
                     [],
@@ -36,7 +40,7 @@ expression: "parse(\"fun foo(abc!) {}\")"
             expected: {
                 Some(
                     Token(
-                        ")",
+                        ",",
                     ),
                 ),
             },
@@ -45,6 +49,15 @@ expression: "parse(\"fun foo(abc!) {}\")"
                     "!",
                 ),
             ),
+            label: None,
+        },
+        Simple {
+            span: 11..12,
+            reason: Custom(
+                "identifier must start with a letter or an underscore",
+            ),
+            expected: {},
+            found: None,
             label: None,
         },
     ],

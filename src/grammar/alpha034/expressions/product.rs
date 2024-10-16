@@ -17,7 +17,13 @@ pub fn product_parser<'a>(
                 .to(Expression::Multiply as fn(_, _) -> _)
                 .or(just(T!['/']).to(Expression::Divide as fn(_, _) -> _))
                 .or(just(T!['%']).to(Expression::Modulo as fn(_, _) -> _))
-                .then(is_parser(stmnts, expr))
+                .then(
+                    is_parser(stmnts, expr).recover_with(skip_parser(
+                        any()
+                            .or_not()
+                            .map_with_span(|_, span| (Expression::Error, span)),
+                    )),
+                )
                 .repeated(),
         )
         .foldl(|lhs, (op, rhs)| {

@@ -1,0 +1,41 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(r#\"\"\"#)"
+---
+(
+    Some(
+        [
+            (
+                Statement(
+                    (
+                        Expression(
+                            (
+                                Text(
+                                    [],
+                                ),
+                                0..1,
+                            ),
+                        ),
+                        0..1,
+                    ),
+                ),
+                0..1,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 1..2,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "\"",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+    ],
+)

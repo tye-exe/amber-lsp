@@ -1,0 +1,44 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"main\")"
+---
+(
+    Some(
+        [
+            (
+                Main(
+                    [],
+                ),
+                0..4,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 4..5,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "{",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+        Simple {
+            span: 4..5,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "}",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+    ],
+)

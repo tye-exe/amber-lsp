@@ -3,7 +3,7 @@ use chumsky::error::Simple;
 pub mod alpha034;
 
 pub enum Grammar {
-    Alpha034(Option<Vec<Spanned<alpha034::GlobalStatement>>>)
+    Alpha034(Option<Vec<Spanned<alpha034::GlobalStatement>>>),
 }
 
 pub type Span = std::ops::Range<usize>;

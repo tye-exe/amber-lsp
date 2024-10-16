@@ -1,0 +1,79 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(r#\"\"{\"\"#)"
+---
+(
+    Some(
+        [
+            (
+                Statement(
+                    (
+                        Expression(
+                            (
+                                Text(
+                                    [
+                                        (
+                                            Expression(
+                                                (
+                                                    Text(
+                                                        [],
+                                                    ),
+                                                    2..3,
+                                                ),
+                                            ),
+                                            1..3,
+                                        ),
+                                    ],
+                                ),
+                                0..3,
+                            ),
+                        ),
+                        0..3,
+                    ),
+                ),
+                0..3,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 3..4,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "\"",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+        Simple {
+            span: 3..4,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "}",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+        Simple {
+            span: 3..4,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "\"",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+    ],
+)

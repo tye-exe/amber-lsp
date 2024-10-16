@@ -14,7 +14,11 @@ pub fn is_parser<'a>(
     cast_parser(stmnts, expr.clone())
         .then(
             just(T!["is"])
-                .ignore_then(ident().map_with_span(|txt, span| (txt, span)))
+                .ignore_then(
+                    ident("type".to_string())
+                        .recover_with(skip_parser(any().or_not().map(|_| "".to_string())))
+                        .map_with_span(|txt, span| (txt, span)),
+                )
                 .repeated(),
         )
         .foldl(|expr, cast| {

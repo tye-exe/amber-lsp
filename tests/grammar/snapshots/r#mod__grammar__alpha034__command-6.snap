@@ -1,0 +1,76 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"$command {unclosed\")"
+---
+(
+    Some(
+        [
+            (
+                Statement(
+                    (
+                        Expression(
+                            (
+                                Command(
+                                    [
+                                        (
+                                            Text(
+                                                "command",
+                                            ),
+                                            1..8,
+                                        ),
+                                        (
+                                            Expression(
+                                                (
+                                                    Var(
+                                                        (
+                                                            "unclosed",
+                                                            10..18,
+                                                        ),
+                                                    ),
+                                                    10..18,
+                                                ),
+                                            ),
+                                            9..18,
+                                        ),
+                                    ],
+                                    None,
+                                ),
+                                0..18,
+                            ),
+                        ),
+                        0..18,
+                    ),
+                ),
+                0..18,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 18..19,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "}",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+        Simple {
+            span: 18..19,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "$",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+    ],
+)

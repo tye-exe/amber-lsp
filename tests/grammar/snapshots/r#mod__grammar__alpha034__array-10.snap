@@ -1,0 +1,174 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"[1, 2 3 let\")"
+---
+(
+    Some(
+        [
+            (
+                Statement(
+                    (
+                        Expression(
+                            (
+                                Array(
+                                    [
+                                        (
+                                            Number(
+                                                (
+                                                    1.0,
+                                                    1..2,
+                                                ),
+                                            ),
+                                            1..2,
+                                        ),
+                                        (
+                                            Number(
+                                                (
+                                                    2.0,
+                                                    4..5,
+                                                ),
+                                            ),
+                                            4..5,
+                                        ),
+                                        (
+                                            Number(
+                                                (
+                                                    3.0,
+                                                    6..7,
+                                                ),
+                                            ),
+                                            6..7,
+                                        ),
+                                        (
+                                            Error,
+                                            8..11,
+                                        ),
+                                    ],
+                                ),
+                                0..11,
+                            ),
+                        ),
+                        0..11,
+                    ),
+                ),
+                0..11,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 6..7,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        ",",
+                    ),
+                ),
+            },
+            found: Some(
+                Token(
+                    "3",
+                ),
+            ),
+            label: None,
+        },
+        Simple {
+            span: 8..11,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        ",",
+                    ),
+                ),
+            },
+            found: Some(
+                Token(
+                    "let",
+                ),
+            ),
+            label: None,
+        },
+        Simple {
+            span: 8..11,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "true",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "\"",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "not",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "(",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "false",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "nameof",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "[",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "status",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "$",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "-",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "null",
+                    ),
+                ),
+            },
+            found: Some(
+                Token(
+                    "let",
+                ),
+            ),
+            label: None,
+        },
+        Simple {
+            span: 11..12,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "]",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+    ],
+)

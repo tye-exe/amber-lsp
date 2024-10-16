@@ -20,7 +20,13 @@ pub fn comparison_parser<'a>(
                 .or(just(T!["<"]).to(Expression::Lt as fn(_, _) -> _))
                 .or(just(T!["=="]).to(Expression::Eq as fn(_, _) -> _))
                 .or(just(T!["!="]).to(Expression::Neq as fn(_, _) -> _))
-                .then(sum_parser(stmnts.clone(), expr.clone()))
+                .then(
+                    sum_parser(stmnts.clone(), expr.clone()).recover_with(skip_parser(
+                        any()
+                            .or_not()
+                            .map_with_span(|_, span| (Expression::Error, span)),
+                    )),
+                )
                 .repeated(),
         )
         .foldl(|lhs, (op, rhs)| {

@@ -1,0 +1,103 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"1..\")"
+---
+(
+    Some(
+        [
+            (
+                Statement(
+                    (
+                        Expression(
+                            (
+                                Range(
+                                    (
+                                        Number(
+                                            (
+                                                1.0,
+                                                0..1,
+                                            ),
+                                        ),
+                                        0..1,
+                                    ),
+                                    (
+                                        Error,
+                                        3..4,
+                                    ),
+                                ),
+                                0..4,
+                            ),
+                        ),
+                        0..3,
+                    ),
+                ),
+                0..3,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 3..4,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "true",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "\"",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "not",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "(",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "false",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "nameof",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "[",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "status",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "$",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "-",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "null",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+    ],
+)

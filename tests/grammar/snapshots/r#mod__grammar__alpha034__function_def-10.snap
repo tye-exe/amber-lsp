@@ -1,0 +1,152 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"fun foo(abc: !WrongType {\n        echo 10\n    }\")"
+---
+(
+    Some(
+        [
+            (
+                FunctionDefinition(
+                    (
+                        "foo",
+                        4..7,
+                    ),
+                    [
+                        (
+                            Generic(
+                                (
+                                    "abc",
+                                    8..11,
+                                ),
+                            ),
+                            8..11,
+                        ),
+                        (
+                            Error,
+                            11..12,
+                        ),
+                        (
+                            Error,
+                            13..14,
+                        ),
+                        (
+                            Generic(
+                                (
+                                    "WrongType",
+                                    14..23,
+                                ),
+                            ),
+                            14..23,
+                        ),
+                    ],
+                    None,
+                    [
+                        (
+                            Echo(
+                                (
+                                    Number(
+                                        (
+                                            10.0,
+                                            39..41,
+                                        ),
+                                    ),
+                                    39..41,
+                                ),
+                            ),
+                            34..41,
+                        ),
+                    ],
+                ),
+                0..47,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 11..12,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        ",",
+                    ),
+                ),
+            },
+            found: Some(
+                Token(
+                    ":",
+                ),
+            ),
+            label: None,
+        },
+        Simple {
+            span: 11..12,
+            reason: Custom(
+                "identifier must start with a letter or an underscore",
+            ),
+            expected: {},
+            found: None,
+            label: None,
+        },
+        Simple {
+            span: 13..14,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        ",",
+                    ),
+                ),
+            },
+            found: Some(
+                Token(
+                    "!",
+                ),
+            ),
+            label: None,
+        },
+        Simple {
+            span: 13..14,
+            reason: Custom(
+                "identifier must start with a letter or an underscore",
+            ),
+            expected: {},
+            found: None,
+            label: None,
+        },
+        Simple {
+            span: 14..23,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        ",",
+                    ),
+                ),
+            },
+            found: Some(
+                Token(
+                    "WrongType",
+                ),
+            ),
+            label: None,
+        },
+        Simple {
+            span: 24..25,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        ")",
+                    ),
+                ),
+            },
+            found: Some(
+                Token(
+                    "{",
+                ),
+            ),
+            label: None,
+        },
+    ],
+)

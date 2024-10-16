@@ -1,0 +1,46 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"func(\")"
+---
+(
+    Some(
+        [
+            (
+                Statement(
+                    (
+                        Expression(
+                            (
+                                FunctionInvocation(
+                                    (
+                                        "func",
+                                        0..4,
+                                    ),
+                                    [],
+                                    None,
+                                ),
+                                0..5,
+                            ),
+                        ),
+                        0..5,
+                    ),
+                ),
+                0..5,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 5..6,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        ")",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+    ],
+)

@@ -1,7 +1,7 @@
 use chumsky::prelude::*;
 
 use crate::{
-    grammar::alpha034::{expressions::parse_expr, lexer::Token, Spanned, Statement},
+    grammar::alpha034::{expressions::parse_expr, lexer::Token, Expression, Spanned, Statement},
     T,
 };
 
@@ -18,6 +18,12 @@ pub fn keywords_parser(
             .ignore_then(parse_expr(stmnts.clone()).or_not())
             .map_with_span(|expr, span| (Statement::Fail(expr.map(Box::new)), span)))
         .or(just(T!["echo"])
-            .ignore_then(parse_expr(stmnts))
+            .ignore_then(
+                parse_expr(stmnts).recover_with(skip_parser(
+                    any()
+                        .or_not()
+                        .map_with_span(|_, span| Spanned::new(Expression::Error, span)),
+                )),
+            )
             .map_with_span(|expr, span| (Statement::Echo(Box::new(expr)), span)))
 }

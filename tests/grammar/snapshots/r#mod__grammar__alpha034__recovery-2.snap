@@ -12,31 +12,40 @@ expression: "parse(\"\n    5 + 5 +;\n    echo 10\")"
                             (
                                 Add(
                                     (
-                                        Number(
+                                        Add(
                                             (
-                                                5.0,
+                                                Number(
+                                                    (
+                                                        5.0,
+                                                        5..6,
+                                                    ),
+                                                ),
                                                 5..6,
                                             ),
-                                        ),
-                                        5..6,
-                                    ),
-                                    (
-                                        Number(
                                             (
-                                                5.0,
+                                                Number(
+                                                    (
+                                                        5.0,
+                                                        9..10,
+                                                    ),
+                                                ),
                                                 9..10,
                                             ),
                                         ),
-                                        9..10,
+                                        5..10,
+                                    ),
+                                    (
+                                        Error,
+                                        12..13,
                                     ),
                                 ),
-                                5..10,
+                                5..13,
                             ),
                         ),
-                        5..10,
+                        5..13,
                     ),
                 ),
-                5..10,
+                5..13,
             ),
             (
                 Statement(
@@ -61,7 +70,7 @@ expression: "parse(\"\n    5 + 5 +;\n    echo 10\")"
     ),
     [
         Simple {
-            span: 11..12,
+            span: 12..13,
             reason: Unexpected,
             expected: {
                 Some(
@@ -71,42 +80,12 @@ expression: "parse(\"\n    5 + 5 +;\n    echo 10\")"
                 ),
                 Some(
                     Token(
+                        "\"",
+                    ),
+                ),
+                Some(
+                    Token(
                         "not",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "null",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "continue",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "false",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "unsafe",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "return",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "import",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "nameof",
                     ),
                 ),
                 Some(
@@ -116,67 +95,12 @@ expression: "parse(\"\n    5 + 5 +;\n    echo 10\")"
                 ),
                 Some(
                     Token(
-                        "let",
+                        "false",
                     ),
                 ),
                 Some(
                     Token(
-                        "status",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "break",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "{",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "\"",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "main",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "-",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "$",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "silent",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "if",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "fail",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "loop",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "fun",
+                        "nameof",
                     ),
                 ),
                 Some(
@@ -186,13 +110,28 @@ expression: "parse(\"\n    5 + 5 +;\n    echo 10\")"
                 ),
                 Some(
                     Token(
-                        "echo",
+                        "status",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "$",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "-",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "null",
                     ),
                 ),
             },
             found: Some(
                 Token(
-                    "+",
+                    ";",
                 ),
             ),
             label: None,

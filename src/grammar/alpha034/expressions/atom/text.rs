@@ -12,7 +12,21 @@ pub fn text_parser(
         .map_with_span(|char, span| InterpolatedText::Escape((char.to_string(), span)));
 
     let interpolated = expr
-        .delimited_by(just(T!['{']), just(T!['}']))
+        .recover_with(skip_parser(
+            any()
+                .or_not()
+                .map_with_span(|_, span| (Expression::Error, span)),
+        ))
+        .delimited_by(
+            just(T!['{']),
+            just(T!['}']).recover_with(skip_parser(
+                none_of(T!["}"])
+                    .repeated()
+                    .then(just(T!['}']))
+                    .or_not()
+                    .map(|_| T!['}']),
+            )),
+        )
         .map(|expr| InterpolatedText::Expression(Box::new(expr)));
 
     just(T!['"'])
@@ -26,6 +40,6 @@ pub fn text_parser(
             .map_with_span(|expr, span| (expr, span))
             .repeated(),
         )
-        .then_ignore(just(T!['"']))
+        .then_ignore(just(T!['"']).recover_with(skip_parser(any().or_not().map(|_| T!['"']))))
         .map_with_span(|expr, span| (Expression::Text(expr), span))
 }

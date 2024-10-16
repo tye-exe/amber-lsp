@@ -1,0 +1,117 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"true and false and\")"
+---
+(
+    Some(
+        [
+            (
+                Statement(
+                    (
+                        Expression(
+                            (
+                                And(
+                                    (
+                                        And(
+                                            (
+                                                Boolean(
+                                                    (
+                                                        true,
+                                                        0..4,
+                                                    ),
+                                                ),
+                                                0..4,
+                                            ),
+                                            (
+                                                Boolean(
+                                                    (
+                                                        false,
+                                                        9..14,
+                                                    ),
+                                                ),
+                                                9..14,
+                                            ),
+                                        ),
+                                        0..14,
+                                    ),
+                                    (
+                                        Error,
+                                        18..19,
+                                    ),
+                                ),
+                                0..19,
+                            ),
+                        ),
+                        0..18,
+                    ),
+                ),
+                0..18,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 18..19,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "true",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "\"",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "not",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "(",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "false",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "nameof",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "[",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "status",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "$",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "-",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "null",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+    ],
+)

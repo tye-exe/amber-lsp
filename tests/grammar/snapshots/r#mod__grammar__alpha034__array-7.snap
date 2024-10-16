@@ -1,0 +1,55 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"[1,\")"
+---
+(
+    Some(
+        [
+            (
+                Statement(
+                    (
+                        Expression(
+                            (
+                                Array(
+                                    [
+                                        (
+                                            Number(
+                                                (
+                                                    1.0,
+                                                    1..2,
+                                                ),
+                                            ),
+                                            1..2,
+                                        ),
+                                    ],
+                                ),
+                                0..3,
+                            ),
+                        ),
+                        0..3,
+                    ),
+                ),
+                0..3,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 2..3,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "]",
+                    ),
+                ),
+            },
+            found: Some(
+                Token(
+                    ",",
+                ),
+            ),
+            label: None,
+        },
+    ],
+)

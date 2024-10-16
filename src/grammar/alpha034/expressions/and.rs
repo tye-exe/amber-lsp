@@ -14,7 +14,13 @@ pub fn and_parser<'a>(
     comparison_parser(stmnts.clone(), expr.clone())
         .then(
             just(T!["and"])
-                .ignore_then(comparison_parser(stmnts, expr))
+                .ignore_then(
+                    comparison_parser(stmnts, expr).recover_with(skip_parser(
+                        any()
+                            .or_not()
+                            .map_with_span(|_, span| (Expression::Error, span)),
+                    )),
+                )
                 .repeated(),
         )
         .foldl(|lhs: Spanned<Expression>, rhs: Spanned<Expression>| {

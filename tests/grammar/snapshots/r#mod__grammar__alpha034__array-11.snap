@@ -1,0 +1,92 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"[1, 2 3] 4\")"
+---
+(
+    Some(
+        [
+            (
+                Statement(
+                    (
+                        Expression(
+                            (
+                                Array(
+                                    [
+                                        (
+                                            Number(
+                                                (
+                                                    1.0,
+                                                    1..2,
+                                                ),
+                                            ),
+                                            1..2,
+                                        ),
+                                        (
+                                            Number(
+                                                (
+                                                    2.0,
+                                                    4..5,
+                                                ),
+                                            ),
+                                            4..5,
+                                        ),
+                                        (
+                                            Number(
+                                                (
+                                                    3.0,
+                                                    6..7,
+                                                ),
+                                            ),
+                                            6..7,
+                                        ),
+                                    ],
+                                ),
+                                0..8,
+                            ),
+                        ),
+                        0..8,
+                    ),
+                ),
+                0..8,
+            ),
+            (
+                Statement(
+                    (
+                        Expression(
+                            (
+                                Number(
+                                    (
+                                        4.0,
+                                        9..10,
+                                    ),
+                                ),
+                                9..10,
+                            ),
+                        ),
+                        9..10,
+                    ),
+                ),
+                9..10,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 6..7,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        ",",
+                    ),
+                ),
+            },
+            found: Some(
+                Token(
+                    "3",
+                ),
+            ),
+            label: None,
+        },
+    ],
+)

@@ -1,0 +1,60 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"import  \\\"unclosed\")"
+---
+(
+    Some(
+        [
+            (
+                Import(
+                    (
+                        ImportAll,
+                        8..9,
+                    ),
+                    (
+                        "unclosed",
+                        9..17,
+                    ),
+                ),
+                0..17,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 8..9,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "*",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "{",
+                    ),
+                ),
+            },
+            found: Some(
+                Token(
+                    "\"",
+                ),
+            ),
+            label: None,
+        },
+        Simple {
+            span: 17..18,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "\"",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+    ],
+)

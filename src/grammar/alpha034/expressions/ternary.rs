@@ -14,9 +14,23 @@ pub fn ternary_parser<'a>(
     range_parser(stmnts, expr.clone())
         .then(
             just(T!["then"])
-                .ignore_then(expr.clone())
-                .then_ignore(just(T!["else"]))
-                .then(expr)
+                .ignore_then(
+                    expr.clone().recover_with(skip_parser(
+                        any()
+                            .or_not()
+                            .map_with_span(|_, span| (Expression::Error, span)),
+                    )),
+                )
+                .then_ignore(
+                    just(T!["else"]).recover_with(skip_parser(any().or_not().map(|_| T![""]))),
+                )
+                .then(
+                    expr.recover_with(skip_parser(
+                        any()
+                            .or_not()
+                            .map_with_span(|_, span| (Expression::Error, span)),
+                    )),
+                )
                 .repeated(),
         )
         .foldl(|cond, (if_true, if_false)| {

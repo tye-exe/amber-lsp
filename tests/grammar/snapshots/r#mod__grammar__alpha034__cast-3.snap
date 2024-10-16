@@ -1,0 +1,47 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"1 as \")"
+---
+(
+    Some(
+        [
+            (
+                Statement(
+                    (
+                        Expression(
+                            (
+                                Cast(
+                                    (
+                                        Number(
+                                            (
+                                                1.0,
+                                                0..1,
+                                            ),
+                                        ),
+                                        0..1,
+                                    ),
+                                    (
+                                        "",
+                                        5..6,
+                                    ),
+                                ),
+                                0..6,
+                            ),
+                        ),
+                        0..4,
+                    ),
+                ),
+                0..4,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 5..6,
+            reason: Unexpected,
+            expected: {},
+            found: None,
+            label: None,
+        },
+    ],
+)

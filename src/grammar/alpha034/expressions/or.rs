@@ -14,7 +14,13 @@ pub fn or_parser<'a>(
     and_parser(stmnts.clone(), expr.clone())
         .then(
             just(T!["or"])
-                .ignore_then(and_parser(stmnts, expr))
+                .ignore_then(
+                    and_parser(stmnts, expr).recover_with(skip_parser(
+                        any()
+                            .or_not()
+                            .map_with_span(|_, span| (Expression::Error, span)),
+                    )),
+                )
                 .repeated(),
         )
         .foldl(|lhs, rhs| {

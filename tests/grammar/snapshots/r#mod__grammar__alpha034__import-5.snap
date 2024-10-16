@@ -1,0 +1,83 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"import { var1 var2  \\\"unclosed\")"
+---
+(
+    Some(
+        [
+            (
+                Import(
+                    (
+                        ImportSpecific(
+                            [
+                                (
+                                    "var1",
+                                    9..13,
+                                ),
+                                (
+                                    "var2",
+                                    14..18,
+                                ),
+                            ],
+                        ),
+                        7..18,
+                    ),
+                    (
+                        "unclosed",
+                        21..29,
+                    ),
+                ),
+                0..29,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 14..18,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        ",",
+                    ),
+                ),
+            },
+            found: Some(
+                Token(
+                    "var2",
+                ),
+            ),
+            label: None,
+        },
+        Simple {
+            span: 20..21,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "}",
+                    ),
+                ),
+            },
+            found: Some(
+                Token(
+                    "\"",
+                ),
+            ),
+            label: None,
+        },
+        Simple {
+            span: 29..30,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "\"",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+    ],
+)

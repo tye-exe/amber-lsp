@@ -19,7 +19,13 @@ fn else_cond_parser(
 
     let else_inline = just(T!["else"])
         .ignore_then(just(T![":"]))
-        .ignore_then(stmnts.clone())
+        .ignore_then(
+            stmnts.clone().recover_with(skip_parser(
+                any()
+                    .or_not()
+                    .map_with_span(|_, span| (Statement::Error, span)),
+            )),
+        )
         .map_with_span(|body, span| (ElseCondition::InlineElse(Box::new(body)), span));
 
     else_inline.or(else_condition)
@@ -30,7 +36,13 @@ fn cond_parser(
 ) -> impl Parser<Token, Spanned<IfCondition>, Error = Simple<Token>> + '_ {
     let inline_if = parse_expr(stmnts.clone())
         .then_ignore(just(T![":"]))
-        .then(stmnts.clone())
+        .then(
+            stmnts.clone().recover_with(skip_parser(
+                any()
+                    .or_not()
+                    .map_with_span(|_, span| (Statement::Error, span)),
+            )),
+        )
         .map_with_span(|(condition, body), span| {
             (
                 IfCondition::InlineIfCondition(Box::new(condition), Box::new(body)),
@@ -61,9 +73,15 @@ pub fn if_chain_parser(
 ) -> impl Parser<Token, Spanned<Statement>, Error = Simple<Token>> + '_ {
     just(T!["if"])
         .ignore_then(just(T!["{"]))
-        .ignore_then(cond_parser(stmnts.clone()).repeated())
+        .ignore_then(
+            cond_parser(stmnts.clone())
+                .recover_with(skip_parser(
+                    none_of([T!["}"], T!["else"]]).map_with_span(|_, span| (IfCondition::Error, span)),
+                ))
+                .repeated(),
+        )
         .then(else_cond_parser(stmnts).or_not())
-        .then_ignore(just(T!["}"]))
+        .then_ignore(just(T!["}"]).recover_with(skip_parser(any().or_not().map(|_| T!["}"]))))
         .map_with_span(|(if_conds, else_cond), span| {
             let mut if_chain: Vec<Spanned<IfChainContent>> = if_conds
                 .into_iter()

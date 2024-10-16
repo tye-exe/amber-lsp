@@ -18,15 +18,33 @@ pub fn command_parser<'a>(
 
     let command_option = just(T!["-"])
         .then(just(T!["-"]).or_not())
-        .then(any())
+        .then(any().or_not())
         .map(|((_, second_dash), option)| {
             let dashes = if second_dash.is_some() { "--" } else { "-" };
 
-            InterpolatedCommand::CommandOption(format!("{}{}", dashes, option.to_string()))
+            InterpolatedCommand::CommandOption(format!(
+                "{}{}",
+                dashes,
+                option.unwrap_or(T![""]).to_string()
+            ))
         });
-    
+
     let interpolated = expr
-        .delimited_by(just(T!['{']), just(T!['}']))
+        .recover_with(skip_parser(
+            any()
+                .or_not()
+                .map_with_span(|_, span| (Expression::Error, span)),
+        ))
+        .delimited_by(
+            just(T!['{']),
+            just(T!['}']).recover_with(skip_parser(
+                none_of(T!["}"])
+                    .repeated()
+                    .then(just(T!['}']))
+                    .or_not()
+                    .map(|_| T!['}']),
+            )),
+        )
         .map(|expr| InterpolatedCommand::Expression(Box::new(expr)));
 
     just(T!['$'])
@@ -41,7 +59,7 @@ pub fn command_parser<'a>(
             .map_with_span(|cmd, span| (cmd, span))
             .repeated(),
         )
-        .then_ignore(just(T!['$']))
+        .then_ignore(just(T!['$']).recover_with(skip_parser(any().or_not().map(|_| T!['$']))))
         .then(failure_parser(stmnts).or_not())
         .map_with_span(|(expr, handler), span| (Expression::Command(expr, handler), span))
 }

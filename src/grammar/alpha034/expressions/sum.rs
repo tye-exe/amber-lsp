@@ -16,12 +16,17 @@ pub fn sum_parser<'a>(
             just(T!['+'])
                 .to(Expression::Add as fn(_, _) -> _)
                 .or(just(T!['-']).to(Expression::Subtract as fn(_, _) -> _))
-                .then(product_parser(stmnts, expr))
+                .then(
+                    product_parser(stmnts, expr).recover_with(skip_parser(
+                        any()
+                            .or_not()
+                            .map_with_span(|_, span| (Expression::Error, span)),
+                    )),
+                )
                 .repeated(),
         )
         .foldl(|lhs, (op, rhs)| {
             let span = lhs.1.start..rhs.1.end;
-
             (op(Box::new(lhs), Box::new(rhs)), span)
         })
 }

@@ -1,0 +1,22 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse_unwrap(\"[]\")"
+---
+[
+    (
+        Statement(
+            (
+                Expression(
+                    (
+                        Array(
+                            [],
+                        ),
+                        0..2,
+                    ),
+                ),
+                0..2,
+            ),
+        ),
+        0..2,
+    ),
+]

@@ -1,0 +1,55 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"$command -$\")"
+---
+(
+    Some(
+        [
+            (
+                Statement(
+                    (
+                        Expression(
+                            (
+                                Command(
+                                    [
+                                        (
+                                            Text(
+                                                "command",
+                                            ),
+                                            1..8,
+                                        ),
+                                        (
+                                            CommandOption(
+                                                "-$",
+                                            ),
+                                            9..11,
+                                        ),
+                                    ],
+                                    None,
+                                ),
+                                0..11,
+                            ),
+                        ),
+                        0..11,
+                    ),
+                ),
+                0..11,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 11..12,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "$",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+    ],
+)

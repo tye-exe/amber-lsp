@@ -17,9 +17,11 @@ pub fn unary_parser<'a>(
         .or(just(T!["nameof"]).to(Expression::Nameof as fn(_) -> _))
         .repeated()
         .then(atom_parser(stmnts, expr))
-        .foldr(|op, expr| {
-            let span = expr.1.start..expr.1.end;
+        .foldr(
+            |op: fn(Box<(Expression, std::ops::Range<usize>)>) -> Expression, expr| {
+                let span = expr.1.start..expr.1.end;
 
-            (op(Box::new(expr)), span)
-        })
+                (op(Box::new(expr)), span)
+            },
+        )
 }

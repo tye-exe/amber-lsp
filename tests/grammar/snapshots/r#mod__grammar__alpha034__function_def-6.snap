@@ -1,0 +1,64 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"fun\")"
+---
+(
+    Some(
+        [
+            (
+                FunctionDefinition(
+                    (
+                        "",
+                        3..4,
+                    ),
+                    [],
+                    None,
+                    [],
+                ),
+                0..3,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 3..4,
+            reason: Custom(
+                "Expected function name",
+            ),
+            expected: {},
+            found: None,
+            label: None,
+        },
+        Simple {
+            span: 3..4,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "(",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+        Simple {
+            span: 3..4,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        ":",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "{",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+    ],
+)

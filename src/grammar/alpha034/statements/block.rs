@@ -9,9 +9,15 @@ pub fn block_parser(
     stmnts: Recursive<Token, Spanned<Statement>, Simple<Token>>,
 ) -> impl Parser<Token, Spanned<Block>, Error = Simple<Token>> + '_ {
     stmnts
-        .clone()
+        .recover_with(skip_parser(
+            none_of([T!['}']])
+                .map_with_span(|_, span| (Statement::Error, span)),
+        ))
         .repeated()
-        .delimited_by(just(T!['{']), just(T!['}']))
+        .delimited_by(
+            just(T!['{']),
+            just(T!['}']).recover_with(skip_parser(any().or_not().map(|_| T!['}']))),
+        )
         .map_with_span(|body, span| (Block::Block(body), span))
 }
 

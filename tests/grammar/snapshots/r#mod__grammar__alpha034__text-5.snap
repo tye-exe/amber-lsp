@@ -1,0 +1,60 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(r#\"\"{unclosed\"\"#)"
+---
+(
+    Some(
+        [
+            (
+                Statement(
+                    (
+                        Expression(
+                            (
+                                Text(
+                                    [
+                                        (
+                                            Expression(
+                                                (
+                                                    Var(
+                                                        (
+                                                            "unclosed",
+                                                            2..10,
+                                                        ),
+                                                    ),
+                                                    2..10,
+                                                ),
+                                            ),
+                                            1..10,
+                                        ),
+                                    ],
+                                ),
+                                0..11,
+                            ),
+                        ),
+                        0..11,
+                    ),
+                ),
+                0..11,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 10..11,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "}",
+                    ),
+                ),
+            },
+            found: Some(
+                Token(
+                    "\"",
+                ),
+            ),
+            label: None,
+        },
+    ],
+)

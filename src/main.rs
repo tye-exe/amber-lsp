@@ -106,6 +106,7 @@ impl LanguageServer for Backend {
     }
 
     async fn did_change(&self, params: DidChangeTextDocumentParams) {
+
         let uri = params.text_document.uri.to_string();
 
         if !self.document_map.contains_key(&uri) {
@@ -384,8 +385,11 @@ impl Backend {
     }
 
     fn offset_to_position(&self, offset: usize, rope: &Rope) -> Option<Position> {
-        let line = rope.try_char_to_line(offset).ok()?;
-        let first_char_of_line = rope.try_line_to_char(line).ok()?;
+        let line = rope
+            .try_char_to_line(offset)
+            .ok()
+            .unwrap_or(rope.len_lines());
+        let first_char_of_line = rope.try_line_to_char(line).ok().unwrap_or(rope.len_chars());
         let column = offset - first_char_of_line;
         Some(Position::new(line as u32, column as u32))
     }

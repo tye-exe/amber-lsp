@@ -23,6 +23,7 @@ pub enum InterpolatedText {
 #[derive(PartialEq, Debug, Clone)]
 pub enum Block {
     Block(Vec<Spanned<Statement>>),
+    Error,
 }
 
 #[derive(PartialEq, Debug, Clone)]
@@ -82,6 +83,7 @@ pub enum Expression {
     Status,
     Nameof(Box<Spanned<Expression>>),
     Is(Box<Spanned<Expression>>, Spanned<String>),
+    Error,
 }
 
 #[derive(PartialEq, Debug, Clone)]
@@ -94,6 +96,7 @@ pub enum ImportContent {
 pub enum FunctionArgument {
     Generic(Spanned<String>),
     Typed(Spanned<String>, Spanned<TypeAnnotation>),
+    Error,
 }
 
 #[derive(PartialEq, Debug, Clone)]
@@ -105,6 +108,7 @@ pub enum TypeAnnotation {
 pub enum IfCondition {
     IfCondition(Box<Spanned<Expression>>, Spanned<Block>),
     InlineIfCondition(Box<Spanned<Expression>>, Box<Spanned<Statement>>),
+    Error,
 }
 
 #[derive(PartialEq, Debug, Clone)]
@@ -123,6 +127,7 @@ pub enum IfChainContent {
 pub enum IterLoopVars {
     Single(Spanned<String>),
     WithIndex(Spanned<String>, Spanned<String>),
+    Error,
 }
 
 #[derive(PartialEq, Debug, Clone)]
@@ -157,6 +162,7 @@ pub enum Statement {
     CommandModifier(Spanned<CommandModifier>),
     Block(Spanned<Block>),
     Comment(String),
+    Error,
 }
 
 #[derive(PartialEq, Debug, Clone)]
@@ -210,7 +216,7 @@ impl LSPAnalysis for AmberCompiler {
         let tokens = self.tokenize(input);
         let len = input.chars().count();
         let (ast, errors) =
-            parser.parse_recovery(Stream::from_iter(len..len + 1, tokens.into_iter()));
+            parser.parse_recovery_verbose(Stream::from_iter(len..len + 1, tokens.into_iter()));
 
         let semantic_tokens = semantic_tokens_from_ast(&ast);
 

@@ -15,7 +15,13 @@ pub fn range_parser<'a>(
         .then(
             just(T![".."])
                 .ignore_then(just(T!["="]).or_not())
-                .ignore_then(or_parser(stmnts, expr))
+                .ignore_then(
+                    or_parser(stmnts, expr).recover_with(skip_parser(
+                        any()
+                            .or_not()
+                            .map_with_span(|_, span| (Expression::Error, span)),
+                    )),
+                )
                 .repeated(),
         )
         .foldl(|start, end| {

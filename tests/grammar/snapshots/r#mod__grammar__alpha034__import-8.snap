@@ -1,0 +1,53 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"import {\")"
+---
+(
+    Some(
+        [
+            (
+                Import(
+                    (
+                        ImportSpecific(
+                            [],
+                        ),
+                        7..8,
+                    ),
+                    (
+                        "",
+                        8..9,
+                    ),
+                ),
+                0..8,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 8..9,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "}",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+        Simple {
+            span: 8..9,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "\"",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+    ],
+)
