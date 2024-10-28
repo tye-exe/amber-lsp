@@ -1,9 +1,10 @@
 use crate::{
-    grammar::alpha034::{lexer::Token, Expression, Spanned},
+    grammar::alpha034::{lexer::Token, AmberParser, Expression, Spanned},
     T,
 };
 use chumsky::prelude::*;
 
-pub fn status_var_parser() -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> {
-    just(T!["status"]).map_with_span(|_, span| (Expression::Status, span))
+pub fn status_var_parser<'a>(
+) -> impl AmberParser<'a, Spanned<Expression>> {
+    just(T!["status"]).map_with(|_, e| (Expression::Status, e.span()))
 }

@@ -2,3 +2,6 @@
 rustflags = [
   "-C", "link-arg=-fuse-ld=lld",
 ]
+
+[build]
+rustc-wrapper = "sccache"

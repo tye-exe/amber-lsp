@@ -1,29 +1,28 @@
 use chumsky::prelude::*;
 
 use crate::{
-    grammar::alpha034::{lexer::Token, parser::ident, Expression, Spanned, Statement},
+    grammar::alpha034::{lexer::Token, parser::ident, AmberParser, Expression, Spanned, Statement},
     T,
 };
 
 use super::cast::cast_parser;
 
 pub fn is_parser<'a>(
-    stmnts: Recursive<'a, Token, Spanned<Statement>, Simple<Token>>,
-    expr: Recursive<'a, Token, Spanned<Expression>, Simple<Token>>,
-) -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> + 'a {
-    cast_parser(stmnts, expr.clone())
-        .then(
-            just(T!["is"])
-                .ignore_then(
-                    ident("type".to_string())
-                        .recover_with(skip_parser(any().or_not().map(|_| "".to_string())))
-                        .map_with_span(|txt, span| (txt, span)),
-                )
-                .repeated(),
-        )
-        .foldl(|expr, cast| {
-            let span = expr.1.start..cast.1.end;
+    stmnts: impl AmberParser<'a, Spanned<Statement>>,
+    expr: impl AmberParser<'a, Spanned<Expression>>,
+) -> impl AmberParser<'a, Spanned<Expression>> {
+    cast_parser(stmnts, expr.clone()).foldl(
+        just(T!["is"])
+            .ignore_then(
+                ident("type".to_string())
+                    .recover_with(via_parser(any().or_not().map(|_| "".to_string())))
+                    .map_with(|txt, e| (txt, e.span())),
+            )
+            .repeated(),
+        |expr, cast| {
+            let span = SimpleSpan::new(expr.1.start, cast.1.end);
 
             (Expression::Is(Box::new(expr), cast), span)
-        })
+        },
+    )
 }

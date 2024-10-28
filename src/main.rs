@@ -9,7 +9,6 @@ use tower_lsp::lsp_types::*;
 use tower_lsp::{Client, LanguageServer, LspService, Server};
 
 mod grammar;
-mod parser;
 
 struct Backend {
     client: Client,
@@ -351,11 +350,13 @@ impl Backend {
             None => return,
         };
 
+        let tokens = self.lsp_analysis.tokenize(&rope.to_string());
+
         let ParserResponse {
             ast,
             errors,
             semantic_tokens,
-        } = self.lsp_analysis.parse(&rope.to_string());
+        } = self.lsp_analysis.parse(&tokens);
 
         let diagnostics = errors
             .iter()

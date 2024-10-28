@@ -1,5 +1,5 @@
 use crate::{
-    grammar::alpha034::{lexer::Token, Spanned, Statement},
+    grammar::alpha034::{lexer::Token, AmberParser, Spanned, Statement},
     T,
 };
 
@@ -18,9 +18,9 @@ mod text;
 mod var;
 
 pub fn atom_parser<'a>(
-    stmnts: Recursive<'a, Token, Spanned<Statement>, Simple<Token>>,
-    expr: Recursive<'a, Token, Spanned<Expression>, Simple<Token>>,
-) -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> + 'a {
+    stmnts: impl AmberParser<'a, Spanned<Statement>>,
+    expr: impl AmberParser<'a, Spanned<Expression>>,
+) -> impl AmberParser<'a, Spanned<Expression>> {
     bool::bool_parser()
         .or(null::null_parser())
         .or(status::status_var_parser())

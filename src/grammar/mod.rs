@@ -1,4 +1,4 @@
-use chumsky::error::Simple;
+use chumsky::{error::Rich, span::SimpleSpan};
 
 pub mod alpha034;
 
@@ -6,7 +6,7 @@ pub enum Grammar {
     Alpha034(Option<Vec<Spanned<alpha034::GlobalStatement>>>),
 }
 
-pub type Span = std::ops::Range<usize>;
+pub type Span = SimpleSpan;
 pub type Spanned<T> = (T, Span);
 pub type SpannedSemanticToken = Spanned<usize>;
 
@@ -32,12 +32,13 @@ macro_rules! T {
     };
 }
 
-pub struct ParserResponse {
+pub struct ParserResponse<'a> {
     pub ast: Grammar,
-    pub errors: Vec<Simple<String>>,
+    pub errors: Vec<Rich<'a, String>>,
     pub semantic_tokens: Vec<SpannedSemanticToken>,
 }
 
 pub trait LSPAnalysis: Sync + Send {
-    fn parse(&self, input: &str) -> ParserResponse;
+    fn tokenize(&self, input: &str) -> Vec<Spanned<Token>>;
+    fn parse<'a>(&self, input: &'a Vec<Spanned<Token>>) -> ParserResponse<'a>;
 }

@@ -1,28 +1,28 @@
 use chumsky::prelude::*;
 
 use crate::{
-    grammar::alpha034::{lexer::Token, Block, Spanned, Statement},
+    grammar::alpha034::{lexer::Token, AmberParser, Block, Spanned, Statement},
     T,
 };
 
-pub fn block_parser(
-    stmnts: Recursive<Token, Spanned<Statement>, Simple<Token>>,
-) -> impl Parser<Token, Spanned<Block>, Error = Simple<Token>> + '_ {
+pub fn block_parser<'a>(
+    stmnts: impl AmberParser<'a, Spanned<Statement>>,
+) -> impl AmberParser<'a, Spanned<Block>> {
     stmnts
-        .recover_with(skip_parser(
-            none_of([T!['}']])
-                .map_with_span(|_, span| (Statement::Error, span)),
+        .recover_with(via_parser(
+            none_of([T!['}']]).map_with(|_, e| (Statement::Error, e.span())),
         ))
         .repeated()
+        .collect()
         .delimited_by(
             just(T!['{']),
-            just(T!['}']).recover_with(skip_parser(any().or_not().map(|_| T!['}']))),
+            just(T!['}']).recover_with(via_parser(any().or_not().map(|_| T!['}']))),
         )
-        .map_with_span(|body, span| (Block::Block(body), span))
+        .map_with(move |body, e| (Block::Block(body), e.span()))
 }
 
-pub fn block_parser_statement(
-    stmnts: Recursive<Token, Spanned<Statement>, Simple<Token>>,
-) -> impl Parser<Token, Spanned<Statement>, Error = Simple<Token>> + '_ {
-    block_parser(stmnts).map_with_span(|block, span| (Statement::Block(block), span))
+pub fn block_parser_statement<'a>(
+    stmnts: impl AmberParser<'a, Spanned<Statement>>,
+) -> impl AmberParser<'a, Spanned<Statement>> {
+    block_parser(stmnts).map_with(|block, e| (Statement::Block(block), e.span()))
 }

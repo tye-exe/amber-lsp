@@ -1,6 +1,6 @@
 use chumsky::prelude::*;
 
-use super::{expressions::parse_expr, lexer::Token, Spanned, Statement};
+use super::{expressions::parse_expr, AmberParser, Spanned, Statement};
 
 pub mod block;
 pub mod comment;
@@ -13,7 +13,7 @@ pub mod shorthands;
 pub mod var_init;
 pub mod var_set;
 
-pub fn statement_parser() -> impl Parser<Token, Spanned<Statement>, Error = Simple<Token>> {
+pub fn statement_parser<'a>() -> impl AmberParser<'a, Spanned<Statement>> {
     recursive(|stmnt| {
         var_init::var_init_parser(stmnt.clone())
             .or(var_set::var_set_parser(stmnt.clone()))
@@ -27,6 +27,6 @@ pub fn statement_parser() -> impl Parser<Token, Spanned<Statement>, Error = Simp
             .or(modifiers::modifier_parser())
             .or(comment::comment_parser())
             .or(parse_expr(stmnt)
-                .map_with_span(|expr, span| (Statement::Expression(Box::new(expr)), span)))
+                .map_with(|expr, e| (Statement::Expression(Box::new(expr)), e.span())))
     })
 }

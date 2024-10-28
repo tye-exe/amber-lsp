@@ -1,6 +1,12 @@
 pub use super::Spanned;
-use super::{Grammar, LSPAnalysis, ParserResponse};
-use chumsky::{Parser, Stream};
+use super::{Grammar, LSPAnalysis, ParserResponse, Span};
+use chumsky::{
+    error::Rich,
+    extra::Err,
+    input::{Input, SpannedInput},
+    span::SimpleSpan,
+    Parser,
+};
 use heraclitus_compiler::prelude::*;
 use lexer::{get_rules, Token};
 use prelude::lexer::Lexer;
@@ -189,7 +195,15 @@ impl AmberCompiler {
         AmberCompiler { lexer }
     }
 
-    pub fn tokenize(&self, input: &str) -> Vec<Spanned<Token>> {
+    #[inline]
+    pub fn parser<'a>(&self) -> impl AmberParser<'a, Vec<Spanned<GlobalStatement>>> {
+        global::global_statement_parser()
+    }
+}
+
+impl LSPAnalysis for AmberCompiler {
+    #[inline]
+    fn tokenize(&self, input: &str) -> Vec<Spanned<Token>> {
         // It should never fail
         self.lexer
             .tokenize(input)
@@ -202,30 +216,43 @@ impl AmberCompiler {
 
                 return Some((
                     Token(t.word.clone()),
-                    t.start..(t.start + t.word.chars().count()),
+                    SimpleSpan::new(t.start, t.start + t.word.chars().count()),
                 ));
             })
             .collect()
     }
-}
 
-impl LSPAnalysis for AmberCompiler {
-    fn parse(&self, input: &str) -> ParserResponse {
-        let parser = global::global_statement_parser();
+    fn parse<'a>(&self, tokens: &'a Vec<Spanned<Token>>) -> ParserResponse<'a> {
+        let len = tokens.last().map(|t| t.1.end).unwrap_or(0);
+        let parser_input = tokens.spanned(Span::new(len, len));
 
-        let tokens = self.tokenize(input);
-        let len = input.chars().count();
-        let (ast, errors) =
-            parser.parse_recovery_verbose(Stream::from_iter(len..len + 1, tokens.into_iter()));
+        let result = self.parser().parse(parser_input);
 
-        let semantic_tokens = semantic_tokens_from_ast(&ast);
+        let semantic_tokens = semantic_tokens_from_ast(result.output());
 
-        let string_errors = errors.into_iter().map(|e| e.map(|t| t.0)).collect();
+        let string_errors = result
+            .errors()
+            .into_iter()
+            .map(|e| e.clone().map_token(|t| t.0))
+            .collect();
 
         ParserResponse {
-            ast: Grammar::Alpha034(ast),
+            ast: Grammar::Alpha034(result.into_output()),
             errors: string_errors,
             semantic_tokens,
         }
     }
+}
+
+pub type RichError<'src> = Err<Rich<'src, Token>>;
+type AmberInput<'src> = SpannedInput<Token, Span, &'src [Spanned<Token>]>;
+
+pub trait AmberParser<'src, Output>:
+    Parser<'src, AmberInput<'src>, Output, RichError<'src>> + Clone + Sized + 'src
+{
+}
+
+impl<'src, Output, T> AmberParser<'src, Output> for T where
+    T: Parser<'src, AmberInput<'src>, Output, RichError<'src>> + Clone + Sized + 'src
+{
 }
