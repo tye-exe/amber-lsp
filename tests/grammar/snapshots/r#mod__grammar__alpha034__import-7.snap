@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"import\")"
+expression: "parse(\"import  \\\"unclosed\")"
 ---
 (
     Some(
@@ -8,21 +8,33 @@ expression: "parse(\"import\")"
             (
                 Import(
                     (
-                        ImportAll,
-                        6..7,
+                        false,
+                        0..6,
                     ),
                     (
-                        "",
-                        6..7,
+                        "import",
+                        0..6,
+                    ),
+                    (
+                        ImportAll,
+                        8..9,
+                    ),
+                    (
+                        "from",
+                        8..9,
+                    ),
+                    (
+                        "unclosed",
+                        9..17,
                     ),
                 ),
-                0..6,
+                0..17,
             ),
         ],
     ),
     [
         Simple {
-            span: 6..7,
+            span: 8..9,
             reason: Unexpected,
             expected: {
                 Some(
@@ -36,11 +48,32 @@ expression: "parse(\"import\")"
                     ),
                 ),
             },
-            found: None,
+            found: Some(
+                Token(
+                    "\"",
+                ),
+            ),
             label: None,
         },
         Simple {
-            span: 6..7,
+            span: 8..9,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "from",
+                    ),
+                ),
+            },
+            found: Some(
+                Token(
+                    "\"",
+                ),
+            ),
+            label: None,
+        },
+        Simple {
+            span: 17..18,
             reason: Unexpected,
             expected: {
                 Some(

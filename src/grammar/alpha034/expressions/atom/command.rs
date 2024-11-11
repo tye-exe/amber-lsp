@@ -31,17 +31,16 @@ pub fn command_parser<'a>(
 
     let interpolated = expr
         .recover_with(skip_parser(
-            any()
+            none_of([T!["}"], T!["$"]])
                 .or_not()
                 .map_with_span(|_, span| (Expression::Error, span)),
         ))
         .delimited_by(
             just(T!['{']),
             just(T!['}']).recover_with(skip_parser(
-                none_of(T!["}"])
+                none_of([T!["}"], T!["$"]])
                     .repeated()
-                    .then(just(T!['}']))
-                    .or_not()
+                    .then(just(T!['}']).or_not())
                     .map(|_| T!['}']),
             )),
         )
@@ -50,7 +49,7 @@ pub fn command_parser<'a>(
     just(T!['$'])
         .ignore_then(
             filter::<_, _, Simple<Token>>(|c: &Token| {
-                *c != T!["$"] && *c != T!["{"] && *c != T!["}"] && *c != T!["\\"] && *c != T!["-"]
+                *c != T!["$"] && *c != T!["{"] && *c != T!["\\"] && *c != T!["-"]
             })
             .map(|text| InterpolatedCommand::Text(text.to_string()))
             .or(escape)

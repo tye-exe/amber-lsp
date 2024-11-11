@@ -17,7 +17,7 @@ expression: "semantic_tokens_from_ast(&parse(r#\"\nfun bar(a: Text) {\n    if tr
     ),
     (
         8,
-        10..16,
+        12..16,
     ),
     (
         5,

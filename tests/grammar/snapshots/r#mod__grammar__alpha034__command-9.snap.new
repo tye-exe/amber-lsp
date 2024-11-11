@@ -1,0 +1,95 @@
+---
+source: tests/grammar/alpha034.rs
+assertion_line: 231
+expression: "parse(r#\"\n            unsafe $echo \"\\$\\{source//{pattern}/{replacement}}\"$\n    \"#)"
+snapshot_kind: text
+---
+(
+    Some(
+        [
+            (
+                Statement(
+                    (
+                        CommandModifier(
+                            (
+                                Unsafe,
+                                13..19,
+                            ),
+                        ),
+                        13..19,
+                    ),
+                ),
+                13..19,
+            ),
+            (
+                Statement(
+                    (
+                        Expression(
+                            (
+                                Command(
+                                    [
+                                        (
+                                            Text(
+                                                "echo",
+                                            ),
+                                            21..25,
+                                        ),
+                                        (
+                                            Text(
+                                                "\"",
+                                            ),
+                                            26..27,
+                                        ),
+                                        (
+                                            Escape(
+                                                "$",
+                                            ),
+                                            27..29,
+                                        ),
+                                        (
+                                            Escape(
+                                                "{",
+                                            ),
+                                            29..31,
+                                        ),
+                                        (
+                                            Text(
+                                                "source",
+                                            ),
+                                            31..37,
+                                        ),
+                                        (
+                                            Text(
+                                                "//{pattern}/{replacement}}\"$\n",
+                                            ),
+                                            37..66,
+                                        ),
+                                    ],
+                                    None,
+                                ),
+                                20..66,
+                            ),
+                        ),
+                        20..66,
+                    ),
+                ),
+                20..66,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 70..71,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "$",
+                    ),
+                ),
+            },
+            found: None,
+            label: None,
+        },
+    ],
+)

@@ -15,7 +15,8 @@ pub mod var_set;
 
 pub fn statement_parser() -> impl Parser<Token, Spanned<Statement>, Error = Simple<Token>> {
     recursive(|stmnt| {
-        var_init::var_init_parser(stmnt.clone())
+        comment::comment_parser()
+            .or(var_init::var_init_parser(stmnt.clone()))
             .or(var_set::var_set_parser(stmnt.clone()))
             .or(block::block_parser_statement(stmnt.clone()))
             .or(if_cond::if_chain_parser(stmnt.clone()))
@@ -25,7 +26,6 @@ pub fn statement_parser() -> impl Parser<Token, Spanned<Statement>, Error = Simp
             .or(loops::iter_loop_parser(stmnt.clone()))
             .or(keywords::keywords_parser(stmnt.clone()))
             .or(modifiers::modifier_parser())
-            .or(comment::comment_parser())
             .or(parse_expr(stmnt)
                 .map_with_span(|expr, span| (Statement::Expression(Box::new(expr)), span)))
     })

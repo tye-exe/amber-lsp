@@ -1,10 +1,18 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"\n        fun func(a: Num, b: Text, c: Bool): Num {\n            echo 10\n\n            return 10\n        }\n    \").unwrap()"
+expression: "parse_unwrap(\"\n        fun func(a: Num, b: Text, c: Bool): Num {\n            echo 10\n\n            return 10\n        }\n    \")"
 ---
 [
     (
         FunctionDefinition(
+            (
+                false,
+                9..12,
+            ),
+            (
+                "fun",
+                9..12,
+            ),
             (
                 "func",
                 13..17,
@@ -17,13 +25,8 @@ expression: "parse(\"\n        fun func(a: Num, b: Text, c: Bool): Num {\n      
                             18..19,
                         ),
                         (
-                            Type(
-                                (
-                                    "Num",
-                                    21..24,
-                                ),
-                            ),
-                            19..24,
+                            "Num",
+                            21..24,
                         ),
                     ),
                     18..24,
@@ -35,13 +38,8 @@ expression: "parse(\"\n        fun func(a: Num, b: Text, c: Bool): Num {\n      
                             26..27,
                         ),
                         (
-                            Type(
-                                (
-                                    "Text",
-                                    29..33,
-                                ),
-                            ),
-                            27..33,
+                            "Text",
+                            29..33,
                         ),
                     ),
                     26..33,
@@ -53,13 +51,8 @@ expression: "parse(\"\n        fun func(a: Num, b: Text, c: Bool): Num {\n      
                             35..36,
                         ),
                         (
-                            Type(
-                                (
-                                    "Bool",
-                                    38..42,
-                                ),
-                            ),
-                            36..42,
+                            "Bool",
+                            38..42,
                         ),
                     ),
                     35..42,
@@ -67,13 +60,8 @@ expression: "parse(\"\n        fun func(a: Num, b: Text, c: Bool): Num {\n      
             ],
             Some(
                 (
-                    Type(
-                        (
-                            "Num",
-                            45..48,
-                        ),
-                    ),
-                    43..48,
+                    "Num",
+                    45..48,
                 ),
             ),
             [

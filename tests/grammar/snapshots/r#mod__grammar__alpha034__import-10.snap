@@ -1,12 +1,20 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"import { var1 \\\"path\\\"\")"
+expression: "parse(\"import { var1\")"
 ---
 (
     Some(
         [
             (
                 Import(
+                    (
+                        false,
+                        0..6,
+                    ),
+                    (
+                        "import",
+                        0..6,
+                    ),
                     (
                         ImportSpecific(
                             [
@@ -19,17 +27,21 @@ expression: "parse(\"import { var1 \\\"path\\\"\")"
                         7..13,
                     ),
                     (
-                        "path",
-                        15..19,
+                        "from",
+                        13..14,
+                    ),
+                    (
+                        "",
+                        13..14,
                     ),
                 ),
-                0..20,
+                0..13,
             ),
         ],
     ),
     [
         Simple {
-            span: 14..15,
+            span: 13..14,
             reason: Unexpected,
             expected: {
                 Some(
@@ -38,11 +50,33 @@ expression: "parse(\"import { var1 \\\"path\\\"\")"
                     ),
                 ),
             },
-            found: Some(
-                Token(
-                    "\"",
+            found: None,
+            label: None,
+        },
+        Simple {
+            span: 13..14,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "from",
+                    ),
                 ),
-            ),
+            },
+            found: None,
+            label: None,
+        },
+        Simple {
+            span: 13..14,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "\"",
+                    ),
+                ),
+            },
+            found: None,
             label: None,
         },
     ],

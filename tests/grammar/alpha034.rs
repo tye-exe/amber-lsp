@@ -1,4 +1,4 @@
-use chumsky::{error::Simple, Parser};
+use chumsky::error::Simple;
 use insta::assert_debug_snapshot;
 
 use amber_lsp::grammar::{
@@ -228,6 +228,9 @@ fn test_command() {
     assert_debug_snapshot!(parse("$command {unclosed"));
     assert_debug_snapshot!(parse("$command {unclosed interpolation$ let x = 10"));
     assert_debug_snapshot!(parse("$command {"));
+    assert_debug_snapshot!(parse("$command {}$"));
+    // TODO: Issue with Heraclitus lexer. Uncomment when fixed
+    // assert_debug_snapshot!(parse(r#"$echo "\$\{source//{pattern}/{replacement}}"$"#));
 }
 
 #[test]
@@ -335,11 +338,14 @@ fn test_comment() {
 
 #[test]
 fn test_import() {
-    assert_debug_snapshot!(parse_unwrap("import * \"path/to/module\""));
-    assert_debug_snapshot!(parse_unwrap("import {} \"path/to/module\""));
-    assert_debug_snapshot!(parse_unwrap("import { var1 } \"path/to/module\""));
-    assert_debug_snapshot!(parse_unwrap("import { var1, var2 } \"path/to/module\""));
-    assert_debug_snapshot!(parse("import { var1 var2  \"unclosed"));
+    assert_debug_snapshot!(parse_unwrap("import * from \"path/to/module\""));
+    assert_debug_snapshot!(parse_unwrap("import {} from \"path/to/module\""));
+    assert_debug_snapshot!(parse_unwrap("import { var1 } from \"path/to/module\""));
+    assert_debug_snapshot!(parse_unwrap(
+        "import { var1, var2 } from \"path/to/module\""
+    ));
+    assert_debug_snapshot!(parse("import { var1 var2 from \"unclosed"));
+    assert_debug_snapshot!(parse("import { var1 var2 \"unclosed"));
     assert_debug_snapshot!(parse("import  \"unclosed"));
     assert_debug_snapshot!(parse("import"));
     assert_debug_snapshot!(parse("import {"));
@@ -353,6 +359,7 @@ fn test_function_def() {
     assert_debug_snapshot!(parse_unwrap("fun func(a) {}"));
     assert_debug_snapshot!(parse_unwrap("fun func(a : Num) {}"));
     assert_debug_snapshot!(parse_unwrap("fun func(a: Num, b, c: Bool): Num {}"));
+    assert_debug_snapshot!(parse_unwrap("fun func(a: Num, b, c: Bool): [Num] {}"));
     assert_debug_snapshot!(parse_unwrap(
         "
         fun func(a: Num, b: Text, c: Bool): Num {
@@ -363,18 +370,26 @@ fn test_function_def() {
     "
     ));
     assert_debug_snapshot!(parse("fun"));
-    assert_debug_snapshot!(parse("fun foo {
+    assert_debug_snapshot!(parse(
+        "fun foo {
         echo 10
-    }"));
-    assert_debug_snapshot!(parse("fun foo(abc! {
+    }"
+    ));
+    assert_debug_snapshot!(parse(
+        "fun foo(abc! {
         echo 10
-    }"));
-    assert_debug_snapshot!(parse("fun foo(abc:  {
+    }"
+    ));
+    assert_debug_snapshot!(parse(
+        "fun foo(abc:  {
         echo 10
-    }"));
-    assert_debug_snapshot!(parse("fun foo(abc: !WrongType {
+    }"
+    ));
+    assert_debug_snapshot!(parse(
+        "fun foo(abc: !WrongType {
         echo 10
-    }"));
+    }"
+    ));
 }
 
 #[test]
@@ -537,14 +552,47 @@ fn test_recovery() {
     5 + 5 +;
     echo 10"
     ));
-    assert_debug_snapshot!(parse(r#"
+    assert_debug_snapshot!(parse(
+        r#"
+        import {}
+
         fun foo(a) {
 
             return "echo \"{5 + 5}\"";
         }
 
         unsafe {
-    "#))
+    "#
+    ));
+    assert_debug_snapshot!(parse(
+        r#"
+        // comments
+        // comments
+
+        import {} from "test.ab";
+
+        fun test_cat_cmd(file: Text): CmdText {
+            return `echo "NOT READY" > {file}`
+        }
+
+        fun foo(a) {
+            return "echo \"{5 + 5}\"";
+        }
+
+        unsafe {
+            let x = 5;
+
+            echo x;
+
+            if {
+                2 == 2 {
+                    echo 3
+                }
+                else: 5
+            }
+        }
+    "#
+    ));
 }
 
 #[test]

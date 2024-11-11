@@ -1,6 +1,6 @@
 use chumsky::prelude::*;
 
-use crate::grammar::alpha034::{lexer::Token, Spanned, Statement};
+use crate::{grammar::alpha034::{lexer::Token, Spanned, Statement}, T};
 
 pub fn comment_parser() -> impl Parser<Token, Spanned<Statement>, Error = Simple<Token>> {
     filter(|t: &Token| t.to_string().starts_with("//"))

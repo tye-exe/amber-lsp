@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"import {\")"
+expression: "parse(\"import { var1 \\\"path\\\"\")"
 ---
 (
     Some(
@@ -17,26 +17,31 @@ expression: "parse(\"import {\")"
                     ),
                     (
                         ImportSpecific(
-                            [],
+                            [
+                                (
+                                    "var1",
+                                    9..13,
+                                ),
+                            ],
                         ),
-                        7..8,
+                        7..13,
                     ),
                     (
                         "from",
-                        8..9,
+                        14..15,
                     ),
                     (
-                        "",
-                        8..9,
+                        "path",
+                        15..19,
                     ),
                 ),
-                0..8,
+                0..20,
             ),
         ],
     ),
     [
         Simple {
-            span: 8..9,
+            span: 14..15,
             reason: Unexpected,
             expected: {
                 Some(
@@ -45,11 +50,15 @@ expression: "parse(\"import {\")"
                     ),
                 ),
             },
-            found: None,
+            found: Some(
+                Token(
+                    "\"",
+                ),
+            ),
             label: None,
         },
         Simple {
-            span: 8..9,
+            span: 14..15,
             reason: Unexpected,
             expected: {
                 Some(
@@ -58,20 +67,11 @@ expression: "parse(\"import {\")"
                     ),
                 ),
             },
-            found: None,
-            label: None,
-        },
-        Simple {
-            span: 8..9,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "\"",
-                    ),
+            found: Some(
+                Token(
+                    "\"",
                 ),
-            },
-            found: None,
+            ),
             label: None,
         },
     ],

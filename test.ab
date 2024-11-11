@@ -1,0 +1,22 @@
+import * from "lib.ab"
+
+let x = 5
+
+{
+    let x = 10
+    echo x
+}
+
+echo x
+
+// echo foo()
+
+fun bar(x: Num): Num {
+    if x == 0 {
+        return 0
+    }
+
+    return x + bar(x - 1)
+}
+
+echo bar(5)

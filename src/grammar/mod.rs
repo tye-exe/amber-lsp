@@ -1,9 +1,11 @@
+use alpha034::GlobalStatement;
 use chumsky::error::Simple;
 
 pub mod alpha034;
 
+#[derive(Debug, PartialEq, Clone)]
 pub enum Grammar {
-    Alpha034(Option<Vec<Spanned<alpha034::GlobalStatement>>>),
+    Alpha034(Option<Vec<Spanned<GlobalStatement>>>),
 }
 
 pub type Span = std::ops::Range<usize>;
@@ -40,4 +42,11 @@ pub struct ParserResponse {
 
 pub trait LSPAnalysis: Sync + Send {
     fn parse(&self, input: &str) -> ParserResponse;
+}
+
+#[derive(PartialEq)]
+pub enum JumpDefinitionResult {
+    InFile(Span),
+    OpenFile(String),
+    None,
 }

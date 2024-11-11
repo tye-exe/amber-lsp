@@ -12,6 +12,8 @@ pub mod lexer;
 pub mod parser;
 pub mod semantic_tokens;
 pub mod statements;
+pub mod jump_definition;
+pub mod symbol_table;
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum InterpolatedText {
@@ -95,13 +97,8 @@ pub enum ImportContent {
 #[derive(PartialEq, Debug, Clone)]
 pub enum FunctionArgument {
     Generic(Spanned<String>),
-    Typed(Spanned<String>, Spanned<TypeAnnotation>),
+    Typed(Spanned<String>, Spanned<String>),
     Error,
-}
-
-#[derive(PartialEq, Debug, Clone)]
-pub enum TypeAnnotation {
-    Type(Spanned<String>),
 }
 
 #[derive(PartialEq, Debug, Clone)]
@@ -167,11 +164,19 @@ pub enum Statement {
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum GlobalStatement {
-    Import(Spanned<ImportContent>, Spanned<String>),
+    /// Import statement
+    /// 
+    /// is_public, "import", import_content, "from", path
+    Import(Spanned<bool>, Spanned<String>, Spanned<ImportContent>, Spanned<String>, Spanned<String>),
+    /// Function definition
+    /// 
+    /// is_public, "fun", name, args, return_type, body
     FunctionDefinition(
+        Spanned<bool>,
+        Spanned<String>,
         Spanned<String>,
         Vec<Spanned<FunctionArgument>>,
-        Option<Spanned<TypeAnnotation>>,
+        Option<Spanned<String>>,
         Vec<Spanned<Statement>>,
     ),
     Main(Vec<Spanned<Statement>>),

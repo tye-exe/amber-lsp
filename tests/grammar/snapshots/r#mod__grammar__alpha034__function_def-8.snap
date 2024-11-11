@@ -8,6 +8,14 @@ expression: "parse(\"fun foo(abc! {\n        echo 10\n    }\")"
             (
                 FunctionDefinition(
                     (
+                        false,
+                        0..3,
+                    ),
+                    (
+                        "fun",
+                        0..3,
+                    ),
+                    (
                         "foo",
                         4..7,
                     ),

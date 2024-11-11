@@ -8,6 +8,14 @@ expression: "parse(r#\"\n        fun foo(a) {\n\n            return \"echo \\\"{
             (
                 FunctionDefinition(
                     (
+                        false,
+                        9..12,
+                    ),
+                    (
+                        "fun",
+                        9..12,
+                    ),
+                    (
                         "foo",
                         13..16,
                     ),

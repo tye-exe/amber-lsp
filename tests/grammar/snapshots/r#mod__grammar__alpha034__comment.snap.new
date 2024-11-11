@@ -1,0 +1,14 @@
+---
+source: tests/grammar/alpha034.rs
+assertion_line: 325
+expression: "compiler.tokenize(\"// This is a comment\")"
+snapshot_kind: text
+---
+[
+    (
+        Token(
+            "// This is a comment",
+        ),
+        0..20,
+    ),
+]

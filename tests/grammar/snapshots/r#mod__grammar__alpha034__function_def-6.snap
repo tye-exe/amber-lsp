@@ -8,6 +8,14 @@ expression: "parse(\"fun\")"
             (
                 FunctionDefinition(
                     (
+                        false,
+                        0..3,
+                    ),
+                    (
+                        "fun",
+                        0..3,
+                    ),
+                    (
                         "",
                         3..4,
                     ),

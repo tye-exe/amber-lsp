@@ -1,12 +1,20 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"import { var1 var2  \\\"unclosed\")"
+expression: "parse(\"import { var1 var2 from \\\"unclosed\")"
 ---
 (
     Some(
         [
             (
                 Import(
+                    (
+                        false,
+                        0..6,
+                    ),
+                    (
+                        "import",
+                        0..6,
+                    ),
                     (
                         ImportSpecific(
                             [
@@ -18,16 +26,24 @@ expression: "parse(\"import { var1 var2  \\\"unclosed\")"
                                     "var2",
                                     14..18,
                                 ),
+                                (
+                                    "from",
+                                    19..23,
+                                ),
                             ],
                         ),
-                        7..18,
+                        7..23,
+                    ),
+                    (
+                        "from",
+                        24..25,
                     ),
                     (
                         "unclosed",
-                        21..29,
+                        25..33,
                     ),
                 ),
-                0..29,
+                0..33,
             ),
         ],
     ),
@@ -50,7 +66,24 @@ expression: "parse(\"import { var1 var2  \\\"unclosed\")"
             label: None,
         },
         Simple {
-            span: 20..21,
+            span: 19..23,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        ",",
+                    ),
+                ),
+            },
+            found: Some(
+                Token(
+                    "from",
+                ),
+            ),
+            label: None,
+        },
+        Simple {
+            span: 24..25,
             reason: Unexpected,
             expected: {
                 Some(
@@ -67,7 +100,24 @@ expression: "parse(\"import { var1 var2  \\\"unclosed\")"
             label: None,
         },
         Simple {
-            span: 29..30,
+            span: 24..25,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "from",
+                    ),
+                ),
+            },
+            found: Some(
+                Token(
+                    "\"",
+                ),
+            ),
+            label: None,
+        },
+        Simple {
+            span: 33..34,
             reason: Unexpected,
             expected: {
                 Some(

@@ -11,6 +11,7 @@ import {
 	LanguageClientOptions,
 	ServerOptions,
 } from 'vscode-languageclient/node';
+Math
 
 let client: LanguageClient;
 
