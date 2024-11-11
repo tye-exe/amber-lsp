@@ -11,14 +11,16 @@ pub fn comparison_parser<'a>(
     stmnts: impl AmberParser<'a, Spanned<Statement>>,
     expr: impl AmberParser<'a, Spanned<Expression>>,
 ) -> impl AmberParser<'a, Spanned<Expression>> {
-    sum_parser(stmnts.clone(), expr.clone()).foldl(
-        just(T![">="])
-            .to(Expression::Ge as fn(_, _) -> _)
-            .or(just(T![">"]).to(Expression::Gt as fn(_, _) -> _))
-            .or(just(T!["<="]).to(Expression::Le as fn(_, _) -> _))
-            .or(just(T!["<"]).to(Expression::Lt as fn(_, _) -> _))
-            .or(just(T!["=="]).to(Expression::Eq as fn(_, _) -> _))
-            .or(just(T!["!="]).to(Expression::Neq as fn(_, _) -> _))
+    sum_parser(stmnts.clone(), expr.clone())
+        .foldl(
+            choice((
+                just(T![">="]).to(Expression::Ge as fn(_, _) -> _),
+                just(T![">"]).to(Expression::Gt as fn(_, _) -> _),
+                just(T!["<="]).to(Expression::Le as fn(_, _) -> _),
+                just(T!["<"]).to(Expression::Lt as fn(_, _) -> _),
+                just(T!["=="]).to(Expression::Eq as fn(_, _) -> _),
+                just(T!["!="]).to(Expression::Neq as fn(_, _) -> _),
+            ))
             .then(
                 sum_parser(stmnts.clone(), expr.clone()).recover_with(via_parser(
                     any()
@@ -27,10 +29,11 @@ pub fn comparison_parser<'a>(
                 )),
             )
             .repeated(),
-        |lhs, (op, rhs)| {
-            let span = SimpleSpan::new(lhs.1.start, rhs.1.end);
+            |lhs, (op, rhs)| {
+                let span = SimpleSpan::new(lhs.1.start, rhs.1.end);
 
-            (op(Box::new(lhs), Box::new(rhs)), span)
-        },
-    )
+                (op(Box::new(lhs), Box::new(rhs)), span)
+            },
+        )
+        .boxed()
 }

@@ -11,10 +11,12 @@ pub fn sum_parser<'a>(
     stmnts: impl AmberParser<'a, Spanned<Statement>>,
     expr: impl AmberParser<'a, Spanned<Expression>>,
 ) -> impl AmberParser<'a, Spanned<Expression>> {
-    product_parser(stmnts.clone(), expr.clone()).foldl(
-        just(T!['+'])
-            .to(Expression::Add as fn(_, _) -> _)
-            .or(just(T!['-']).to(Expression::Subtract as fn(_, _) -> _))
+    product_parser(stmnts.clone(), expr.clone())
+        .foldl(
+            choice((
+                just(T!['+']).to(Expression::Add as fn(_, _) -> _),
+                just(T!['-']).to(Expression::Subtract as fn(_, _) -> _),
+            ))
             .then(
                 product_parser(stmnts, expr).recover_with(via_parser(
                     any()
@@ -23,9 +25,10 @@ pub fn sum_parser<'a>(
                 )),
             )
             .repeated(),
-        |lhs, (op, rhs)| {
-            let span = SimpleSpan::new(lhs.1.start, rhs.1.end);
-            (op(Box::new(lhs), Box::new(rhs)), span)
-        },
-    )
+            |lhs, (op, rhs)| {
+                let span = SimpleSpan::new(lhs.1.start, rhs.1.end);
+                (op(Box::new(lhs), Box::new(rhs)), span)
+            },
+        )
+        .boxed()
 }

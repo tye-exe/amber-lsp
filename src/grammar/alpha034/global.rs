@@ -25,7 +25,8 @@ pub fn import_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
         .then_ignore(
             just(T!["}"]).recover_with(via_parser(none_of([T!['"']]).or_not().map(|_| T!["}"]))),
         )
-        .map_with(|vars, e| (ImportContent::ImportSpecific(vars), e.span()));
+        .map_with(|vars, e| (ImportContent::ImportSpecific(vars), e.span()))
+        .boxed();
 
     let path_parser = just(T!['"'])
         .ignore_then(
@@ -48,40 +49,43 @@ pub fn import_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
                     .or_not()
                     .map(|_| T!['"']),
             )),
-        );
+        )
+        .boxed();
 
     just(T!["import"])
         .ignore_then(
-            import_all_parser
-                .or(import_specific_parser)
-                .recover_with(via_parser(
-                    none_of([T!['"']])
-                        .or_not()
-                        .map_with(|_, e| (ImportContent::ImportAll, e.span())),
-                )),
+            choice((import_all_parser, import_specific_parser)).recover_with(via_parser(
+                none_of([T!['"']])
+                    .or_not()
+                    .map_with(|_, e| (ImportContent::ImportAll, e.span())),
+            )),
         )
         .then(path_parser.recover_with(via_parser(
             any().or_not().map_with(|_, e| ("".to_string(), e.span())),
         )))
         .map_with(|(vars, path), e| (GlobalStatement::Import(vars, path), e.span()))
+        .boxed()
 }
 
 fn type_parser<'a>() -> impl AmberParser<'a, Spanned<TypeAnnotation>> {
     just(T![':'])
         .ignore_then(ident("type".to_string()).map_with(|name, e| (name, e.span())))
         .map_with(|name, e| (TypeAnnotation::Type(name), e.span()))
+        .boxed()
 }
 
 pub fn function_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
     let generic_arg_parser = ident("argument".to_string())
-        .map_with(|name, e| (FunctionArgument::Generic((name, e.span())), e.span()));
+        .map_with(|name, e| (FunctionArgument::Generic((name, e.span())), e.span()))
+        .boxed();
 
     let typed_arg_parser = ident("argument".to_string())
         .map_with(|name, e| (name, e.span()))
         .then(type_parser())
-        .map_with(|(name, ty), e| (FunctionArgument::Typed(name, ty), e.span()));
+        .map_with(|(name, ty), e| (FunctionArgument::Typed(name, ty), e.span()))
+        .boxed();
 
-    let arg_parser = typed_arg_parser.or(generic_arg_parser);
+    let arg_parser = choice((typed_arg_parser, generic_arg_parser)).boxed();
 
     let args_parser = arg_parser
         .recover_with(via_parser(
@@ -96,20 +100,26 @@ pub fn function_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
             just(T![')']).recover_with(via_parser(
                 none_of([T!['{'], T!['}']]).or_not().map(|_| T![')']),
             )),
-        );
+        )
+        .boxed();
 
-    let ret_parser = type_parser().or_not().then(
-        just(T!["{"])
-            .ignore_then(
-                statement_parser()
-                    .recover_with(via_parser(
-                        none_of([T!['}']]).map_with(|_, e| (Statement::Error, e.span())),
-                    ))
-                    .repeated()
-                    .collect(),
-            )
-            .then_ignore(just(T!["}"]).recover_with(via_parser(any().or_not().map(|_| T!["}"])))),
-    );
+    let ret_parser = type_parser()
+        .or_not()
+        .then(
+            just(T!["{"])
+                .ignore_then(
+                    statement_parser()
+                        .recover_with(via_parser(
+                            none_of([T!['}']]).map_with(|_, e| (Statement::Error, e.span())),
+                        ))
+                        .repeated()
+                        .collect(),
+                )
+                .then_ignore(
+                    just(T!["}"]).recover_with(via_parser(any().or_not().map(|_| T!["}"]))),
+                ),
+        )
+        .boxed();
 
     just(T!["fun"])
         .ignore_then(
@@ -128,6 +138,7 @@ pub fn function_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
                 e.span(),
             )
         })
+        .boxed()
 }
 
 pub fn main_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
@@ -154,19 +165,19 @@ pub fn main_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
                 ),
         )
         .map_with(|body, e| (GlobalStatement::Main(body), e.span()))
+        .boxed()
 }
 
 pub fn global_statement_parser<'a>() -> impl AmberParser<'a, Vec<Spanned<GlobalStatement>>> {
-    let statement =
-        statement_parser().map(|stmnt| (GlobalStatement::Statement(stmnt.clone()), stmnt.1));
+    let statement = statement_parser()
+        .map(|stmnt| (GlobalStatement::Statement(stmnt.clone()), stmnt.1))
+        .boxed();
 
-    import_parser()
-        .or(function_parser())
-        .or(main_parser())
-        .or(statement)
+    choice((import_parser(), function_parser(), main_parser(), statement))
         .recover_with(skip_then_retry_until(any().ignored(), end()))
         .repeated()
         .collect()
         .then_ignore(just(T![';']).or_not())
         .then_ignore(end())
+        .boxed()
 }

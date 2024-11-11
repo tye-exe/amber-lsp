@@ -13,14 +13,13 @@ pub fn shorthand_parser<'a>(
 ) -> impl AmberParser<'a, Spanned<Statement>> {
     ident("variable".to_string())
         .map_with(|name, e| (name, e.span()))
-        .then(
-            just(T!["+="])
-                .to(Statement::ShorthandAdd as fn(_, _) -> _)
-                .or(just(T!["-="]).to(Statement::ShorthandSub as fn(_, _) -> _))
-                .or(just(T!["*="]).to(Statement::ShorthandMul as fn(_, _) -> _))
-                .or(just(T!["/="]).to(Statement::ShorthandDiv as fn(_, _) -> _))
-                .or(just(T!["%="]).to(Statement::ShorthandModulo as fn(_, _) -> _)),
-        )
+        .then(choice((
+            just(T!["+="]).to(Statement::ShorthandAdd as fn(_, _) -> _),
+            just(T!["-="]).to(Statement::ShorthandSub as fn(_, _) -> _),
+            just(T!["*="]).to(Statement::ShorthandMul as fn(_, _) -> _),
+            just(T!["/="]).to(Statement::ShorthandDiv as fn(_, _) -> _),
+            just(T!["%="]).to(Statement::ShorthandModulo as fn(_, _) -> _),
+        )))
         .then(
             parse_expr(stmnts).recover_with(via_parser(
                 any()
@@ -29,4 +28,5 @@ pub fn shorthand_parser<'a>(
             )),
         )
         .map_with(|((name, op), value), e| (op(name, Box::new(value)), e.span()))
+        .boxed()
 }

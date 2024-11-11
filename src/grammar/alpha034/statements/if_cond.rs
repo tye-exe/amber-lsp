@@ -24,7 +24,7 @@ fn else_cond_parser<'a>(
         )))
         .map_with(|body, e| (ElseCondition::InlineElse(Box::new(body)), e.span()));
 
-    else_inline.or(else_condition)
+    choice((else_condition, else_inline)).boxed()
 }
 
 fn cond_parser<'a>(
@@ -46,7 +46,7 @@ fn cond_parser<'a>(
         .then(block_parser(stmnts))
         .map_with(|(cond, body), e| (IfCondition::IfCondition(Box::new(cond), body), e.span()));
 
-    inline_if.or(if_condition)
+    choice((inline_if, if_condition)).boxed()
 }
 
 pub fn if_cond_parser<'a>(
@@ -56,6 +56,7 @@ pub fn if_cond_parser<'a>(
         .ignore_then(cond_parser(stmnts.clone()))
         .then(else_cond_parser(stmnts).or_not())
         .map_with(|(if_cond, else_cond), e| (Statement::IfCondition(if_cond, else_cond), e.span()))
+        .boxed()
 }
 
 pub fn if_chain_parser<'a>(
@@ -88,4 +89,5 @@ pub fn if_chain_parser<'a>(
                 (Statement::IfChain(if_chain), e.span())
             },
         )
+        .boxed()
 }

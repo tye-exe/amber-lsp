@@ -32,4 +32,5 @@ pub fn function_call_parser<'a>(
                 e.span(),
             )
         })
+        .boxed()
 }

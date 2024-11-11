@@ -19,11 +19,12 @@ pub fn failure_parser<'a>(
                 .collect(),
         )
         .then_ignore(just(T!["}"]).recover_with(via_parser(any().or_not().map(|_| T!["}"]))))
-        .map(|block| FailureHandler::Handle(block));
+        .map(|block| FailureHandler::Handle(block))
+        .boxed();
 
-    let prop_parser = just(T!['?']).map(|_| FailureHandler::Propagate);
+    let prop_parser = just(T!['?']).map(|_| FailureHandler::Propagate).boxed();
 
-    handle_parser
-        .or(prop_parser)
+    choice((handle_parser, prop_parser))
         .map_with(|handler, e| (handler, e.span()))
+        .boxed()
 }

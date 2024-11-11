@@ -2,7 +2,8 @@ use chumsky::prelude::*;
 
 use crate::{
     grammar::alpha034::{
-        expressions::parse_expr, lexer::Token, parser::ident, AmberParser, Block, Expression, IterLoopVars, Spanned, Statement
+        expressions::parse_expr, lexer::Token, parser::ident, AmberParser, Block, Expression,
+        IterLoopVars, Spanned, Statement,
     },
     T,
 };
@@ -15,6 +16,7 @@ pub fn inf_loop_parser<'a>(
     just(T!["loop"])
         .ignore_then(block_parser(stmnts))
         .map_with(|block, e| (Statement::InfiniteLoop(block), e.span()))
+        .boxed()
 }
 
 pub fn iter_loop_parser<'a>(
@@ -33,9 +35,11 @@ pub fn iter_loop_parser<'a>(
         .map_with(|(var, index), e| (IterLoopVars::WithIndex(var, index), e.span()));
 
     just(T!["loop"])
-        .ignore_then(with_index_var.or(single_var).recover_with(via_parser(
-            none_of([T!["in"]]).map_with(|_, e| (IterLoopVars::Error, e.span())),
-        )))
+        .ignore_then(
+            choice((with_index_var, single_var)).recover_with(via_parser(
+                none_of([T!["in"]]).map_with(|_, e| (IterLoopVars::Error, e.span())),
+            )),
+        )
         .then_ignore(just(T!["in"]).recover_with(via_parser(any().or_not().map(|_| T!["in"]))))
         .then(
             parse_expr(stmnts.clone()).recover_with(via_parser(
@@ -50,4 +54,5 @@ pub fn iter_loop_parser<'a>(
         .map_with(|((vars, expr), body), e| {
             (Statement::IterLoop(vars, Box::new(expr), body), e.span())
         })
+        .boxed()
 }

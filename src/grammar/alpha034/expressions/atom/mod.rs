@@ -21,15 +21,18 @@ pub fn atom_parser<'a>(
     stmnts: impl AmberParser<'a, Spanned<Statement>>,
     expr: impl AmberParser<'a, Spanned<Expression>>,
 ) -> impl AmberParser<'a, Spanned<Expression>> {
-    bool::bool_parser()
-        .or(null::null_parser())
-        .or(status::status_var_parser())
-        .or(call::function_call_parser(stmnts.clone(), expr.clone()))
-        .or(var::var_parser())
-        .or(text::text_parser(expr.clone()))
-        .or(array::array_parser(expr.clone()))
-        .or(command::command_parser(stmnts, expr.clone()))
-        .or(number::number_parser())
-        .or(parentheses::parentheses_parser(expr))
-        .then_ignore(just(T![';']).or_not())
+    choice((
+        bool::bool_parser(),
+        null::null_parser(),
+        status::status_var_parser(),
+        call::function_call_parser(stmnts.clone(), expr.clone()),
+        var::var_parser(),
+        text::text_parser(expr.clone()),
+        array::array_parser(expr.clone()),
+        command::command_parser(stmnts, expr.clone()),
+        number::number_parser(),
+        parentheses::parentheses_parser(expr),
+    ))
+    .then_ignore(just(T![';']).or_not())
+    .boxed()
 }

@@ -2,13 +2,14 @@ use chumsky::prelude::*;
 
 use crate::{
     grammar::alpha034::{
-        expressions::parse_expr, lexer::Token, parser::ident, AmberParser, Expression, Spanned, Statement
+        expressions::parse_expr, lexer::Token, parser::ident, AmberParser, Expression, Spanned,
+        Statement,
     },
     T,
 };
 
 pub fn var_set_parser<'a>(
-    stmnts: impl AmberParser<'a, Spanned<Statement>>
+    stmnts: impl AmberParser<'a, Spanned<Statement>>,
 ) -> impl AmberParser<'a, Spanned<Statement>> {
     ident("variable".to_string())
         .map_with(|name, e| (name, e.span()))
@@ -21,4 +22,5 @@ pub fn var_set_parser<'a>(
             )),
         )
         .map_with(|(name, value), e| (Statement::VariableSet(name, Box::new(value)), e.span()))
+        .boxed()
 }

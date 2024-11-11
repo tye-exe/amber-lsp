@@ -9,7 +9,8 @@ pub fn text_parser<'a>(
 ) -> impl AmberParser<'a, Spanned<Expression>> {
     let escaped = just(T!['\\'])
         .ignore_then(any())
-        .map_with(|char: Token, e| InterpolatedText::Escape((char.to_string(), e.span())));
+        .map_with(|char: Token, e| InterpolatedText::Escape((char.to_string(), e.span())))
+        .boxed();
 
     let interpolated = expr
         .recover_with(via_parser(
@@ -27,21 +28,23 @@ pub fn text_parser<'a>(
                     .map(|_| T!['}']),
             )),
         )
-        .map(|expr| InterpolatedText::Expression(Box::new(expr)));
+        .map(|expr| InterpolatedText::Expression(Box::new(expr)))
+        .boxed();
 
     just(T!['"'])
         .ignore_then(
-            any()
-                .filter(|c: &Token| {
-                    *c != T!['"'] && *c != T!['{'] && *c != T!['}'] && *c != T!['\\']
-                })
-                .map_with(|text, e| InterpolatedText::Text((text.to_string(), e.span())))
-                .or(escaped)
-                .or(interpolated)
-                .map_with(|expr, e| (expr, e.span()))
-                .repeated()
-                .collect(),
+            choice((
+                any()
+                    .filter(|c: &Token| *c != T!['"'] && *c != T!['{'] && *c != T!['\\'])
+                    .map_with(|text, e| InterpolatedText::Text((text.to_string(), e.span()))),
+                escaped,
+                interpolated,
+            ))
+            .map_with(|expr, e| (expr, e.span()))
+            .repeated()
+            .collect(),
         )
         .then_ignore(just(T!['"']).recover_with(via_parser(any().or_not().map(|_| T!['"']))))
         .map_with(|expr, e| (Expression::Text(expr), e.span()))
+        .boxed()
 }

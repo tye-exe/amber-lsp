@@ -11,21 +11,23 @@ pub fn range_parser<'a>(
     stmnts: impl AmberParser<'a, Spanned<Statement>>,
     expr: impl AmberParser<'a, Spanned<Expression>>,
 ) -> impl AmberParser<'a, Spanned<Expression>> {
-    or_parser(stmnts.clone(), expr.clone()).foldl(
-        just(T![".."])
-            .ignore_then(just(T!["="]).or_not())
-            .ignore_then(
-                or_parser(stmnts, expr).recover_with(via_parser(
-                    any()
-                        .or_not()
-                        .map_with(|_, e| (Expression::Error, e.span())),
-                )),
-            )
-            .repeated(),
-        |start, end| {
-            let span = SimpleSpan::new(start.1.start, end.1.end);
+    or_parser(stmnts.clone(), expr.clone())
+        .foldl(
+            just(T![".."])
+                .ignore_then(just(T!["="]).or_not())
+                .ignore_then(
+                    or_parser(stmnts, expr).recover_with(via_parser(
+                        any()
+                            .or_not()
+                            .map_with(|_, e| (Expression::Error, e.span())),
+                    )),
+                )
+                .repeated(),
+            |start, end| {
+                let span = SimpleSpan::new(start.1.start, end.1.end);
 
-            (Expression::Range(Box::new(start), Box::new(end)), span)
-        },
-    )
+                (Expression::Range(Box::new(start), Box::new(end)), span)
+            },
+        )
+        .boxed()
 }

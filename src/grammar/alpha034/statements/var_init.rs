@@ -26,4 +26,5 @@ pub fn var_init_parser<'a>(
             )),
         )
         .map_with(|(name, value), e| (Statement::VariableInit(name, Box::new(value)), e.span()))
+        .boxed()
 }

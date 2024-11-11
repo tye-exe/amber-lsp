@@ -19,10 +19,13 @@ pub fn block_parser<'a>(
             just(T!['}']).recover_with(via_parser(any().or_not().map(|_| T!['}']))),
         )
         .map_with(move |body, e| (Block::Block(body), e.span()))
+        .boxed()
 }
 
 pub fn block_parser_statement<'a>(
     stmnts: impl AmberParser<'a, Spanned<Statement>>,
 ) -> impl AmberParser<'a, Spanned<Statement>> {
-    block_parser(stmnts).map_with(|block, e| (Statement::Block(block), e.span()))
+    block_parser(stmnts)
+        .map_with(|block, e| (Statement::Block(block), e.span()))
+        .boxed()
 }

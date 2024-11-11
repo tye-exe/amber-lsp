@@ -7,8 +7,7 @@ use crate::{
 
 use super::Expression;
 
-pub fn number_parser<'a>() -> impl AmberParser<'a, Spanned<Expression>>
-{
+pub fn number_parser<'a>() -> impl AmberParser<'a, Spanned<Expression>> {
     let int = any().try_map(|token: Token, span| {
         let word = token.to_string();
 
@@ -30,4 +29,5 @@ pub fn number_parser<'a>() -> impl AmberParser<'a, Spanned<Expression>>
         .from_str::<f32>()
         .unwrapped()
         .map_with(|num, e| (Expression::Number((num, e.span())), e.span()))
+        .boxed()
 }

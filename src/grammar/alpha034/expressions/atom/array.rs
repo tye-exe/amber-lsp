@@ -6,7 +6,7 @@ use crate::{
 };
 
 pub fn array_parser<'a>(
-    expr: impl AmberParser<'a, Spanned<Expression>>
+    expr: impl AmberParser<'a, Spanned<Expression>>,
 ) -> impl AmberParser<'a, Spanned<Expression>> {
     expr.recover_with(via_parser(
         none_of([T![']']]).map_with(|_, e| (Expression::Error, e.span())),
@@ -20,4 +20,5 @@ pub fn array_parser<'a>(
         just(T!["]"]).recover_with(via_parser(any().or_not().map(|_| T!["]"]))),
     )
     .map_with(move |arr, e| (Expression::Array(arr), e.span()))
+    .boxed()
 }

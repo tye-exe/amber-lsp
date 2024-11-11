@@ -11,17 +11,19 @@ pub fn unary_parser<'a>(
     stmnts: impl AmberParser<'a, Spanned<Statement>>,
     expr: impl AmberParser<'a, Spanned<Expression>>,
 ) -> impl AmberParser<'a, Spanned<Expression>> {
-    just(T!['-'])
-        .to(Expression::Neg as fn(_) -> _)
-        .or(just(T!["not"]).to(Expression::Not as fn(_) -> _))
-        .or(just(T!["nameof"]).to(Expression::Nameof as fn(_) -> _))
-        .repeated()
-        .foldr(
-            atom_parser(stmnts, expr),
-            |op: fn(Box<Spanned<Expression>>) -> Expression, expr| {
-                let span = SimpleSpan::new(expr.1.start, expr.1.end);
+    choice((
+        just(T!['-']).to(Expression::Neg as fn(_) -> _),
+        just(T!["not"]).to(Expression::Not as fn(_) -> _),
+        just(T!["nameof"]).to(Expression::Nameof as fn(_) -> _),
+    ))
+    .repeated()
+    .foldr(
+        atom_parser(stmnts, expr),
+        |op: fn(Box<Spanned<Expression>>) -> Expression, expr| {
+            let span = SimpleSpan::new(expr.1.start, expr.1.end);
 
-                (op(Box::new(expr)), span)
-            },
-        )
+            (op(Box::new(expr)), span)
+        },
+    )
+    .boxed()
 }

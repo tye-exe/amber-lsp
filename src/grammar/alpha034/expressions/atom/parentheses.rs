@@ -25,4 +25,5 @@ pub fn parentheses_parser<'a>(
         )),
     )
     .map_with(|expr, e| (Expression::Parentheses(Box::new(expr)), e.span()))
+    .boxed()
 }

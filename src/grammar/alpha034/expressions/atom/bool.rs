@@ -5,8 +5,7 @@ use crate::{
 use chumsky::prelude::*;
 
 pub fn bool_parser<'a>() -> impl AmberParser<'a, Spanned<Expression>> {
-    just(T!["true"])
-        .to(true)
-        .or(just(T!["false"]).to(false))
+    choice((just(T!["true"]).to(true), just(T!["false"]).to(false)))
         .map_with(|b, e| (Expression::Boolean((b, e.span())), e.span()))
+        .boxed()
 }
