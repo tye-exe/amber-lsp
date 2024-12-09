@@ -30,13 +30,13 @@
 			"type": "object",
 			"title": "Example configuration",
 			"properties": {
-				"languageServerExample.maxNumberOfProblems": {
+				"amber-lsp.maxNumberOfProblems": {
 					"scope": "resource",
 					"type": "number",
 					"default": 100,
 					"description": "Controls the maximum number of problems produced by the server."
 				},
-				"languageServerExample.trace.server": {
+				"amber-lsp.trace.server": {
 					"scope": "window",
 					"type": "string",
 					"enum": [
@@ -46,6 +46,16 @@
 					],
 					"default": "off",
 					"description": "Traces the communication between VS Code and the language server."
+				},
+				"amber-lsp.version": {
+					"type": "string",
+					"default": "auto",
+					"enum": ["auto", "0.3.4-alpha"],
+					"enumDescriptions": [
+						"Automatically detect Amber version.",
+						"Use version compatible with Amber 0.3.4-alpha."
+					],
+					"description": "Select the version of the LSP server to use."
 				}
 			}
 		}

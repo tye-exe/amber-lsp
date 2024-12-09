@@ -16,6 +16,7 @@ Math
 let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
+	const version = workspace.getConfiguration('amber-lsp').get<string>('version', 'auto');
 	const traceOutputChannel = window.createOutputChannel("Amber Language Server trace");
 	const command = process.env.SERVER_PATH || "amber-lsp";
 	const run: Executable = {
@@ -26,6 +27,7 @@ export function activate(context: ExtensionContext) {
 		  RUST_LOG: "debug",
 		},
 	  },
+	  args: ["--version", version],
 	};
 	const serverOptions: ServerOptions = {
 	  run,

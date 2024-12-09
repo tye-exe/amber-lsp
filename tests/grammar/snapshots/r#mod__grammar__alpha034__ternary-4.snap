@@ -101,7 +101,9 @@ expression: "parse(\"true then\")"
                 ),
             },
             found: None,
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
         Simple {
             span: 9..10,
@@ -114,7 +116,9 @@ expression: "parse(\"true then\")"
                 ),
             },
             found: None,
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
         Simple {
             span: 9..10,
@@ -177,7 +181,9 @@ expression: "parse(\"true then\")"
                 ),
             },
             found: None,
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

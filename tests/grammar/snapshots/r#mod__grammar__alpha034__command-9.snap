@@ -1,0 +1,114 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse(\"$command {}$\")"
+---
+(
+    Some(
+        [
+            (
+                Statement(
+                    (
+                        Expression(
+                            (
+                                Command(
+                                    [
+                                        (
+                                            Text(
+                                                "command",
+                                            ),
+                                            1..8,
+                                        ),
+                                        (
+                                            Expression(
+                                                (
+                                                    Error,
+                                                    10..11,
+                                                ),
+                                            ),
+                                            9..11,
+                                        ),
+                                    ],
+                                    None,
+                                ),
+                                0..12,
+                            ),
+                        ),
+                        0..12,
+                    ),
+                ),
+                0..12,
+            ),
+        ],
+    ),
+    [
+        Simple {
+            span: 10..11,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "true",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "\"",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "not",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "(",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "false",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "nameof",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "[",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "status",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "$",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "-",
+                    ),
+                ),
+                Some(
+                    Token(
+                        "null",
+                    ),
+                ),
+            },
+            found: Some(
+                Token(
+                    "}",
+                ),
+            ),
+            label: Some(
+                "expression",
+            ),
+        },
+    ],
+)

@@ -111,7 +111,9 @@ expression: "parse(\"true and false and\")"
                 ),
             },
             found: None,
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

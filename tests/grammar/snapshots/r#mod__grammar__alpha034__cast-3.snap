@@ -41,7 +41,9 @@ expression: "parse(\"1 as \")"
             reason: Unexpected,
             expected: {},
             found: None,
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

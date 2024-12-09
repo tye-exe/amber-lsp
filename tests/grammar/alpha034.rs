@@ -564,6 +564,7 @@ fn test_recovery() {
         unsafe {
     "#
     ));
+
     assert_debug_snapshot!(parse(
         r#"
         // comments

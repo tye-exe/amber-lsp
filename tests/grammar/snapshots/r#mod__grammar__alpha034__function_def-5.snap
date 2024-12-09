@@ -1,102 +1,67 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse_unwrap(\"\n        fun func(a: Num, b: Text, c: Bool): Num {\n            echo 10\n\n            return 10\n        }\n    \")"
+expression: "parse_unwrap(\"fun func(a: Num, b, c: Bool): [Num] {}\")"
 ---
 [
     (
         FunctionDefinition(
             (
                 false,
-                9..12,
+                0..3,
             ),
             (
                 "fun",
-                9..12,
+                0..3,
             ),
             (
                 "func",
-                13..17,
+                4..8,
             ),
             [
                 (
                     Typed(
                         (
                             "a",
-                            18..19,
+                            9..10,
                         ),
                         (
                             "Num",
-                            21..24,
+                            12..15,
                         ),
                     ),
-                    18..24,
+                    9..15,
                 ),
                 (
-                    Typed(
+                    Generic(
                         (
                             "b",
-                            26..27,
-                        ),
-                        (
-                            "Text",
-                            29..33,
+                            17..18,
                         ),
                     ),
-                    26..33,
+                    17..18,
                 ),
                 (
                     Typed(
                         (
                             "c",
-                            35..36,
+                            20..21,
                         ),
                         (
                             "Bool",
-                            38..42,
+                            23..27,
                         ),
                     ),
-                    35..42,
+                    20..27,
                 ),
             ],
             Some(
                 (
-                    "Num",
-                    45..48,
+                    "[Num]",
+                    30..35,
                 ),
             ),
-            [
-                (
-                    Echo(
-                        (
-                            Number(
-                                (
-                                    10.0,
-                                    68..70,
-                                ),
-                            ),
-                            68..70,
-                        ),
-                    ),
-                    63..70,
-                ),
-                (
-                    Return(
-                        Some(
-                            (
-                                Number(
-                                    (
-                                        10.0,
-                                        91..93,
-                                    ),
-                                ),
-                                91..93,
-                            ),
-                        ),
-                    ),
-                    84..93,
-                ),
-            ],
+            [],
         ),
-        9..103,
+        0..38,
     ),
 ]

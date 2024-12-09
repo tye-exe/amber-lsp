@@ -49,7 +49,9 @@ expression: "parse(\"[1,\")"
                     ",",
                 ),
             ),
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

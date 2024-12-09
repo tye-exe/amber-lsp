@@ -55,7 +55,9 @@ expression: "parse(\"$command --arg1 -v\")"
                 ),
             },
             found: None,
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

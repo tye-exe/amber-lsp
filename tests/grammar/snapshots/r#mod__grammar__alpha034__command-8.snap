@@ -102,7 +102,9 @@ expression: "parse(\"$command {\")"
                 ),
             },
             found: None,
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
         Simple {
             span: 10..11,
@@ -115,7 +117,9 @@ expression: "parse(\"$command {\")"
                 ),
             },
             found: None,
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
         Simple {
             span: 10..11,
@@ -128,7 +132,9 @@ expression: "parse(\"$command {\")"
                 ),
             },
             found: None,
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

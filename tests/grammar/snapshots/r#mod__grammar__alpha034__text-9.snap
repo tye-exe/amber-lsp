@@ -39,7 +39,9 @@ expression: "parse(r#\"\"\\\"#)"
                     "\\",
                 ),
             ),
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

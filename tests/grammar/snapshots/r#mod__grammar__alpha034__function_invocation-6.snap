@@ -99,7 +99,9 @@ expression: "parse(\"func(,)\")"
                     ",",
                 ),
             ),
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

@@ -45,7 +45,9 @@ expression: "parse(r#\"\"\\\"\"#)"
                 ),
             },
             found: None,
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

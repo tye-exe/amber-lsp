@@ -1,6 +1,6 @@
-use std::fs;
-
 use chumsky::error::Simple;
+use clap::builder::PossibleValue;
+use clap::ValueEnum;
 use dashmap::DashMap;
 use ropey::Rope;
 use serde_json::Value;
@@ -8,21 +8,38 @@ use tower_lsp::jsonrpc::{Error, Result};
 use tower_lsp::lsp_types::*;
 use tower_lsp::{Client, LanguageServer};
 
-use crate::grammar::alpha034::symbol_table::analyze_global_stmnt;
-use crate::paths::{FileId, PathInterner};
-use crate::{
-    grammar::{
-        alpha034::{semantic_tokens::LEGEND_TYPE, AmberCompiler},
-        Grammar, LSPAnalysis, ParserResponse, SpannedSemanticToken,
-    },
-    SymbolTable,
+use crate::fs::{LocalFs, FS};
+use crate::grammar::{
+    alpha034::{semantic_tokens::LEGEND_TYPE, AmberCompiler},
+    Grammar, LSPAnalysis, ParserResponse, SpannedSemanticToken,
 };
+use crate::paths::{FileId, PathInterner};
+use crate::symbol_table::alpha034::global::analyze_global_stmnt;
+use crate::symbol_table::SymbolTable;
 
-use std::io::Write;
+#[derive(Clone, Debug)]
+pub enum AmberVersion {
+    Auto,
+    Alpha034,
+}
+
+impl ValueEnum for AmberVersion {
+    fn value_variants<'a>() -> &'a [AmberVersion] {
+        &[AmberVersion::Auto, AmberVersion::Alpha034]
+    }
+
+    fn to_possible_value(&self) -> Option<PossibleValue> {
+        match self {
+            AmberVersion::Auto => Some(PossibleValue::new("auto")),
+            AmberVersion::Alpha034 => Some(PossibleValue::new("0.3.4-alpha")),
+        }
+    }
+}
 
 pub struct Backend {
     pub client: Client,
     pub paths: PathInterner,
+    pub fs: Box<dyn FS>,
     /// A map from document URI to the parsed AST.
     pub ast_map: DashMap<FileId, Grammar>,
     /// A map from document URI to the parse errors.
@@ -35,19 +52,32 @@ pub struct Backend {
     pub symbol_table: DashMap<FileId, SymbolTable>,
     /// The LSP analysis implementation.
     pub lsp_analysis: Box<dyn LSPAnalysis>,
+    pub token_types: Box<[SemanticTokenType]>,
 }
 
 impl Backend {
-    pub fn new(client: Client) -> Self {
+    pub fn new(client: Client, amber_version: AmberVersion, fs: Option<Box<dyn FS>>) -> Self {
+        let (lsp_analysis, token_types) = match amber_version {
+            _ => (Box::new(AmberCompiler::new()), Box::new(LEGEND_TYPE)),
+        };
+
+        let fs = if let Some(fs) = fs {
+            fs
+        } else {
+            Box::new(LocalFs::new())
+        };
+
         Self {
             client,
             paths: PathInterner::default(),
+            fs,
             ast_map: DashMap::new(),
             errors: DashMap::new(),
             document_map: DashMap::new(),
             semantic_token_map: DashMap::new(),
             symbol_table: DashMap::new(),
-            lsp_analysis: Box::new(AmberCompiler::new()),
+            lsp_analysis,
+            token_types,
         }
     }
 
@@ -63,26 +93,16 @@ impl Backend {
             return Ok(file_id);
         }
 
-        let text = match fs::read_to_string(uri.to_file_path().unwrap()) {
+        let text = match self.fs.read(&uri.to_file_path().unwrap().to_string_lossy()) {
             Ok(text) => Rope::from_str(&text),
             Err(_) => {
                 return Err(Error::internal_error());
             }
         };
 
-        let mut log_file = fs::OpenOptions::new()
-            .create(true)
-            .append(true)
-            .open("logs")
-            .unwrap();
-
-        writeln!(&mut log_file, "uri: {}", uri).unwrap();
-
         let file_id = self.paths.insert(uri.clone());
 
         self.document_map.insert(file_id, (text, 0));
-
-        writeln!(&mut log_file, "document_map: {:?}", self.document_map).unwrap();
 
         self.analize_document(&file_id);
 
@@ -203,7 +223,7 @@ impl LanguageServer for Backend {
                             semantic_tokens_options: SemanticTokensOptions {
                                 work_done_progress_options: WorkDoneProgressOptions::default(),
                                 legend: SemanticTokensLegend {
-                                    token_types: LEGEND_TYPE.into(),
+                                    token_types: self.token_types.to_vec(),
                                     token_modifiers: vec![].into(),
                                 },
                                 range: Some(true),
@@ -222,6 +242,23 @@ impl LanguageServer for Backend {
     }
 
     async fn initialized(&self, _: InitializedParams) {
+        let options = serde_json::to_value(DidChangeWatchedFilesRegistrationOptions {
+            watchers: vec![FileSystemWatcher {
+                glob_pattern: GlobPattern::String("**/*.ab".to_string()),
+                kind: None, // Default is 7 - Create | Change | Delete
+            }],
+        })
+        .unwrap();
+
+        let _ = self
+            .client
+            .register_capability(vec![Registration {
+                id: "did_change_watched_files".to_string(),
+                method: "workspace/didChangeWatchedFiles".to_string(),
+                register_options: Some(options),
+            }])
+            .await;
+
         self.client
             .log_message(MessageType::INFO, "server initialized!")
             .await;
@@ -348,6 +385,10 @@ impl LanguageServer for Backend {
             .await;
     }
 
+    async fn did_change_watched_files(&self, _: DidChangeWatchedFilesParams) {
+        // TODO: Invalidate the file and re-analyze dependencies
+    }
+
     async fn did_close(&self, _: DidCloseTextDocumentParams) {
         self.client
             .log_message(MessageType::INFO, "document closed!")
@@ -400,33 +441,6 @@ impl LanguageServer for Backend {
                 let first = rope.try_line_to_char(line as usize).ok()? as u32;
                 // Get the start position of the token relative to the line
                 let start = rope.try_byte_to_char(span.start).ok()? as u32 - first;
-
-                if line < pre_line {
-                    fs::write(
-                        "semantic_tokens_log",
-                        format!(
-                            "issue: {:?}, (line, first): {:?}, tokens: {:?}",
-                            (token, span),
-                            (line, first),
-                            semantic_tokens,
-                        ),
-                    )
-                    .unwrap();
-                    // fs::write(
-                    //     "semantic_tokens_log",
-                    //     format!(
-                    //         "line: {:?}, pre_line: {:?}, token: {:?}, span: {:?}",
-                    //         line, pre_line, token, span
-                    //     ),
-                    // )
-                    // .unwrap();
-                    // self.client
-                    //     .log_message(
-                    //         MessageType::LOG,
-                    //         format!("line: {:?}, pre_line: {:?}", line, pre_line),
-                    //     )
-                    //     .await;
-                }
 
                 // Calculate the delta line and delta start
                 let delta_line = line - pre_line;
@@ -671,12 +685,6 @@ impl LanguageServer for Backend {
     async fn did_change_workspace_folders(&self, _: DidChangeWorkspaceFoldersParams) {
         self.client
             .log_message(MessageType::INFO, "workspace folders changed!")
-            .await;
-    }
-
-    async fn did_change_watched_files(&self, _: DidChangeWatchedFilesParams) {
-        self.client
-            .log_message(MessageType::INFO, "watched files have changed!")
             .await;
     }
 

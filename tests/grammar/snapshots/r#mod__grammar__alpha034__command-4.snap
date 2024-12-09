@@ -49,7 +49,9 @@ expression: "parse(\"$command -$\")"
                 ),
             },
             found: None,
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

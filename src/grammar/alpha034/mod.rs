@@ -12,8 +12,6 @@ pub mod lexer;
 pub mod parser;
 pub mod semantic_tokens;
 pub mod statements;
-pub mod jump_definition;
-pub mod symbol_table;
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum InterpolatedText {

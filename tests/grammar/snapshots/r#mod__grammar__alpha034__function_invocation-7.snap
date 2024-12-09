@@ -63,7 +63,9 @@ expression: "parse(\"func(1 2\")"
                     "2",
                 ),
             ),
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
         Simple {
             span: 8..9,
@@ -76,7 +78,9 @@ expression: "parse(\"func(1 2\")"
                 ),
             },
             found: None,
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

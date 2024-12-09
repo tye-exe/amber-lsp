@@ -54,7 +54,9 @@ expression: "parse(r#\"\"{unclosed\"\"#)"
                     "\"",
                 ),
             ),
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

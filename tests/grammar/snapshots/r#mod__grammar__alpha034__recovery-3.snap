@@ -1,109 +1,146 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(r#\"\n        fun foo(a) {\n\n            return \"echo \\\"{5 + 5}\\\"\";\n        }\n\n        unsafe {\n    \"#)"
+expression: "parse(r#\"\n        import {}\n\n        fun foo(a) {\n\n            return \"echo \\\"{5 + 5}\\\"\";\n        }\n\n        unsafe {\n    \"#)"
 ---
 (
     Some(
         [
             (
-                FunctionDefinition(
+                Import(
                     (
                         false,
-                        9..12,
+                        9..15,
                     ),
                     (
-                        "fun",
-                        9..12,
+                        "import",
+                        9..15,
                     ),
                     (
-                        "foo",
-                        13..16,
-                    ),
-                    [
-                        (
-                            Generic(
-                                (
-                                    "a",
-                                    17..18,
-                                ),
-                            ),
-                            17..18,
+                        ImportSpecific(
+                            [],
                         ),
-                    ],
-                    None,
-                    [
-                        (
-                            Return(
-                                Some(
+                        16..18,
+                    ),
+                    (
+                        "from",
+                        28..31,
+                    ),
+                    (
+                        "",
+                        32..35,
+                    ),
+                ),
+                9..35,
+            ),
+            (
+                Statement(
+                    (
+                        Expression(
+                            (
+                                Parentheses(
                                     (
-                                        Text(
-                                            [
-                                                (
-                                                    Text(
-                                                        (
-                                                            "echo",
-                                                            43..47,
-                                                        ),
-                                                    ),
-                                                    43..47,
-                                                ),
-                                                (
-                                                    Escape(
-                                                        (
-                                                            "\"",
-                                                            48..50,
-                                                        ),
-                                                    ),
-                                                    48..50,
-                                                ),
-                                                (
-                                                    Expression(
-                                                        (
-                                                            Add(
-                                                                (
-                                                                    Number(
-                                                                        (
-                                                                            5.0,
-                                                                            51..52,
-                                                                        ),
-                                                                    ),
-                                                                    51..52,
-                                                                ),
-                                                                (
-                                                                    Number(
-                                                                        (
-                                                                            5.0,
-                                                                            55..56,
-                                                                        ),
-                                                                    ),
-                                                                    55..56,
-                                                                ),
-                                                            ),
-                                                            51..56,
-                                                        ),
-                                                    ),
-                                                    50..57,
-                                                ),
-                                                (
-                                                    Escape(
-                                                        (
-                                                            "\"",
-                                                            57..59,
-                                                        ),
-                                                    ),
-                                                    57..59,
-                                                ),
-                                            ],
+                                        Var(
+                                            (
+                                                "a",
+                                                36..37,
+                                            ),
                                         ),
-                                        42..60,
+                                        36..37,
                                     ),
                                 ),
+                                35..38,
                             ),
-                            35..61,
                         ),
-                    ],
+                        35..38,
+                    ),
                 ),
-                9..71,
+                35..38,
+            ),
+            (
+                Statement(
+                    (
+                        Block(
+                            (
+                                Block(
+                                    [
+                                        (
+                                            Return(
+                                                Some(
+                                                    (
+                                                        Text(
+                                                            [
+                                                                (
+                                                                    Text(
+                                                                        (
+                                                                            "echo",
+                                                                            62..66,
+                                                                        ),
+                                                                    ),
+                                                                    62..66,
+                                                                ),
+                                                                (
+                                                                    Escape(
+                                                                        (
+                                                                            "\"",
+                                                                            67..69,
+                                                                        ),
+                                                                    ),
+                                                                    67..69,
+                                                                ),
+                                                                (
+                                                                    Expression(
+                                                                        (
+                                                                            Add(
+                                                                                (
+                                                                                    Number(
+                                                                                        (
+                                                                                            5.0,
+                                                                                            70..71,
+                                                                                        ),
+                                                                                    ),
+                                                                                    70..71,
+                                                                                ),
+                                                                                (
+                                                                                    Number(
+                                                                                        (
+                                                                                            5.0,
+                                                                                            74..75,
+                                                                                        ),
+                                                                                    ),
+                                                                                    74..75,
+                                                                                ),
+                                                                            ),
+                                                                            70..75,
+                                                                        ),
+                                                                    ),
+                                                                    69..76,
+                                                                ),
+                                                                (
+                                                                    Escape(
+                                                                        (
+                                                                            "\"",
+                                                                            76..78,
+                                                                        ),
+                                                                    ),
+                                                                    76..78,
+                                                                ),
+                                                            ],
+                                                        ),
+                                                        61..79,
+                                                    ),
+                                                ),
+                                            ),
+                                            54..80,
+                                        ),
+                                    ],
+                                ),
+                                39..90,
+                            ),
+                        ),
+                        39..90,
+                    ),
+                ),
+                39..90,
             ),
             (
                 Statement(
@@ -111,13 +148,13 @@ expression: "parse(r#\"\n        fun foo(a) {\n\n            return \"echo \\\"{
                         CommandModifier(
                             (
                                 Unsafe,
-                                81..87,
+                                100..106,
                             ),
                         ),
-                        81..87,
+                        100..106,
                     ),
                 ),
-                81..87,
+                100..106,
             ),
             (
                 Statement(
@@ -127,19 +164,53 @@ expression: "parse(r#\"\n        fun foo(a) {\n\n            return \"echo \\\"{
                                 Block(
                                     [],
                                 ),
-                                88..89,
+                                107..108,
                             ),
                         ),
-                        88..89,
+                        107..108,
                     ),
                 ),
-                88..89,
+                107..108,
             ),
         ],
     ),
     [
         Simple {
-            span: 94..95,
+            span: 28..31,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "from",
+                    ),
+                ),
+            },
+            found: Some(
+                Token(
+                    "fun",
+                ),
+            ),
+            label: None,
+        },
+        Simple {
+            span: 32..35,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        "\"",
+                    ),
+                ),
+            },
+            found: Some(
+                Token(
+                    "foo",
+                ),
+            ),
+            label: None,
+        },
+        Simple {
+            span: 113..114,
             reason: Unexpected,
             expected: {
                 Some(

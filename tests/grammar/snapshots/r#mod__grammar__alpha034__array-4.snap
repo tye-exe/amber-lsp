@@ -35,7 +35,9 @@ expression: "parse(\"[\")"
                 ),
             },
             found: None,
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

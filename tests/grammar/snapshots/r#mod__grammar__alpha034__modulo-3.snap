@@ -111,7 +111,9 @@ expression: "parse(\"1 % 2 %\")"
                 ),
             },
             found: None,
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

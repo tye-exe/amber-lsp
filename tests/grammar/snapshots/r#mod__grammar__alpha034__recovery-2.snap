@@ -134,7 +134,9 @@ expression: "parse(\"\n    5 + 5 +;\n    echo 10\")"
                     ";",
                 ),
             ),
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

@@ -90,7 +90,9 @@ expression: "parse(\"$command {unclosed interpolation$ let x = 10\")"
                     "interpolation",
                 ),
             ),
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

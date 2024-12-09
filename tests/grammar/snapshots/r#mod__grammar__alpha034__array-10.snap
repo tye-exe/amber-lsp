@@ -71,7 +71,9 @@ expression: "parse(\"[1, 2 3 let\")"
                     "3",
                 ),
             ),
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
         Simple {
             span: 8..11,
@@ -88,7 +90,9 @@ expression: "parse(\"[1, 2 3 let\")"
                     "let",
                 ),
             ),
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
         Simple {
             span: 8..11,
@@ -155,7 +159,9 @@ expression: "parse(\"[1, 2 3 let\")"
                     "let",
                 ),
             ),
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
         Simple {
             span: 11..12,
@@ -168,7 +174,9 @@ expression: "parse(\"[1, 2 3 let\")"
                 ),
             },
             found: None,
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

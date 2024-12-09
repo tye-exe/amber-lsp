@@ -50,7 +50,9 @@ expression: "parse(\"func(1\")"
                 ),
             },
             found: None,
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

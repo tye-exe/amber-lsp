@@ -1,4 +1,4 @@
-use std::{fs, ops::Range};
+use std::ops::Range;
 
 use tower_lsp::lsp_types::SemanticTokenType;
 
@@ -26,7 +26,6 @@ fn hash_semantic_token_type(token_type: SemanticTokenType) -> usize {
 pub fn semantic_tokens_from_ast(
     ast: &Option<Vec<Spanned<GlobalStatement>>>,
 ) -> Vec<SpannedSemanticToken> {
-    fs::write("semantic_tokens_from_ast.txt", format!("{:?}", ast)).unwrap();
     ast.as_ref().map_or(vec![], |ast| {
         let mut tokens = vec![];
 

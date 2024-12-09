@@ -67,7 +67,9 @@ expression: "parse(\"func(1 2 let\")"
                     "2",
                 ),
             ),
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
         Simple {
             span: 9..12,
@@ -84,7 +86,9 @@ expression: "parse(\"func(1 2 let\")"
                     "let",
                 ),
             ),
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
         Simple {
             span: 9..12,
@@ -151,7 +155,9 @@ expression: "parse(\"func(1 2 let\")"
                     "let",
                 ),
             ),
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
         Simple {
             span: 12..13,
@@ -164,7 +170,9 @@ expression: "parse(\"func(1 2 let\")"
                 ),
             },
             found: None,
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

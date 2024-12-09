@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"fun foo(abc:  {\n        echo 10\n    }\")"
+expression: "parse(\"fun foo(abc! {\n        echo 10\n    }\")"
 ---
 (
     Some(
@@ -42,17 +42,17 @@ expression: "parse(\"fun foo(abc:  {\n        echo 10\n    }\")"
                                     Number(
                                         (
                                             10.0,
-                                            29..31,
+                                            28..30,
                                         ),
                                     ),
-                                    29..31,
+                                    28..30,
                                 ),
                             ),
-                            24..31,
+                            23..30,
                         ),
                     ],
                 ),
-                0..37,
+                0..36,
             ),
         ],
     ),
@@ -69,7 +69,7 @@ expression: "parse(\"fun foo(abc:  {\n        echo 10\n    }\")"
             },
             found: Some(
                 Token(
-                    ":",
+                    "!",
                 ),
             ),
             label: None,
@@ -84,7 +84,7 @@ expression: "parse(\"fun foo(abc:  {\n        echo 10\n    }\")"
             label: None,
         },
         Simple {
-            span: 14..15,
+            span: 13..14,
             reason: Unexpected,
             expected: {
                 Some(

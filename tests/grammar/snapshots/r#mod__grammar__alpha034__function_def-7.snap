@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"fun foo {\n        echo 10\n    }\")"
+expression: "parse(\"fun\")"
 ---
 (
     Some(
@@ -16,35 +16,29 @@ expression: "parse(\"fun foo {\n        echo 10\n    }\")"
                         0..3,
                     ),
                     (
-                        "foo",
-                        4..7,
+                        "",
+                        3..4,
                     ),
                     [],
                     None,
-                    [
-                        (
-                            Echo(
-                                (
-                                    Number(
-                                        (
-                                            10.0,
-                                            23..25,
-                                        ),
-                                    ),
-                                    23..25,
-                                ),
-                            ),
-                            18..25,
-                        ),
-                    ],
+                    [],
                 ),
-                0..31,
+                0..3,
             ),
         ],
     ),
     [
         Simple {
-            span: 8..9,
+            span: 3..4,
+            reason: Custom(
+                "Expected function name",
+            ),
+            expected: {},
+            found: None,
+            label: None,
+        },
+        Simple {
+            span: 3..4,
             reason: Unexpected,
             expected: {
                 Some(
@@ -53,11 +47,25 @@ expression: "parse(\"fun foo {\n        echo 10\n    }\")"
                     ),
                 ),
             },
-            found: Some(
-                Token(
-                    "{",
+            found: None,
+            label: None,
+        },
+        Simple {
+            span: 3..4,
+            reason: Unexpected,
+            expected: {
+                Some(
+                    Token(
+                        ":",
+                    ),
                 ),
-            ),
+                Some(
+                    Token(
+                        "{",
+                    ),
+                ),
+            },
+            found: None,
             label: None,
         },
     ],

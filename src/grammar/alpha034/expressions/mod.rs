@@ -21,5 +21,5 @@ pub fn parse_expr(
         |expr: Recursive<Token, Spanned<Expression>, Simple<Token>>| {
             ternary::ternary_parser(stmnts, expr)
         },
-    )
+    ).labelled("expression")
 }

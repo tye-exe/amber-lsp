@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"fun foo(abc: !WrongType {\n        echo 10\n    }\")"
+expression: "parse(\"fun foo(abc:  {\n        echo 10\n    }\")"
 ---
 (
     Some(
@@ -33,19 +33,6 @@ expression: "parse(\"fun foo(abc: !WrongType {\n        echo 10\n    }\")"
                             Error,
                             11..12,
                         ),
-                        (
-                            Error,
-                            13..14,
-                        ),
-                        (
-                            Generic(
-                                (
-                                    "WrongType",
-                                    14..23,
-                                ),
-                            ),
-                            14..23,
-                        ),
                     ],
                     None,
                     [
@@ -55,17 +42,17 @@ expression: "parse(\"fun foo(abc: !WrongType {\n        echo 10\n    }\")"
                                     Number(
                                         (
                                             10.0,
-                                            39..41,
+                                            29..31,
                                         ),
                                     ),
-                                    39..41,
+                                    29..31,
                                 ),
                             ),
-                            34..41,
+                            24..31,
                         ),
                     ],
                 ),
-                0..47,
+                0..37,
             ),
         ],
     ),
@@ -97,50 +84,7 @@ expression: "parse(\"fun foo(abc: !WrongType {\n        echo 10\n    }\")"
             label: None,
         },
         Simple {
-            span: 13..14,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        ",",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "!",
-                ),
-            ),
-            label: None,
-        },
-        Simple {
-            span: 13..14,
-            reason: Custom(
-                "identifier must start with a letter or an underscore",
-            ),
-            expected: {},
-            found: None,
-            label: None,
-        },
-        Simple {
-            span: 14..23,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        ",",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "WrongType",
-                ),
-            ),
-            label: None,
-        },
-        Simple {
-            span: 24..25,
+            span: 14..15,
             reason: Unexpected,
             expected: {
                 Some(

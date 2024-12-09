@@ -56,7 +56,9 @@ expression: "parse(\"true then 1\")"
                 ),
             },
             found: None,
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
         Simple {
             span: 11..12,
@@ -119,7 +121,9 @@ expression: "parse(\"true then 1\")"
                 ),
             },
             found: None,
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

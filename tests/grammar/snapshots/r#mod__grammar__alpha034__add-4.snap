@@ -124,7 +124,9 @@ expression: "parse(\"\n        1 +\n        let x = 10\n    \")"
                     "let",
                 ),
             ),
-            label: None,
+            label: Some(
+                "expression",
+            ),
         },
     ],
 )

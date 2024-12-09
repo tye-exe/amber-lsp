@@ -40,7 +40,8 @@ pub fn command_parser<'a>(
             just(T!['}']).recover_with(skip_parser(
                 none_of([T!["}"], T!["$"]])
                     .repeated()
-                    .then(just(T!['}']).or_not())
+                    .then(just(T!['}']))
+                    .or_not()
                     .map(|_| T!['}']),
             )),
         )
