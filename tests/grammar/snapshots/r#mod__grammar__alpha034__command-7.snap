@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"$command {unclosed interpolation$ let x = 10\")"
+expression: "parse(&tokenize(\"$command {unclosed interpolation$ let x = 10\"))"
 ---
 (
     Some(
@@ -75,24 +75,6 @@ expression: "parse(\"$command {unclosed interpolation$ let x = 10\")"
         ],
     ),
     [
-        Simple {
-            span: 19..32,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "}",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "interpolation",
-                ),
-            ),
-            label: Some(
-                "expression",
-            ),
-        },
+        found "interpolation" at 19..32 expected '"("', '";"', '"as"', '"is"', '"*"', '"/"', '"%"', '"+"', '"-"', '">="', '">"', '"<="', '"<"', '"=="', '"!="', '"and"', '"or"', '".."', '"then"', or '"}"',
     ],
 )

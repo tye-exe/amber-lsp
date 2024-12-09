@@ -30,6 +30,7 @@ pub fn statement_parser<'a>() -> impl AmberParser<'a, Spanned<Statement>> {
             parse_expr(stmnt).map_with(|expr, e| (Statement::Expression(Box::new(expr)), e.span())),
         ))
         .boxed()
+        .labelled("statement")
     })
     .boxed()
 }

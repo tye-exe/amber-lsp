@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"func(1\")"
+expression: "parse(&tokenize(\"func(1\"))"
 ---
 (
     Some(
@@ -39,20 +39,6 @@ expression: "parse(\"func(1\")"
         ],
     ),
     [
-        Simple {
-            span: 6..7,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        ")",
-                    ),
-                ),
-            },
-            found: None,
-            label: Some(
-                "expression",
-            ),
-        },
+        found end of input at 0..6 expected '"."', '";"', '"as"', '"is"', '"*"', '"/"', '"%"', '"+"', '"-"', '">="', '">"', '"<="', '"<"', '"=="', '"!="', '"and"', '"or"', '".."', '"then"', '","', or '")"',
     ],
 )

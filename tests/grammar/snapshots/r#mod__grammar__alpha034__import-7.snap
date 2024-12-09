@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"import  \\\"unclosed\")"
+expression: "parse(&tokenize(\"import  \\\"unclosed\"))"
 ---
 (
     Some(
@@ -17,11 +17,11 @@ expression: "parse(\"import  \\\"unclosed\")"
                     ),
                     (
                         ImportAll,
-                        8..9,
+                        8..6,
                     ),
                     (
                         "from",
-                        8..9,
+                        8..6,
                     ),
                     (
                         "unclosed",
@@ -33,57 +33,8 @@ expression: "parse(\"import  \\\"unclosed\")"
         ],
     ),
     [
-        Simple {
-            span: 8..9,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "*",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "{",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "\"",
-                ),
-            ),
-            label: None,
-        },
-        Simple {
-            span: 8..9,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "from",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "\"",
-                ),
-            ),
-            label: None,
-        },
-        Simple {
-            span: 17..18,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "\"",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
+        found "\"" at 8..9 expected '"*"', or '"{"',
+        found "\"" at 8..9 expected something else,
+        found end of input at 0..17 expected '"\""',
     ],
 )

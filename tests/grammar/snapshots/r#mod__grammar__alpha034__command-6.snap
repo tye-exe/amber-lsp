@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"$command {unclosed\")"
+expression: "parse(&tokenize(\"$command {unclosed\"))"
 ---
 (
     Some(
@@ -46,35 +46,7 @@ expression: "parse(\"$command {unclosed\")"
         ],
     ),
     [
-        Simple {
-            span: 18..19,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "}",
-                    ),
-                ),
-            },
-            found: None,
-            label: Some(
-                "expression",
-            ),
-        },
-        Simple {
-            span: 18..19,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "$",
-                    ),
-                ),
-            },
-            found: None,
-            label: Some(
-                "expression",
-            ),
-        },
+        found end of input at 0..18 expected '"("', '";"', '"as"', '"is"', '"*"', '"/"', '"%"', '"+"', '"-"', '">="', '">"', '"<="', '"<"', '"=="', '"!="', '"and"', '"or"', '".."', '"then"', or '"}"',
+        found end of input at 0..18 expected '"}"', '"\\"', '"-"', '"{"', or '"$"',
     ],
 )

@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"fun\")"
+expression: "parse(&tokenize(\"fun\"))"
 ---
 (
     Some(
@@ -17,7 +17,7 @@ expression: "parse(\"fun\")"
                     ),
                     (
                         "",
-                        3..4,
+                        0..3,
                     ),
                     [],
                     None,
@@ -28,45 +28,8 @@ expression: "parse(\"fun\")"
         ],
     ),
     [
-        Simple {
-            span: 3..4,
-            reason: Custom(
-                "Expected function name",
-            ),
-            expected: {},
-            found: None,
-            label: None,
-        },
-        Simple {
-            span: 3..4,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "(",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
-        Simple {
-            span: 3..4,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        ":",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "{",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
+        Expected function name at 0..3,
+        found end of input at 0..3 expected '"("',
+        found end of input at 0..3 expected '":"', or '"{"',
     ],
 )

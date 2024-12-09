@@ -17,7 +17,5 @@ mod unary;
 pub fn parse_expr<'a>(
     stmnts: impl AmberParser<'a, Spanned<Statement>>,
 ) -> impl AmberParser<'a, Spanned<Expression>> {
-    recursive(move |expr| ternary::ternary_parser(stmnts, expr))
-        .boxed()
-        .labelled("expression")
+    recursive(move |expr| ternary::ternary_parser(stmnts, expr).labelled("expression")).boxed()
 }

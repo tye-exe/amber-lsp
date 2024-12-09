@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"\n    5 + 5 +;\n    echo 10\")"
+expression: "parse(&tokenize(\"\n    5 + 5 +;\n    echo 10\"))"
 ---
 (
     Some(
@@ -69,74 +69,6 @@ expression: "parse(\"\n    5 + 5 +;\n    echo 10\")"
         ],
     ),
     [
-        Simple {
-            span: 12..13,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "true",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "\"",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "not",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "(",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "false",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "nameof",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "[",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "status",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "$",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "-",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "null",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    ";",
-                ),
-            ),
-            label: Some(
-                "expression",
-            ),
-        },
+        multiple errors found at 12..13,
     ],
 )

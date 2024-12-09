@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(r#\"\n        import {}\n\n        fun foo(a) {\n\n            return \"echo \\\"{5 + 5}\\\"\";\n        }\n\n        unsafe {\n    \"#)"
+expression: "parse(&tokenize(r#\"\n        import {}\n\n    \"#))"
 ---
 (
     Some(
@@ -23,204 +23,19 @@ expression: "parse(r#\"\n        import {}\n\n        fun foo(a) {\n\n          
                     ),
                     (
                         "from",
-                        28..31,
+                        9..18,
                     ),
                     (
                         "",
-                        32..35,
+                        9..18,
                     ),
                 ),
-                9..35,
-            ),
-            (
-                Statement(
-                    (
-                        Expression(
-                            (
-                                Parentheses(
-                                    (
-                                        Var(
-                                            (
-                                                "a",
-                                                36..37,
-                                            ),
-                                        ),
-                                        36..37,
-                                    ),
-                                ),
-                                35..38,
-                            ),
-                        ),
-                        35..38,
-                    ),
-                ),
-                35..38,
-            ),
-            (
-                Statement(
-                    (
-                        Block(
-                            (
-                                Block(
-                                    [
-                                        (
-                                            Return(
-                                                Some(
-                                                    (
-                                                        Text(
-                                                            [
-                                                                (
-                                                                    Text(
-                                                                        (
-                                                                            "echo",
-                                                                            62..66,
-                                                                        ),
-                                                                    ),
-                                                                    62..66,
-                                                                ),
-                                                                (
-                                                                    Escape(
-                                                                        (
-                                                                            "\"",
-                                                                            67..69,
-                                                                        ),
-                                                                    ),
-                                                                    67..69,
-                                                                ),
-                                                                (
-                                                                    Expression(
-                                                                        (
-                                                                            Add(
-                                                                                (
-                                                                                    Number(
-                                                                                        (
-                                                                                            5.0,
-                                                                                            70..71,
-                                                                                        ),
-                                                                                    ),
-                                                                                    70..71,
-                                                                                ),
-                                                                                (
-                                                                                    Number(
-                                                                                        (
-                                                                                            5.0,
-                                                                                            74..75,
-                                                                                        ),
-                                                                                    ),
-                                                                                    74..75,
-                                                                                ),
-                                                                            ),
-                                                                            70..75,
-                                                                        ),
-                                                                    ),
-                                                                    69..76,
-                                                                ),
-                                                                (
-                                                                    Escape(
-                                                                        (
-                                                                            "\"",
-                                                                            76..78,
-                                                                        ),
-                                                                    ),
-                                                                    76..78,
-                                                                ),
-                                                            ],
-                                                        ),
-                                                        61..79,
-                                                    ),
-                                                ),
-                                            ),
-                                            54..80,
-                                        ),
-                                    ],
-                                ),
-                                39..90,
-                            ),
-                        ),
-                        39..90,
-                    ),
-                ),
-                39..90,
-            ),
-            (
-                Statement(
-                    (
-                        CommandModifier(
-                            (
-                                Unsafe,
-                                100..106,
-                            ),
-                        ),
-                        100..106,
-                    ),
-                ),
-                100..106,
-            ),
-            (
-                Statement(
-                    (
-                        Block(
-                            (
-                                Block(
-                                    [],
-                                ),
-                                107..108,
-                            ),
-                        ),
-                        107..108,
-                    ),
-                ),
-                107..108,
+                9..18,
             ),
         ],
     ),
     [
-        Simple {
-            span: 28..31,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "from",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "fun",
-                ),
-            ),
-            label: None,
-        },
-        Simple {
-            span: 32..35,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "\"",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "foo",
-                ),
-            ),
-            label: None,
-        },
-        Simple {
-            span: 113..114,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "}",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
+        found end of input at 9..18 expected '"from"',
+        found end of input at 9..18 expected '"\""',
     ],
 )

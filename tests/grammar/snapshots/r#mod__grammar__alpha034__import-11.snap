@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"import { var1 \\\"path\\\"\")"
+expression: "parse(&tokenize(\"import { var1 \\\"path\\\"\"))"
 ---
 (
     Some(
@@ -28,7 +28,7 @@ expression: "parse(\"import { var1 \\\"path\\\"\")"
                     ),
                     (
                         "from",
-                        14..15,
+                        14..13,
                     ),
                     (
                         "path",
@@ -40,39 +40,7 @@ expression: "parse(\"import { var1 \\\"path\\\"\")"
         ],
     ),
     [
-        Simple {
-            span: 14..15,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "}",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "\"",
-                ),
-            ),
-            label: None,
-        },
-        Simple {
-            span: 14..15,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "from",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "\"",
-                ),
-            ),
-            label: None,
-        },
+        found "\"" at 14..15 expected '","', or '"}"',
+        found "\"" at 14..15 expected something else,
     ],
 )

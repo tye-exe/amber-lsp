@@ -222,15 +222,17 @@ fn test_ternary() {
 
 #[test]
 fn test_command() {
-    assert_debug_snapshot!(parse_unwrap(r#"$echo \"Hello, world!\"$"#));
-    assert_debug_snapshot!(parse_unwrap("$echo \"Hello, {name}!\"$"));
-    assert_debug_snapshot!(parse("$command --arg1 -v$"));
-    assert_debug_snapshot!(parse("$command -$"));
-    assert_debug_snapshot!(parse("$command --arg1 -v"));
-    assert_debug_snapshot!(parse("$command {unclosed"));
-    assert_debug_snapshot!(parse("$command {unclosed interpolation$ let x = 10"));
-    assert_debug_snapshot!(parse("$command {"));
-    assert_debug_snapshot!(parse("$command {}$"));
+    assert_debug_snapshot!(parse_unwrap(&tokenize(r#"$echo \"Hello, world!\"$"#)));
+    assert_debug_snapshot!(parse_unwrap(&tokenize("$echo \"Hello, {name}!\"$")));
+    assert_debug_snapshot!(parse(&tokenize("$command --arg1 -v$")));
+    assert_debug_snapshot!(parse(&tokenize("$command -$")));
+    assert_debug_snapshot!(parse(&tokenize("$command --arg1 -v")));
+    assert_debug_snapshot!(parse(&tokenize("$command {unclosed")));
+    assert_debug_snapshot!(parse(&tokenize(
+        "$command {unclosed interpolation$ let x = 10"
+    )));
+    assert_debug_snapshot!(parse(&tokenize("$command {")));
+    assert_debug_snapshot!(parse(&tokenize("$command {}$")));
     // TODO: Issue with Heraclitus lexer. Uncomment when fixed
     // assert_debug_snapshot!(parse(r#"$echo "\$\{source//{pattern}/{replacement}}"$"#));
 }
@@ -346,28 +348,34 @@ fn test_comment() {
 
 #[test]
 fn test_import() {
-    assert_debug_snapshot!(parse_unwrap("import * from \"path/to/module\""));
-    assert_debug_snapshot!(parse_unwrap("import {} from \"path/to/module\""));
-    assert_debug_snapshot!(parse_unwrap("import { var1 } from \"path/to/module\""));
-    assert_debug_snapshot!(parse_unwrap(
+    assert_debug_snapshot!(parse_unwrap(&tokenize("import * from \"path/to/module\"")));
+    assert_debug_snapshot!(parse_unwrap(&tokenize("import {} from \"path/to/module\"")));
+    assert_debug_snapshot!(parse_unwrap(&tokenize(
+        "import { var1 } from \"path/to/module\""
+    )));
+    assert_debug_snapshot!(parse_unwrap(&tokenize(
         "import { var1, var2 } from \"path/to/module\""
-    ));
-    assert_debug_snapshot!(parse("import { var1 var2 from \"unclosed"));
-    assert_debug_snapshot!(parse("import { var1 var2 \"unclosed"));
-    assert_debug_snapshot!(parse("import  \"unclosed"));
-    assert_debug_snapshot!(parse("import"));
-    assert_debug_snapshot!(parse("import {"));
-    assert_debug_snapshot!(parse("import { var1"));
-    assert_debug_snapshot!(parse("import { var1 \"path\""));
+    )));
+    assert_debug_snapshot!(parse(&tokenize("import { var1 var2 from \"unclosed")));
+    assert_debug_snapshot!(parse(&tokenize("import { var1 var2 \"unclosed")));
+    assert_debug_snapshot!(parse(&tokenize("import  \"unclosed")));
+    assert_debug_snapshot!(parse(&tokenize("import")));
+    assert_debug_snapshot!(parse(&tokenize("import {")));
+    assert_debug_snapshot!(parse(&tokenize("import { var1")));
+    assert_debug_snapshot!(parse(&tokenize("import { var1 \"path\"")));
 }
 
 #[test]
 fn test_function_def() {
-    assert_debug_snapshot!(parse_unwrap("fun func() {}"));
-    assert_debug_snapshot!(parse_unwrap("fun func(a) {}"));
-    assert_debug_snapshot!(parse_unwrap("fun func(a : Num) {}"));
-    assert_debug_snapshot!(parse_unwrap("fun func(a: Num, b, c: Bool): Num {}"));
-    assert_debug_snapshot!(parse_unwrap("fun func(a: Num, b, c: Bool): [Num] {}"));
+    assert_debug_snapshot!(parse_unwrap(&tokenize("fun func() {}")));
+    assert_debug_snapshot!(parse_unwrap(&tokenize("fun func(a) {}")));
+    assert_debug_snapshot!(parse_unwrap(&tokenize("fun func(a : Num) {}")));
+    assert_debug_snapshot!(parse_unwrap(&tokenize(
+        "fun func(a: Num, b, c: Bool): Num {}"
+    )));
+    assert_debug_snapshot!(parse_unwrap(&tokenize(
+        "fun func(a: Num, b, c: Bool): [Num] {}"
+    )));
     assert_debug_snapshot!(parse_unwrap(&tokenize(
         "
         fun func(a: Num, b: Text, c: Bool): Num {
@@ -375,28 +383,29 @@ fn test_function_def() {
 
             return 10
         }
-    ")));
-    assert_debug_snapshot!(parse("fun"));
-    assert_debug_snapshot!(parse(
+    "
+    )));
+    assert_debug_snapshot!(parse(&tokenize("fun")));
+    assert_debug_snapshot!(parse(&tokenize(
         "fun foo {
         echo 10
     }"
-    ));
-    assert_debug_snapshot!(parse(
+    )));
+    assert_debug_snapshot!(parse(&tokenize(
         "fun foo(abc! {
         echo 10
     }"
-    ));
-    assert_debug_snapshot!(parse(
+    )));
+    assert_debug_snapshot!(parse(&tokenize(
         "fun foo(abc:  {
         echo 10
     }"
-    ));
-    assert_debug_snapshot!(parse(
+    )));
+    assert_debug_snapshot!(parse(&tokenize(
         "fun foo(abc: !WrongType {
         echo 10
     }"
-    ));
+    )));
 }
 
 #[test]
@@ -561,11 +570,12 @@ fn test_recovery() {
     5 + 5 +;
     echo 10"
     )));
-    assert_debug_snapshot!(parse(
+    assert_debug_snapshot!(parse(&tokenize(
         r#"
         import {}
 
-    "#));
+    "#
+    )));
     assert_debug_snapshot!(parse(&tokenize(
         r#"
         fun foo(a) {
@@ -577,7 +587,7 @@ fn test_recovery() {
     "#
     )));
 
-    assert_debug_snapshot!(parse(
+    assert_debug_snapshot!(parse(&tokenize(
         r#"
         // comments
         // comments
@@ -605,7 +615,7 @@ fn test_recovery() {
             }
         }
     "#
-    ));
+    )));
 }
 
 #[test]

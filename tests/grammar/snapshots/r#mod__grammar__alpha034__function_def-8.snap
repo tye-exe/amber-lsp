@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"fun foo {\n        echo 10\n    }\")"
+expression: "parse(&tokenize(\"fun foo {\n        echo 10\n    }\"))"
 ---
 (
     Some(
@@ -43,22 +43,6 @@ expression: "parse(\"fun foo {\n        echo 10\n    }\")"
         ],
     ),
     [
-        Simple {
-            span: 8..9,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "(",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "{",
-                ),
-            ),
-            label: None,
-        },
+        found "{" at 8..9 expected '"("',
     ],
 )

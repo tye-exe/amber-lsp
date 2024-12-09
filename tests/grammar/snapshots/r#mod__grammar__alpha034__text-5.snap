@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(r#\"\"{unclosed\"\"#)"
+expression: "parse(&tokenize(r#\"\"{unclosed\"\"#))"
 ---
 (
     Some(
@@ -39,24 +39,6 @@ expression: "parse(r#\"\"{unclosed\"\"#)"
         ],
     ),
     [
-        Simple {
-            span: 10..11,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "}",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "\"",
-                ),
-            ),
-            label: Some(
-                "expression",
-            ),
-        },
+        found "\"" at 10..11 expected '"("', '";"', '"as"', '"is"', '"*"', '"/"', '"%"', '"+"', '"-"', '">="', '">"', '"<="', '"<"', '"=="', '"!="', '"and"', '"or"', '".."', '"then"', or '"}"',
     ],
 )

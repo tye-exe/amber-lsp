@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"true and false and\")"
+expression: "parse(&tokenize(\"true and false and\"))"
 ---
 (
     Some(
@@ -36,10 +36,10 @@ expression: "parse(\"true and false and\")"
                                     ),
                                     (
                                         Error,
-                                        18..19,
+                                        0..18,
                                     ),
                                 ),
-                                0..19,
+                                0..18,
                             ),
                         ),
                         0..18,
@@ -50,70 +50,6 @@ expression: "parse(\"true and false and\")"
         ],
     ),
     [
-        Simple {
-            span: 18..19,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "true",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "\"",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "not",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "(",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "false",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "nameof",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "[",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "status",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "$",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "-",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "null",
-                    ),
-                ),
-            },
-            found: None,
-            label: Some(
-                "expression",
-            ),
-        },
+        found end of input at 0..18 expected '"-"', '"not"', '"nameof"', '"true"', '"false"', '"null"', '"status"', '"\""', '"["', '"$"', or '"("',
     ],
 )

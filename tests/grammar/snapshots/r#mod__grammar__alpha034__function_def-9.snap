@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"fun foo(abc! {\n        echo 10\n    }\")"
+expression: "parse(&tokenize(\"fun foo(abc! {\n        echo 10\n    }\"))"
 ---
 (
     Some(
@@ -57,48 +57,8 @@ expression: "parse(\"fun foo(abc! {\n        echo 10\n    }\")"
         ],
     ),
     [
-        Simple {
-            span: 11..12,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        ",",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "!",
-                ),
-            ),
-            label: None,
-        },
-        Simple {
-            span: 11..12,
-            reason: Custom(
-                "identifier must start with a letter or an underscore",
-            ),
-            expected: {},
-            found: None,
-            label: None,
-        },
-        Simple {
-            span: 13..14,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        ")",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "{",
-                ),
-            ),
-            label: None,
-        },
+        found "!" at 11..12 expected '":"', or '","',
+        multiple errors found at 11..12,
+        found "{" at 13..14 expected '","', or '")"',
     ],
 )
