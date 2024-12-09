@@ -1,5 +1,5 @@
 use crate::{
-    grammar::alpha034::{lexer::Token, Spanned, Statement},
+    grammar::alpha034::{lexer::Token, AmberParser, Spanned, Statement},
     T,
 };
 
@@ -18,18 +18,21 @@ mod text;
 mod var;
 
 pub fn atom_parser<'a>(
-    stmnts: Recursive<'a, Token, Spanned<Statement>, Simple<Token>>,
-    expr: Recursive<'a, Token, Spanned<Expression>, Simple<Token>>,
-) -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> + 'a {
-    bool::bool_parser()
-        .or(null::null_parser())
-        .or(status::status_var_parser())
-        .or(call::function_call_parser(stmnts.clone(), expr.clone()))
-        .or(var::var_parser())
-        .or(text::text_parser(expr.clone()))
-        .or(array::array_parser(expr.clone()))
-        .or(command::command_parser(stmnts, expr.clone()))
-        .or(number::number_parser())
-        .or(parentheses::parentheses_parser(expr))
-        .then_ignore(just(T![';']).or_not())
+    stmnts: impl AmberParser<'a, Spanned<Statement>>,
+    expr: impl AmberParser<'a, Spanned<Expression>>,
+) -> impl AmberParser<'a, Spanned<Expression>> {
+    choice((
+        bool::bool_parser(),
+        null::null_parser(),
+        status::status_var_parser(),
+        call::function_call_parser(stmnts.clone(), expr.clone()),
+        var::var_parser(),
+        text::text_parser(expr.clone()),
+        array::array_parser(expr.clone()),
+        command::command_parser(stmnts, expr.clone()),
+        number::number_parser(),
+        parentheses::parentheses_parser(expr),
+    ))
+    .then_ignore(just(T![';']).or_not())
+    .boxed()
 }

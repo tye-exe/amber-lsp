@@ -1,6 +1,6 @@
 use dashmap::DashMap;
 use rangemap::RangeInclusiveMap;
-use std::{ops::{Range, RangeInclusive}, path::PathBuf};
+use std::{ops::RangeInclusive, path::PathBuf};
 
 use crate::{backend::Backend, paths::FileId};
 
@@ -67,7 +67,6 @@ pub struct SymbolLocation {
 /// The `symbols` Lapper contains the information about symbols in the document.
 pub struct SymbolTable {
     pub symbols: RangeInclusiveMap<usize, SymbolInfo>,
-    // TODO: Scoped definitions
     pub definitions: DashMap<String, RangeInclusiveMap<usize, SymbolLocation>>,
     pub references: DashMap<String, Vec<SymbolLocation>>,
 }
@@ -141,10 +140,7 @@ pub fn insert_symbol_definition(
         }
     };
 
-    symbol_definitions.insert(
-        definition_scope,
-        definition_location.clone(),
-    );
+    symbol_definitions.insert(definition_scope, definition_location.clone());
 }
 
 pub fn insert_symbol_reference(

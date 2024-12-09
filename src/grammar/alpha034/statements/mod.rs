@@ -1,6 +1,6 @@
 use chumsky::prelude::*;
 
-use super::{expressions::parse_expr, lexer::Token, Spanned, Statement};
+use super::{expressions::parse_expr, AmberParser, Spanned, Statement};
 
 pub mod block;
 pub mod comment;
@@ -13,20 +13,23 @@ pub mod shorthands;
 pub mod var_init;
 pub mod var_set;
 
-pub fn statement_parser() -> impl Parser<Token, Spanned<Statement>, Error = Simple<Token>> {
+pub fn statement_parser<'a>() -> impl AmberParser<'a, Spanned<Statement>> {
     recursive(|stmnt| {
-        comment::comment_parser()
-            .or(var_init::var_init_parser(stmnt.clone()))
-            .or(var_set::var_set_parser(stmnt.clone()))
-            .or(block::block_parser_statement(stmnt.clone()))
-            .or(if_cond::if_chain_parser(stmnt.clone()))
-            .or(if_cond::if_cond_parser(stmnt.clone()))
-            .or(shorthands::shorthand_parser(stmnt.clone()))
-            .or(loops::inf_loop_parser(stmnt.clone()))
-            .or(loops::iter_loop_parser(stmnt.clone()))
-            .or(keywords::keywords_parser(stmnt.clone()))
-            .or(modifiers::modifier_parser())
-            .or(parse_expr(stmnt)
-                .map_with_span(|expr, span| (Statement::Expression(Box::new(expr)), span)))
+        choice((
+            comment::comment_parser(),
+            var_init::var_init_parser(stmnt.clone()),
+            var_set::var_set_parser(stmnt.clone()),
+            block::block_parser_statement(stmnt.clone()),
+            if_cond::if_chain_parser(stmnt.clone()),
+            if_cond::if_cond_parser(stmnt.clone()),
+            shorthands::shorthand_parser(stmnt.clone()),
+            loops::inf_loop_parser(stmnt.clone()),
+            loops::iter_loop_parser(stmnt.clone()),
+            keywords::keywords_parser(stmnt.clone()),
+            modifiers::modifier_parser(),
+            parse_expr(stmnt).map_with(|expr, e| (Statement::Expression(Box::new(expr)), e.span())),
+        ))
+        .boxed()
     })
+    .boxed()
 }

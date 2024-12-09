@@ -1,29 +1,30 @@
 use chumsky::prelude::*;
 
 use crate::{
-    grammar::alpha034::{lexer::Token, parser::ident, Expression, Spanned, Statement},
+    grammar::alpha034::{lexer::Token, parser::ident, AmberParser, Expression, Spanned, Statement},
     T,
 };
 
 use super::unary::unary_parser;
 
 pub fn cast_parser<'a>(
-    stmnts: Recursive<'a, Token, Spanned<Statement>, Simple<Token>>,
-    expr: Recursive<'a, Token, Spanned<Expression>, Simple<Token>>,
-) -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> + 'a {
+    stmnts: impl AmberParser<'a, Spanned<Statement>>,
+    expr: impl AmberParser<'a, Spanned<Expression>>,
+) -> impl AmberParser<'a, Spanned<Expression>> {
     unary_parser(stmnts, expr)
-        .then(
+        .foldl(
             just(T!["as"])
                 .ignore_then(
                     ident("type".to_string())
-                        .recover_with(skip_parser(any().or_not().map(|_| "".to_string())))
-                        .map_with_span(|txt, span| (txt, span)),
+                        .recover_with(via_parser(any().or_not().map(|_| "".to_string())))
+                        .map_with(|txt, e| (txt, e.span())),
                 )
                 .repeated(),
-        )
-        .foldl(|expr, cast| {
-            let span = expr.1.start..cast.1.end;
+            |expr, cast| {
+                let span = SimpleSpan::new(expr.1.start, cast.1.end);
 
-            (Expression::Cast(Box::new(expr), cast), span)
-        })
+                (Expression::Cast(Box::new(expr), cast), span)
+            },
+        )
+        .boxed()
 }

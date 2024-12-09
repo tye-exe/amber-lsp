@@ -1,21 +1,19 @@
-use std::ops::Range;
-
 use chumsky::prelude::*;
 
 use crate::{
-    grammar::alpha034::{lexer::Token, Spanned},
+    grammar::alpha034::{lexer::Token, AmberParser, Spanned},
     T,
 };
 
 use super::Expression;
 
-pub fn number_parser() -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> {
-    let int = filter_map(|span, token: Token| {
+pub fn number_parser<'a>() -> impl AmberParser<'a, Spanned<Expression>> {
+    let int = any().try_map(|token: Token, span| {
         let word = token.to_string();
 
         for char in word.chars() {
             if !char.is_ascii_digit() {
-                return Err(Simple::custom(span, "int must contain only digits"));
+                return Err(Rich::custom(span, "int must contain only digits"));
             }
         }
 
@@ -30,5 +28,6 @@ pub fn number_parser() -> impl Parser<Token, Spanned<Expression>, Error = Simple
         })
         .from_str::<f32>()
         .unwrapped()
-        .map_with_span(|num, span: Range<usize>| (Expression::Number((num, span.clone())), span))
+        .map_with(|num, e| (Expression::Number((num, e.span())), e.span()))
+        .boxed()
 }

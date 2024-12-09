@@ -1,25 +1,26 @@
 use crate::{
-    grammar::alpha034::{lexer::Token, Expression, InterpolatedText, Spanned},
+    grammar::alpha034::{lexer::Token, AmberParser, Expression, InterpolatedText, Spanned},
     T,
 };
 use chumsky::prelude::*;
 
-pub fn text_parser(
-    expr: Recursive<Token, Spanned<Expression>, Simple<Token>>,
-) -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> + '_ {
+pub fn text_parser<'a>(
+    expr: impl AmberParser<'a, Spanned<Expression>>,
+) -> impl AmberParser<'a, Spanned<Expression>> {
     let escaped = just(T!['\\'])
         .ignore_then(any())
-        .map_with_span(|char, span| InterpolatedText::Escape((char.to_string(), span)));
+        .map_with(|char: Token, e| InterpolatedText::Escape((char.to_string(), e.span())))
+        .boxed();
 
     let interpolated = expr
-        .recover_with(skip_parser(
+        .recover_with(via_parser(
             any()
                 .or_not()
-                .map_with_span(|_, span| (Expression::Error, span)),
+                .map_with(|_, e| (Expression::Error, e.span())),
         ))
         .delimited_by(
             just(T!['{']),
-            just(T!['}']).recover_with(skip_parser(
+            just(T!['}']).recover_with(via_parser(
                 none_of(T!["}"])
                     .repeated()
                     .then(just(T!['}']))
@@ -27,19 +28,23 @@ pub fn text_parser(
                     .map(|_| T!['}']),
             )),
         )
-        .map(|expr| InterpolatedText::Expression(Box::new(expr)));
+        .map(|expr| InterpolatedText::Expression(Box::new(expr)))
+        .boxed();
 
     just(T!['"'])
         .ignore_then(
-            filter::<_, _, Simple<Token>>(|c: &Token| {
-                *c != T!['"'] && *c != T!['{'] && *c != T!['}'] && *c != T!['\\']
-            })
-            .map_with_span(|text, span| InterpolatedText::Text((text.to_string(), span)))
-            .or(escaped)
-            .or(interpolated)
-            .map_with_span(|expr, span| (expr, span))
-            .repeated(),
+            choice((
+                any()
+                    .filter(|c: &Token| *c != T!['"'] && *c != T!['{'] && *c != T!['\\'])
+                    .map_with(|text, e| InterpolatedText::Text((text.to_string(), e.span()))),
+                escaped,
+                interpolated,
+            ))
+            .map_with(|expr, e| (expr, e.span()))
+            .repeated()
+            .collect(),
         )
-        .then_ignore(just(T!['"']).recover_with(skip_parser(any().or_not().map(|_| T!['"']))))
-        .map_with_span(|expr, span| (Expression::Text(expr), span))
+        .then_ignore(just(T!['"']).recover_with(via_parser(any().or_not().map(|_| T!['"']))))
+        .map_with(|expr, e| (Expression::Text(expr), e.span()))
+        .boxed()
 }

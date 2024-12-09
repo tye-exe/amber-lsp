@@ -1,31 +1,32 @@
 use chumsky::prelude::*;
 
 use crate::{
-    grammar::alpha034::{lexer::Token, Spanned, Statement},
+    grammar::alpha034::{lexer::Token, AmberParser, Spanned, Statement},
     T,
 };
 
 use super::{and::and_parser, Expression};
 
 pub fn or_parser<'a>(
-    stmnts: Recursive<'a, Token, Spanned<Statement>, Simple<Token>>,
-    expr: Recursive<'a, Token, Spanned<Expression>, Simple<Token>>,
-) -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> + 'a {
+    stmnts: impl AmberParser<'a, Spanned<Statement>>,
+    expr: impl AmberParser<'a, Spanned<Expression>>,
+) -> impl AmberParser<'a, Spanned<Expression>> {
     and_parser(stmnts.clone(), expr.clone())
-        .then(
+        .foldl(
             just(T!["or"])
                 .ignore_then(
-                    and_parser(stmnts, expr).recover_with(skip_parser(
+                    and_parser(stmnts, expr).recover_with(via_parser(
                         any()
                             .or_not()
-                            .map_with_span(|_, span| (Expression::Error, span)),
+                            .map_with(|_, e| (Expression::Error, e.span())),
                     )),
                 )
                 .repeated(),
-        )
-        .foldl(|lhs, rhs| {
-            let span = lhs.1.start..rhs.1.end;
+            |lhs, rhs| {
+                let span = SimpleSpan::new(lhs.1.start, rhs.1.end);
 
-            (Expression::Or(Box::new(lhs), Box::new(rhs)), span)
-        })
+                (Expression::Or(Box::new(lhs), Box::new(rhs)), span)
+            },
+        )
+        .boxed()
 }

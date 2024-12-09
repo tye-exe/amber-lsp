@@ -1,4 +1,3 @@
-use chumsky::error::Simple;
 use clap::builder::PossibleValue;
 use clap::ValueEnum;
 use dashmap::DashMap;
@@ -9,6 +8,7 @@ use tower_lsp::lsp_types::*;
 use tower_lsp::{Client, LanguageServer};
 
 use crate::fs::{LocalFs, FS};
+use crate::grammar::Spanned;
 use crate::grammar::{
     alpha034::{semantic_tokens::LEGEND_TYPE, AmberCompiler},
     Grammar, LSPAnalysis, ParserResponse, SpannedSemanticToken,
@@ -43,7 +43,7 @@ pub struct Backend {
     /// A map from document URI to the parsed AST.
     pub ast_map: DashMap<FileId, Grammar>,
     /// A map from document URI to the parse errors.
-    pub errors: DashMap<FileId, Vec<Simple<String>>>,
+    pub errors: DashMap<FileId, Vec<Spanned<String>>>,
     /// A map from document URI to the document content and version.
     pub document_map: DashMap<FileId, (Rope, i32)>,
     /// A map from document URI to the semantic tokens.
@@ -134,10 +134,7 @@ impl Backend {
 
         let diagnostics = errors
             .iter()
-            .filter_map(|error| {
-                let msg = error.to_string();
-                let span = error.span();
-
+            .filter_map(|(msg, span)| {
                 || -> Option<Diagnostic> {
                     let start_position = self.offset_to_position(span.start, &rope)?;
                     let end_position = self.offset_to_position(span.end, &rope)?;
@@ -160,13 +157,21 @@ impl Backend {
             None => return,
         };
 
+        let tokens = self.lsp_analysis.tokenize(&rope.to_string());
+
         let ParserResponse {
             ast,
             errors,
             semantic_tokens,
-        } = self.lsp_analysis.parse(&rope.to_string());
+        } = self.lsp_analysis.parse(&tokens);
 
-        self.errors.insert(*file_id, errors);
+        self.errors.insert(
+            *file_id,
+            errors
+                .iter()
+                .map(|err| (err.to_string(), *err.span()))
+                .collect(),
+        );
         self.ast_map.insert(*file_id, ast.clone());
         self.semantic_token_map.insert(*file_id, semantic_tokens);
 

@@ -1,13 +1,11 @@
 use crate::{
-    grammar::alpha034::{lexer::Token, Expression, Spanned},
+    grammar::alpha034::{lexer::Token, AmberParser, Expression, Spanned},
     T,
 };
 use chumsky::prelude::*;
-use core::ops::Range;
 
-pub fn bool_parser() -> impl Parser<Token, Spanned<Expression>, Error = Simple<Token>> {
-    just(T!["true"])
-        .to(true)
-        .or(just(T!["false"]).to(false))
-        .map_with_span(|b, span: Range<usize>| (Expression::Boolean((b, span.clone())), span))
+pub fn bool_parser<'a>() -> impl AmberParser<'a, Spanned<Expression>> {
+    choice((just(T!["true"]).to(true), just(T!["false"]).to(false)))
+        .map_with(|b, e| (Expression::Boolean((b, e.span())), e.span()))
+        .boxed()
 }
