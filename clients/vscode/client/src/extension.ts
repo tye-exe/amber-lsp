@@ -10,8 +10,8 @@ import {
 	LanguageClient,
 	LanguageClientOptions,
 	ServerOptions,
+	Trace,
 } from 'vscode-languageclient/node';
-Math
 
 let client: LanguageClient;
 
@@ -24,10 +24,10 @@ export function activate(context: ExtensionContext) {
 	  options: {
 		env: {
 		  ...process.env,
-		  RUST_LOG: "debug",
+		  RUST_LOG: "trace",
 		},
 	  },
-	  args: ["--version", version],
+	  args: ["--amber-version", version],
 	};
 	const serverOptions: ServerOptions = {
 	  run,
@@ -46,8 +46,11 @@ export function activate(context: ExtensionContext) {
 	  traceOutputChannel,
 	};
   
+	
 	// Create the language client and start the client.
 	client = new LanguageClient("amber-lsp", "Amber language server", serverOptions, clientOptions);
+
+	client.setTrace(Trace.Verbose)
 	// activateInlayHints(context);
 	client.start();
 }

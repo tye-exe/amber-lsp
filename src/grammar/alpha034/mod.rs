@@ -198,14 +198,12 @@ impl AmberCompiler {
         AmberCompiler { lexer }
     }
 
-    // #[inline]
     pub fn parser<'a>(&self) -> impl AmberParser<'a, Vec<Spanned<GlobalStatement>>> {
         global::global_statement_parser()
     }
 }
 
 impl LSPAnalysis for AmberCompiler {
-    // #[inline]
     fn tokenize(&self, input: &str) -> Vec<Spanned<Token>> {
         // It should never fail
         self.lexer

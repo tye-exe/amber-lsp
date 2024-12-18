@@ -1,7 +1,0 @@
-main {
-    let foo = 5
-}
-
-pub fun foo() {
-    return 5
-}

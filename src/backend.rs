@@ -284,21 +284,9 @@ impl LanguageServer for Backend {
             ),
         );
 
-        self.client
-            .log_message(MessageType::INFO, "document opened!")
-            .await;
-
         self.analize_document(&file_id);
 
-        self.client
-            .log_message(MessageType::INFO, "document analyzed!")
-            .await;
-
         self.publish_syntax_errors(&file_id).await;
-
-        self.client
-            .log_message(MessageType::INFO, "syntax errors published!")
-            .await;
     }
 
     async fn did_change(&self, params: DidChangeTextDocumentParams) {
@@ -344,10 +332,6 @@ impl LanguageServer for Backend {
         } else {
             let mut document = self.document_map.get_mut(&file_id).unwrap();
 
-            self.client
-                .log_message(MessageType::INFO, "document changing in range!")
-                .await;
-
             params
                 .content_changes
                 .iter()
@@ -363,31 +347,12 @@ impl LanguageServer for Backend {
                     document.0.insert(start, &change.text);
                 });
 
-            self.client
-                .log_message(
-                    MessageType::INFO,
-                    format!("document after change {}", document.0),
-                )
-                .await;
-
             document.1 = params.text_document.version;
         }
 
-        self.client
-            .log_message(MessageType::INFO, "document changed!")
-            .await;
-
         self.analize_document(&file_id);
 
-        self.client
-            .log_message(MessageType::INFO, "document analyzed!")
-            .await;
-
         self.publish_syntax_errors(&file_id).await;
-
-        self.client
-            .log_message(MessageType::INFO, "syntax errors published!")
-            .await;
     }
 
     async fn did_change_watched_files(&self, _: DidChangeWatchedFilesParams) {
@@ -410,10 +375,6 @@ impl LanguageServer for Backend {
         &self,
         params: SemanticTokensParams,
     ) -> Result<Option<SemanticTokensResult>> {
-        self.client
-            .log_message(MessageType::LOG, "semantic tokens full")
-            .await;
-
         let file_id = match self.paths.get(&params.text_document.uri) {
             Some(file_id) => file_id,
             None => {
@@ -472,10 +433,6 @@ impl LanguageServer for Backend {
             })
             .collect();
 
-        self.client
-            .log_message(MessageType::LOG, format!("semantic tokens: {:?}", data))
-            .await;
-
         Ok(Some(SemanticTokensResult::Tokens(SemanticTokens {
             result_id: None,
             data,
@@ -486,10 +443,6 @@ impl LanguageServer for Backend {
         &self,
         params: SemanticTokensRangeParams,
     ) -> Result<Option<SemanticTokensRangeResult>> {
-        self.client
-            .log_message(MessageType::LOG, "semantic tokens range")
-            .await;
-
         let file_id = match self.paths.get(&params.text_document.uri) {
             Some(file_id) => file_id,
             None => {
@@ -549,10 +502,6 @@ impl LanguageServer for Backend {
             })
             .collect();
 
-        self.client
-            .log_message(MessageType::LOG, format!("semantic tokens: {:?}", data))
-            .await;
-
         Ok(Some(SemanticTokensRangeResult::Tokens(SemanticTokens {
             result_id: None,
             data,
@@ -563,20 +512,12 @@ impl LanguageServer for Backend {
         &self,
         params: GotoDefinitionParams,
     ) -> Result<Option<GotoDefinitionResponse>> {
-        self.client
-            .log_message(MessageType::LOG, "goto definition")
-            .await;
-
         let definition = {
             let uri = params.text_document_position_params.text_document.uri;
             let file_id = match self.paths.get(&uri) {
                 Some(file_id) => file_id,
                 None => return Ok(None),
             };
-
-            self.client
-                .log_message(MessageType::LOG, format!("file_id: {:?}", file_id))
-                .await;
 
             let (rope, _) = match self.document_map.get(&file_id) {
                 Some(document) => document.clone(),
@@ -588,64 +529,28 @@ impl LanguageServer for Backend {
                 .try_line_to_char(position.line as usize)
                 .ok()
                 .unwrap_or(rope.len_chars());
-            let offset = char + position.character as usize - 1;
+            let offset = char + position.character as usize;
 
             let symbol_table = match self.symbol_table.get(&file_id) {
                 Some(symbol_table) => symbol_table,
                 None => return Ok(None),
             };
 
-            self.client
-                .log_message(MessageType::LOG, format!("symbol table found!"))
-                .await;
-
-            self.client
-                .log_message(MessageType::LOG, format!("offset: {:?}", offset))
-                .await;
-
-            self.client
-                .log_message(
-                    MessageType::LOG,
-                    format!("symbols: {:?}", symbol_table.symbols),
-                )
-                .await;
-
             let symbol_info = match symbol_table.symbols.get(&offset) {
                 Some(symbol) => symbol.clone(),
                 None => return Ok(None),
             };
 
-            self.client
-                .log_message(MessageType::LOG, format!("symbol_info: {:?}", symbol_info))
-                .await;
-
             if symbol_info.undefined || symbol_info.is_definition {
                 return Ok(None);
             }
 
-            self.client
-                .log_message(
-                    MessageType::LOG,
-                    format!("document_map: {:?}", self.document_map),
-                )
-                .await;
-
             let response = match symbol_table.definitions.get(&symbol_info.name) {
                 Some(definitions) => match definitions.get(&offset) {
                     Some(definition) => {
-                        self.client
-                            .log_message(MessageType::LOG, format!("definition: {:?}", definition))
-                            .await;
-
                         let file_rope = match self.document_map.get(&definition.file) {
                             Some(document) => document.0.clone(),
                             None => {
-                                self.client
-                                    .log_message(
-                                        MessageType::LOG,
-                                        format!("file {:?} not found", definition.file),
-                                    )
-                                    .await;
                                 return Ok(None);
                             }
                         };
@@ -670,10 +575,6 @@ impl LanguageServer for Backend {
                 },
                 None => None,
             };
-
-            self.client
-                .log_message(MessageType::LOG, format!("response: {:?}", response))
-                .await;
 
             response
         };
