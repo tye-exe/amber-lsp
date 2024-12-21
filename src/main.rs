@@ -1,3 +1,5 @@
+use std::process::{Command, Stdio};
+
 use amber_lsp::backend::{AmberVersion, Backend};
 use clap::Parser;
 use tower_lsp::{LspService, Server};
@@ -17,7 +19,34 @@ async fn main() {
     let stdin = tokio::io::stdin();
     let stdout = tokio::io::stdout();
 
-    let (service, socket) =
-        LspService::new(|client| Backend::new(client, args.amber_version, None));
+    let amber_version = if args.amber_version == AmberVersion::Auto {
+        detect_amber_version()
+    } else {
+        args.amber_version
+    };
+
+    let (service, socket) = LspService::new(|client| Backend::new(client, amber_version, None));
     Server::new(stdin, stdout, socket).serve(service).await;
+}
+
+fn detect_amber_version() -> AmberVersion {
+    let output = String::from_utf8_lossy(
+        Command::new("amber")
+            .arg("-V")
+            .stdout(Stdio::piped())
+            .output()
+            .expect("Amber is not installed.")
+            .stdout
+            .as_slice(),
+    )
+    .to_string();
+
+    let version = output.split_whitespace().last().unwrap();
+
+    match version {
+        "0.3.4-alpha" => AmberVersion::Alpha034,
+        "0.3.5-alpha" => AmberVersion::Alpha035,
+        "0.4.0-alpha" => AmberVersion::Alpha040,
+        _ => AmberVersion::Auto,
+    }
 }

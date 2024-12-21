@@ -17,10 +17,12 @@ use crate::paths::{FileId, PathInterner};
 use crate::symbol_table::alpha034::global::analyze_global_stmnt;
 use crate::symbol_table::SymbolTable;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum AmberVersion {
     Auto,
     Alpha034,
+    Alpha035,
+    Alpha040,
 }
 
 impl ValueEnum for AmberVersion {
@@ -32,6 +34,8 @@ impl ValueEnum for AmberVersion {
         match self {
             AmberVersion::Auto => Some(PossibleValue::new("auto")),
             AmberVersion::Alpha034 => Some(PossibleValue::new("0.3.4-alpha")),
+            AmberVersion::Alpha035 => Some(PossibleValue::new("0.3.5-alpha")),
+            AmberVersion::Alpha040 => Some(PossibleValue::new("0.4.0-alpha")),
         }
     }
 }
