@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"func(1 2 let\")"
+expression: "parse(&tokenize(\"func(1 2 let\"))"
 ---
 (
     Some(
@@ -52,119 +52,9 @@ expression: "parse(\"func(1 2 let\")"
         ],
     ),
     [
-        Simple {
-            span: 7..8,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        ",",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "2",
-                ),
-            ),
-            label: None,
-        },
-        Simple {
-            span: 9..12,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        ",",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "let",
-                ),
-            ),
-            label: None,
-        },
-        Simple {
-            span: 9..12,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "true",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "\"",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "not",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "(",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "false",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "nameof",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "[",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "status",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "$",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "-",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "null",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "let",
-                ),
-            ),
-            label: None,
-        },
-        Simple {
-            span: 12..13,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        ")",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
+        found "2" at 7..8 expected '"."', '";"', '"as"', '"is"', '"*"', '"/"', '"%"', '"+"', '"-"', '">="', '">"', '"<="', '"<"', '"=="', '"!="', '"and"', '"or"', '".."', '"then"', or '","',
+        found "let" at 9..12 expected '"."', '";"', '"as"', '"is"', '"*"', '"/"', '"%"', '"+"', '"-"', '">="', '">"', '"<="', '"<"', '"=="', '"!="', '"and"', '"or"', '".."', '"then"', or '","',
+        found "let" at 9..12 expected "expression",
+        found end of input at 0..12 expected '","', or '")"',
     ],
 )

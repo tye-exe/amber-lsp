@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"import { var1\")"
+expression: "parse(&tokenize(\"import {\"))"
 ---
 (
     Some(
@@ -8,51 +8,35 @@ expression: "parse(\"import { var1\")"
             (
                 Import(
                     (
+                        false,
+                        0..6,
+                    ),
+                    (
+                        "import",
+                        0..6,
+                    ),
+                    (
                         ImportSpecific(
-                            [
-                                (
-                                    "var1",
-                                    9..13,
-                                ),
-                            ],
+                            [],
                         ),
-                        7..13,
+                        7..8,
+                    ),
+                    (
+                        "from",
+                        0..8,
                     ),
                     (
                         "",
-                        13..14,
+                        0..8,
                     ),
                 ),
-                0..13,
+                0..8,
             ),
         ],
     ),
     [
-        Simple {
-            span: 13..14,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "}",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
-        Simple {
-            span: 13..14,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "\"",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
+        found end of input at 0..8 expected '"}"',
+        found end of input at 0..8 expected '"from"',
+        found end of input at 0..8 expected '"\""',
     ],
 )

@@ -1,9 +1,11 @@
+use alpha034::GlobalStatement;
 use chumsky::{error::Rich, span::SimpleSpan};
 
 pub mod alpha034;
 
+#[derive(Debug, PartialEq, Clone)]
 pub enum Grammar {
-    Alpha034(Option<Vec<Spanned<alpha034::GlobalStatement>>>),
+    Alpha034(Option<Vec<Spanned<GlobalStatement>>>),
 }
 
 pub type Span = SimpleSpan;
@@ -41,4 +43,11 @@ pub struct ParserResponse<'a> {
 pub trait LSPAnalysis: Sync + Send {
     fn tokenize(&self, input: &str) -> Vec<Spanned<Token>>;
     fn parse<'a>(&self, input: &'a Vec<Spanned<Token>>) -> ParserResponse<'a>;
+}
+
+#[derive(PartialEq)]
+pub enum JumpDefinitionResult {
+    InFile(Span),
+    OpenFile(String),
+    None,
 }

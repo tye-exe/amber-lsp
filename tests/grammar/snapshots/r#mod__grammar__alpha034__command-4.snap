@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"$command -$\")"
+expression: "parse(&tokenize(\"$command -$\"))"
 ---
 (
     Some(
@@ -38,18 +38,6 @@ expression: "parse(\"$command -$\")"
         ],
     ),
     [
-        Simple {
-            span: 11..12,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "$",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
+        found end of input at 0..11 expected '"\\"', '"-"', '"{"', or '"$"',
     ],
 )

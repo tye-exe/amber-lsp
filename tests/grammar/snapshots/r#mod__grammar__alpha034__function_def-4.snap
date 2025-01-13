@@ -1,10 +1,18 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"fun func(a: Num, b, c: Bool): Num {}\").unwrap()"
+expression: "parse_unwrap(\"fun func(a: Num, b, c: Bool): Num {}\")"
 ---
 [
     (
         FunctionDefinition(
+            (
+                false,
+                0..3,
+            ),
+            (
+                "fun",
+                0..3,
+            ),
             (
                 "func",
                 4..8,
@@ -17,13 +25,8 @@ expression: "parse(\"fun func(a: Num, b, c: Bool): Num {}\").unwrap()"
                             9..10,
                         ),
                         (
-                            Type(
-                                (
-                                    "Num",
-                                    12..15,
-                                ),
-                            ),
-                            10..15,
+                            "Num",
+                            12..15,
                         ),
                     ),
                     9..15,
@@ -44,13 +47,8 @@ expression: "parse(\"fun func(a: Num, b, c: Bool): Num {}\").unwrap()"
                             20..21,
                         ),
                         (
-                            Type(
-                                (
-                                    "Bool",
-                                    23..27,
-                                ),
-                            ),
-                            21..27,
+                            "Bool",
+                            23..27,
                         ),
                     ),
                     20..27,
@@ -58,13 +56,8 @@ expression: "parse(\"fun func(a: Num, b, c: Bool): Num {}\").unwrap()"
             ],
             Some(
                 (
-                    Type(
-                        (
-                            "Num",
-                            30..33,
-                        ),
-                    ),
-                    28..33,
+                    "Num",
+                    30..33,
                 ),
             ),
             [],

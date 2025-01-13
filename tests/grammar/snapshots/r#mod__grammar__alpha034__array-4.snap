@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"[\")"
+expression: "parse(&tokenize(\"[\"))"
 ---
 (
     Some(
@@ -24,18 +24,6 @@ expression: "parse(\"[\")"
         ],
     ),
     [
-        Simple {
-            span: 1..2,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "]",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
+        found end of input at 0..1 expected "expression", or '"]"',
     ],
 )

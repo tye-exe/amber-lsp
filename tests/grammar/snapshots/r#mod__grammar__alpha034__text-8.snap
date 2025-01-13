@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(r#\"\"\\\"\"#)"
+expression: "parse(&tokenize(r#\"\"\\\"\"#))"
 ---
 (
     Some(
@@ -34,18 +34,6 @@ expression: "parse(r#\"\"\\\"\"#)"
         ],
     ),
     [
-        Simple {
-            span: 3..4,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "\"",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
+        found end of input at 0..3 expected '"\\"', '"{"', or '"\""',
     ],
 )

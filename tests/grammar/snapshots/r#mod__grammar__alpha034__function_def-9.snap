@@ -1,12 +1,20 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"fun foo(abc:  {\n        echo 10\n    }\")"
+expression: "parse(&tokenize(\"fun foo(abc! {\n        echo 10\n    }\"))"
 ---
 (
     Some(
         [
             (
                 FunctionDefinition(
+                    (
+                        false,
+                        0..3,
+                    ),
+                    (
+                        "fun",
+                        0..3,
+                    ),
                     (
                         "foo",
                         4..7,
@@ -34,63 +42,23 @@ expression: "parse(\"fun foo(abc:  {\n        echo 10\n    }\")"
                                     Number(
                                         (
                                             10.0,
-                                            29..31,
+                                            28..30,
                                         ),
                                     ),
-                                    29..31,
+                                    28..30,
                                 ),
                             ),
-                            24..31,
+                            23..30,
                         ),
                     ],
                 ),
-                0..37,
+                0..36,
             ),
         ],
     ),
     [
-        Simple {
-            span: 11..12,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        ",",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    ":",
-                ),
-            ),
-            label: None,
-        },
-        Simple {
-            span: 11..12,
-            reason: Custom(
-                "identifier must start with a letter or an underscore",
-            ),
-            expected: {},
-            found: None,
-            label: None,
-        },
-        Simple {
-            span: 14..15,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        ")",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "{",
-                ),
-            ),
-            label: None,
-        },
+        found "!" at 11..12 expected '":"', or '","',
+        multiple errors found at 11..12,
+        found "{" at 13..14 expected '","', or '")"',
     ],
 )

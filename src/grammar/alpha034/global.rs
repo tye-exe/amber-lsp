@@ -4,7 +4,7 @@ use crate::T;
 
 use super::{
     lexer::Token, parser::ident, statements::statement_parser, AmberParser, FunctionArgument,
-    GlobalStatement, ImportContent, Spanned, Statement, TypeAnnotation,
+    GlobalStatement, ImportContent, Spanned, Statement,
 };
 
 pub fn import_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
@@ -52,25 +52,46 @@ pub fn import_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
         )
         .boxed();
 
-    just(T!["import"])
-        .ignore_then(
-            choice((import_all_parser, import_specific_parser)).recover_with(via_parser(
-                none_of([T!['"']])
-                    .or_not()
-                    .map_with(|_, e| (ImportContent::ImportAll, e.span())),
-            )),
+    just(T!["pub"])
+        .or_not()
+        .map_with(|is_pub, e| (is_pub.is_some(), e.span()))
+        .then(just(T!["import"]).map_with(|_, e| ("import".to_string(), e.span())))
+        .then(
+            import_all_parser
+                .or(import_specific_parser)
+                .recover_with(via_parser(
+                    none_of([T!['"'], T!["from"]])
+                        .or_not()
+                        .map_with(|_, e| (ImportContent::ImportAll, e.span())),
+                )),
+        )
+        .then(
+            just(T!["from"])
+                .recover_with(via_parser(none_of([T!['"']]).or_not().map(|_| T!["from"])))
+                .map_with(|_, e| ("from".to_string(), e.span())),
         )
         .then(path_parser.recover_with(via_parser(
             any().or_not().map_with(|_, e| ("".to_string(), e.span())),
         )))
-        .map_with(|(vars, path), e| (GlobalStatement::Import(vars, path), e.span()))
+        .map_with(|((((is_pub, imp), vars), from), path), e| {
+            (
+                GlobalStatement::Import(is_pub, imp, vars, from, path),
+                e.span(),
+            )
+        })
         .boxed()
 }
 
-fn type_parser<'a>() -> impl AmberParser<'a, Spanned<TypeAnnotation>> {
+fn type_parser<'a>() -> impl AmberParser<'a, Spanned<String>> {
     just(T![':'])
-        .ignore_then(ident("type".to_string()).map_with(|name, e| (name, e.span())))
-        .map_with(|name, e| (TypeAnnotation::Type(name), e.span()))
+        .ignore_then(
+            ident("type".to_string())
+                .or(just(T!["["])
+                    .ignore_then(ident("type".to_string()))
+                    .then_ignore(just(T!["]"]))
+                    .map(|ty| format!("[{}]", ty)))
+                .map_with(|name, e| (name, e.span())),
+        )
         .boxed()
 }
 
@@ -121,8 +142,11 @@ pub fn function_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
         )
         .boxed();
 
-    just(T!["fun"])
-        .ignore_then(
+    just(T!["pub"])
+        .or_not()
+        .map_with(|is_pub, e| (is_pub.is_some(), e.span()))
+        .then(just(T!["fun"]).map_with(|_, e| ("fun".to_string(), e.span())))
+        .then(
             ident("function".to_string())
                 .map_err(|err| Rich::custom(err.span().clone(), "Expected function name"))
                 .recover_with(via_parser(any().or_not().map(|_| "".to_string())))
@@ -132,9 +156,9 @@ pub fn function_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
             none_of([T!["{"], T!["}"]]).or_not().map(|_| vec![]),
         )))
         .then(ret_parser.recover_with(via_parser(any().or_not().map(|_| (None, vec![])))))
-        .map_with(|((name, args), (ty, body)), e| {
+        .map_with(|((((is_pub, fun), name), args), (ty, body)), e| {
             (
-                GlobalStatement::FunctionDefinition(name, args, ty, body),
+                GlobalStatement::FunctionDefinition(is_pub, fun, name, args, ty, body),
                 e.span(),
             )
         })

@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"main\")"
+expression: "parse(&tokenize(\"main\"))"
 ---
 (
     Some(
@@ -14,31 +14,7 @@ expression: "parse(\"main\")"
         ],
     ),
     [
-        Simple {
-            span: 4..5,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "{",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
-        Simple {
-            span: 4..5,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "}",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
+        found end of input at 0..4 expected '"{"',
+        found end of input at 0..4 expected '"{"', "statement", or '"}"',
     ],
 )

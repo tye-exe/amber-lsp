@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"fun foo(abc! {\n        echo 10\n    }\")"
+expression: "parse(&tokenize(\"fun foo {\n        echo 10\n    }\"))"
 ---
 (
     Some(
@@ -8,24 +8,18 @@ expression: "parse(\"fun foo(abc! {\n        echo 10\n    }\")"
             (
                 FunctionDefinition(
                     (
+                        false,
+                        0..3,
+                    ),
+                    (
+                        "fun",
+                        0..3,
+                    ),
+                    (
                         "foo",
                         4..7,
                     ),
-                    [
-                        (
-                            Generic(
-                                (
-                                    "abc",
-                                    8..11,
-                                ),
-                            ),
-                            8..11,
-                        ),
-                        (
-                            Error,
-                            11..12,
-                        ),
-                    ],
+                    [],
                     None,
                     [
                         (
@@ -34,63 +28,21 @@ expression: "parse(\"fun foo(abc! {\n        echo 10\n    }\")"
                                     Number(
                                         (
                                             10.0,
-                                            28..30,
+                                            23..25,
                                         ),
                                     ),
-                                    28..30,
+                                    23..25,
                                 ),
                             ),
-                            23..30,
+                            18..25,
                         ),
                     ],
                 ),
-                0..36,
+                0..31,
             ),
         ],
     ),
     [
-        Simple {
-            span: 11..12,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        ",",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "!",
-                ),
-            ),
-            label: None,
-        },
-        Simple {
-            span: 11..12,
-            reason: Custom(
-                "identifier must start with a letter or an underscore",
-            ),
-            expected: {},
-            found: None,
-            label: None,
-        },
-        Simple {
-            span: 13..14,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        ")",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "{",
-                ),
-            ),
-            label: None,
-        },
+        found "{" at 8..9 expected '"("',
     ],
 )

@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"$command {\")"
+expression: "parse(&tokenize(\"$command {\"))"
 ---
 (
     Some(
@@ -22,7 +22,7 @@ expression: "parse(\"$command {\")"
                                             Expression(
                                                 (
                                                     Error,
-                                                    10..11,
+                                                    0..10,
                                                 ),
                                             ),
                                             9..10,
@@ -41,94 +41,8 @@ expression: "parse(\"$command {\")"
         ],
     ),
     [
-        Simple {
-            span: 10..11,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "true",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "\"",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "not",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "(",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "false",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "nameof",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "[",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "status",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "$",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "-",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "null",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
-        Simple {
-            span: 10..11,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "}",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
-        Simple {
-            span: 10..11,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "$",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
+        found end of input at 9..10 expected "expression",
+        found end of input at 0..10 expected '"}"',
+        found end of input at 0..10 expected '"}"', '"\\"', '"-"', '"{"', or '"$"',
     ],
 )

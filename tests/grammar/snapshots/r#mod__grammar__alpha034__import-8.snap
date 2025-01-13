@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"import {\")"
+expression: "parse(&tokenize(\"import\"))"
 ---
 (
     Some(
@@ -8,46 +8,33 @@ expression: "parse(\"import {\")"
             (
                 Import(
                     (
-                        ImportSpecific(
-                            [],
-                        ),
-                        7..8,
+                        false,
+                        0..6,
+                    ),
+                    (
+                        "import",
+                        0..6,
+                    ),
+                    (
+                        ImportAll,
+                        0..6,
+                    ),
+                    (
+                        "from",
+                        0..6,
                     ),
                     (
                         "",
-                        8..9,
+                        0..6,
                     ),
                 ),
-                0..8,
+                0..6,
             ),
         ],
     ),
     [
-        Simple {
-            span: 8..9,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "}",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
-        Simple {
-            span: 8..9,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "\"",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
+        found end of input at 0..6 expected '"*"', or '"{"',
+        found end of input at 0..6 expected '"from"',
+        found end of input at 0..6 expected '"\""',
     ],
 )

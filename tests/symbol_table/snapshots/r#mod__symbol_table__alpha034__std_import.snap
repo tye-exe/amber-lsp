@@ -1,0 +1,14 @@
+---
+source: tests/symbol_table/alpha034.rs
+expression: input_refs.value()
+---
+[
+    SymbolLocation {
+        file: FileId(
+            0,
+        ),
+        start: 38,
+        end: 43,
+        is_public: false,
+    },
+]

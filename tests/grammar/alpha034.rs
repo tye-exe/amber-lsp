@@ -232,6 +232,9 @@ fn test_command() {
         "$command {unclosed interpolation$ let x = 10"
     )));
     assert_debug_snapshot!(parse(&tokenize("$command {")));
+    assert_debug_snapshot!(parse(&tokenize("$command {}$")));
+    // TODO: Issue with Heraclitus lexer. Uncomment when fixed
+    // assert_debug_snapshot!(parse(r#"$echo "\$\{source//{pattern}/{replacement}}"$"#));
 }
 
 #[test]
@@ -345,15 +348,16 @@ fn test_comment() {
 
 #[test]
 fn test_import() {
-    assert_debug_snapshot!(parse_unwrap(&tokenize("import * \"path/to/module\"")));
-    assert_debug_snapshot!(parse_unwrap(&tokenize("import {} \"path/to/module\"")));
+    assert_debug_snapshot!(parse_unwrap(&tokenize("import * from \"path/to/module\"")));
+    assert_debug_snapshot!(parse_unwrap(&tokenize("import {} from \"path/to/module\"")));
     assert_debug_snapshot!(parse_unwrap(&tokenize(
-        "import { var1 } \"path/to/module\""
+        "import { var1 } from \"path/to/module\""
     )));
     assert_debug_snapshot!(parse_unwrap(&tokenize(
-        "import { var1, var2 } \"path/to/module\""
+        "import { var1, var2 } from \"path/to/module\""
     )));
-    assert_debug_snapshot!(parse(&tokenize("import { var1 var2  \"unclosed")));
+    assert_debug_snapshot!(parse(&tokenize("import { var1 var2 from \"unclosed")));
+    assert_debug_snapshot!(parse(&tokenize("import { var1 var2 \"unclosed")));
     assert_debug_snapshot!(parse(&tokenize("import  \"unclosed")));
     assert_debug_snapshot!(parse(&tokenize("import")));
     assert_debug_snapshot!(parse(&tokenize("import {")));
@@ -368,6 +372,9 @@ fn test_function_def() {
     assert_debug_snapshot!(parse_unwrap(&tokenize("fun func(a : Num) {}")));
     assert_debug_snapshot!(parse_unwrap(&tokenize(
         "fun func(a: Num, b, c: Bool): Num {}"
+    )));
+    assert_debug_snapshot!(parse_unwrap(&tokenize(
+        "fun func(a: Num, b, c: Bool): [Num] {}"
     )));
     assert_debug_snapshot!(parse_unwrap(&tokenize(
         "
@@ -565,12 +572,48 @@ fn test_recovery() {
     )));
     assert_debug_snapshot!(parse(&tokenize(
         r#"
+        import {}
+
+    "#
+    )));
+    assert_debug_snapshot!(parse(&tokenize(
+        r#"
         fun foo(a) {
 
             return "echo \"{5 + 5}\"";
         }
 
         unsafe {
+    "#
+    )));
+
+    assert_debug_snapshot!(parse(&tokenize(
+        r#"
+        // comments
+        // comments
+
+        import {} from "test.ab";
+
+        fun test_cat_cmd(file: Text): CmdText {
+            return `echo "NOT READY" > {file}`
+        }
+
+        fun foo(a) {
+            return "echo \"{5 + 5}\"";
+        }
+
+        unsafe {
+            let x = 5;
+
+            echo x;
+
+            if {
+                2 == 2 {
+                    echo 3
+                }
+                else: 5
+            }
+        }
     "#
     )));
 }

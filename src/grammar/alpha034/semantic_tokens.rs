@@ -30,10 +30,17 @@ pub fn semantic_tokens_from_ast(
 
         for (statement, span) in ast {
             match statement {
-                GlobalStatement::Import(import_content, path) => {
+                GlobalStatement::Import(is_pub, imp, import_content, from, path) => {
+                    if is_pub.0 {
+                        tokens.push((
+                            hash_semantic_token_type(SemanticTokenType::MODIFIER),
+                            is_pub.1.clone(),
+                        ));
+                    }
+
                     tokens.push((
                         hash_semantic_token_type(SemanticTokenType::KEYWORD),
-                        SimpleSpan::new(span.start, span.start + 6),
+                        imp.1.clone(),
                     ));
 
                     match import_content {
@@ -54,14 +61,33 @@ pub fn semantic_tokens_from_ast(
                     }
 
                     tokens.push((
+                        hash_semantic_token_type(SemanticTokenType::KEYWORD),
+                        from.1.clone(),
+                    ));
+
+                    tokens.push((
                         hash_semantic_token_type(SemanticTokenType::STRING),
                         path.1.clone(),
                     ));
                 }
-                GlobalStatement::FunctionDefinition((_, name_span), args, ty, body) => {
+                GlobalStatement::FunctionDefinition(
+                    is_pub,
+                    fun,
+                    (_, name_span),
+                    args,
+                    ty,
+                    body,
+                ) => {
+                    if is_pub.0 {
+                        tokens.push((
+                            hash_semantic_token_type(SemanticTokenType::MODIFIER),
+                            is_pub.1.clone(),
+                        ));
+                    }
+
                     tokens.push((
                         hash_semantic_token_type(SemanticTokenType::KEYWORD),
-                        SimpleSpan::new(span.start, span.start + 3),
+                        fun.1.clone(),
                     ));
 
                     tokens.push((
@@ -209,7 +235,7 @@ fn semantic_tokens_from_stmnts(stmnts: &Vec<Spanned<Statement>>) -> Vec<SpannedS
                 tokens
             }
             Statement::IfCondition((if_cond, _), else_cond) => {
-                let mut tokens= vec![(
+                let mut tokens = vec![(
                     hash_semantic_token_type(SemanticTokenType::KEYWORD),
                     SimpleSpan::new(span.start, span.start + 2),
                 )];
@@ -452,11 +478,6 @@ fn semantic_tokens_from_expr((expr, span): &Spanned<Expression>) -> Vec<SpannedS
                 }
             });
 
-            tokens.push((
-                hash_semantic_token_type(SemanticTokenType::STRING),
-                SimpleSpan::new(span.end - 1, span.end),
-            ));
-
             if let Some((failure_handler, failure_span)) = failure_handler {
                 match failure_handler {
                     FailureHandler::Handle(stmnts) => {
@@ -475,6 +496,11 @@ fn semantic_tokens_from_expr((expr, span): &Spanned<Expression>) -> Vec<SpannedS
                     }
                 }
             }
+
+            tokens.push((
+                hash_semantic_token_type(SemanticTokenType::STRING),
+                SimpleSpan::new(span.end - 1, span.end),
+            ));
 
             tokens
         }

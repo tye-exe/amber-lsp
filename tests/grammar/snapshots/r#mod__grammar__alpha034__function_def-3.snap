@@ -1,10 +1,18 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"fun func(a : Num) {}\").unwrap()"
+expression: "parse_unwrap(\"fun func(a : Num) {}\")"
 ---
 [
     (
         FunctionDefinition(
+            (
+                false,
+                0..3,
+            ),
+            (
+                "fun",
+                0..3,
+            ),
             (
                 "func",
                 4..8,
@@ -17,13 +25,8 @@ expression: "parse(\"fun func(a : Num) {}\").unwrap()"
                             9..10,
                         ),
                         (
-                            Type(
-                                (
-                                    "Num",
-                                    13..16,
-                                ),
-                            ),
-                            11..16,
+                            "Num",
+                            13..16,
                         ),
                     ),
                     9..16,

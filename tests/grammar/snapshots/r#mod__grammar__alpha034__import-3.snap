@@ -1,10 +1,18 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"import { var1 } \\\"path/to/module\\\"\").unwrap()"
+expression: "parse_unwrap(\"import { var1 } from \\\"path/to/module\\\"\")"
 ---
 [
     (
         Import(
+            (
+                false,
+                0..6,
+            ),
+            (
+                "import",
+                0..6,
+            ),
             (
                 ImportSpecific(
                     [
@@ -17,10 +25,14 @@ expression: "parse(\"import { var1 } \\\"path/to/module\\\"\").unwrap()"
                 7..15,
             ),
             (
+                "from",
+                16..20,
+            ),
+            (
                 "path/to/module",
-                17..31,
+                22..36,
             ),
         ),
-        0..32,
+        0..37,
     ),
 ]

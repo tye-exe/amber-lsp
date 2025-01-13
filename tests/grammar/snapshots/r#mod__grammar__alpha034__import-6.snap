@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"import  \\\"unclosed\")"
+expression: "parse(&tokenize(\"import { var1 var2 \\\"unclosed\"))"
 ---
 (
     Some(
@@ -8,53 +8,45 @@ expression: "parse(\"import  \\\"unclosed\")"
             (
                 Import(
                     (
-                        ImportAll,
-                        8..9,
+                        false,
+                        0..6,
+                    ),
+                    (
+                        "import",
+                        0..6,
+                    ),
+                    (
+                        ImportSpecific(
+                            [
+                                (
+                                    "var1",
+                                    9..13,
+                                ),
+                                (
+                                    "var2",
+                                    14..18,
+                                ),
+                            ],
+                        ),
+                        7..18,
+                    ),
+                    (
+                        "from",
+                        19..18,
                     ),
                     (
                         "unclosed",
-                        9..17,
+                        20..28,
                     ),
                 ),
-                0..17,
+                0..28,
             ),
         ],
     ),
     [
-        Simple {
-            span: 8..9,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "*",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "{",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "\"",
-                ),
-            ),
-            label: None,
-        },
-        Simple {
-            span: 17..18,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "\"",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
+        found "var2" at 14..18 expected '","',
+        found "\"" at 19..20 expected '","', or '"}"',
+        found "\"" at 19..20 expected something else,
+        found end of input at 0..28 expected '"\""',
     ],
 )

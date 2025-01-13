@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"true then 1 else\")"
+expression: "parse(&tokenize(\"true then 1 else\"))"
 ---
 (
     Some(
@@ -31,10 +31,10 @@ expression: "parse(\"true then 1 else\")"
                                     ),
                                     (
                                         Error,
-                                        16..17,
+                                        0..16,
                                     ),
                                 ),
-                                0..17,
+                                0..16,
                             ),
                         ),
                         0..16,
@@ -45,68 +45,6 @@ expression: "parse(\"true then 1 else\")"
         ],
     ),
     [
-        Simple {
-            span: 16..17,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "true",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "\"",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "not",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "(",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "false",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "nameof",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "[",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "status",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "$",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "-",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "null",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
+        found end of input at 0..16 expected "expression",
     ],
 )

@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"[1, 2 3] 4\")"
+expression: "parse(&tokenize(\"[1, 2 3] 4\"))"
 ---
 (
     Some(
@@ -71,22 +71,6 @@ expression: "parse(\"[1, 2 3] 4\")"
         ],
     ),
     [
-        Simple {
-            span: 6..7,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        ",",
-                    ),
-                ),
-            },
-            found: Some(
-                Token(
-                    "3",
-                ),
-            ),
-            label: None,
-        },
+        found "3" at 6..7 expected '"."', '";"', '"as"', '"is"', '"*"', '"/"', '"%"', '"+"', '"-"', '">="', '">"', '"<="', '"<"', '"=="', '"!="', '"and"', '"or"', '".."', '"then"', or '","',
     ],
 )

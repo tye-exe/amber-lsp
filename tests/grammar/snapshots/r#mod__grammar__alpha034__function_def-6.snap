@@ -1,64 +1,102 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"fun\")"
+expression: "parse_unwrap(\"\n        fun func(a: Num, b: Text, c: Bool): Num {\n            echo 10\n\n            return 10\n        }\n    \")"
 ---
-(
-    Some(
-        [
+[
+    (
+        FunctionDefinition(
             (
-                FunctionDefinition(
-                    (
-                        "",
-                        3..4,
-                    ),
-                    [],
-                    None,
-                    [],
-                ),
-                0..3,
+                false,
+                9..12,
             ),
-        ],
+            (
+                "fun",
+                9..12,
+            ),
+            (
+                "func",
+                13..17,
+            ),
+            [
+                (
+                    Typed(
+                        (
+                            "a",
+                            18..19,
+                        ),
+                        (
+                            "Num",
+                            21..24,
+                        ),
+                    ),
+                    18..24,
+                ),
+                (
+                    Typed(
+                        (
+                            "b",
+                            26..27,
+                        ),
+                        (
+                            "Text",
+                            29..33,
+                        ),
+                    ),
+                    26..33,
+                ),
+                (
+                    Typed(
+                        (
+                            "c",
+                            35..36,
+                        ),
+                        (
+                            "Bool",
+                            38..42,
+                        ),
+                    ),
+                    35..42,
+                ),
+            ],
+            Some(
+                (
+                    "Num",
+                    45..48,
+                ),
+            ),
+            [
+                (
+                    Echo(
+                        (
+                            Number(
+                                (
+                                    10.0,
+                                    68..70,
+                                ),
+                            ),
+                            68..70,
+                        ),
+                    ),
+                    63..70,
+                ),
+                (
+                    Return(
+                        Some(
+                            (
+                                Number(
+                                    (
+                                        10.0,
+                                        91..93,
+                                    ),
+                                ),
+                                91..93,
+                            ),
+                        ),
+                    ),
+                    84..93,
+                ),
+            ],
+        ),
+        9..103,
     ),
-    [
-        Simple {
-            span: 3..4,
-            reason: Custom(
-                "Expected function name",
-            ),
-            expected: {},
-            found: None,
-            label: None,
-        },
-        Simple {
-            span: 3..4,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        "(",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
-        Simple {
-            span: 3..4,
-            reason: Unexpected,
-            expected: {
-                Some(
-                    Token(
-                        ":",
-                    ),
-                ),
-                Some(
-                    Token(
-                        "{",
-                    ),
-                ),
-            },
-            found: None,
-            label: None,
-        },
-    ],
-)
+]
