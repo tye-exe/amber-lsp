@@ -1,4 +1,4 @@
-use std::process::{Command, Stdio};
+use std::{os::unix::process::ExitStatusExt, process::{Command, Stdio}};
 
 use amber_lsp::backend::{AmberVersion, Backend};
 use clap::Parser;
@@ -35,18 +35,20 @@ fn detect_amber_version() -> AmberVersion {
             .arg("-V")
             .stdout(Stdio::piped())
             .output()
-            .expect("Amber is not installed.")
+            .unwrap_or(std::process::Output {
+                stdout: Vec::new(),
+                stderr: Vec::new(),
+                status: std::process::ExitStatus::from_raw(0),
+            })
             .stdout
             .as_slice(),
     )
     .to_string();
 
-    let version = output.split_whitespace().last().unwrap();
-
-    match version {
-        "0.3.4-alpha" => AmberVersion::Alpha034,
-        "0.3.5-alpha" => AmberVersion::Alpha035,
-        "0.4.0-alpha" => AmberVersion::Alpha040,
+    match output.split_whitespace().last() {
+        Some("0.3.4-alpha") => AmberVersion::Alpha034,
+        Some("0.3.5-alpha") => AmberVersion::Alpha035,
+        Some("0.4.0-alpha") => AmberVersion::Alpha040,
         _ => AmberVersion::Auto,
     }
 }
