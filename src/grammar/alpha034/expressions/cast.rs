@@ -14,16 +14,17 @@ pub fn cast_parser<'a>(
     unary_parser(stmnts, expr)
         .foldl(
             just(T!["as"])
-                .ignore_then(
+                .map_with(|t, e| (t.to_string(), e.span()))
+                .then(
                     ident("type".to_string())
                         .recover_with(via_parser(any().or_not().map(|_| "".to_string())))
                         .map_with(|txt, e| (txt, e.span())),
                 )
                 .repeated(),
-            |expr, cast| {
+            |expr, (as_keyword, cast)| {
                 let span = SimpleSpan::new(expr.1.start, cast.1.end);
 
-                (Expression::Cast(Box::new(expr), cast), span)
+                (Expression::Cast(Box::new(expr), as_keyword, cast), span)
             },
         )
         .boxed()

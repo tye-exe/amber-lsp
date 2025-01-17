@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"true as Bool as Text as Num * 2 / foo()\").unwrap()"
+expression: "parse_unwrap(&tokenize(\"true as Bool as Text as Num * 2 / foo()\"))"
 ---
 [
     (
@@ -27,6 +27,10 @@ expression: "parse(\"true as Bool as Text as Num * 2 / foo()\").unwrap()"
                                                                 0..4,
                                                             ),
                                                             (
+                                                                "as",
+                                                                5..7,
+                                                            ),
+                                                            (
                                                                 "Bool",
                                                                 8..12,
                                                             ),
@@ -34,11 +38,19 @@ expression: "parse(\"true as Bool as Text as Num * 2 / foo()\").unwrap()"
                                                         0..12,
                                                     ),
                                                     (
+                                                        "as",
+                                                        13..15,
+                                                    ),
+                                                    (
                                                         "Text",
                                                         16..20,
                                                     ),
                                                 ),
                                                 0..20,
+                                            ),
+                                            (
+                                                "as",
+                                                21..23,
                                             ),
                                             (
                                                 "Num",

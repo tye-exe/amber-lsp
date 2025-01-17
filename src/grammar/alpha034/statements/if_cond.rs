@@ -14,15 +14,22 @@ fn else_cond_parser<'a>(
     stmnts: impl AmberParser<'a, Spanned<Statement>>,
 ) -> impl AmberParser<'a, Spanned<ElseCondition>> {
     let else_condition = just(T!["else"])
-        .ignore_then(block_parser(stmnts.clone()))
-        .map_with(|body, e| (ElseCondition::Else(body), e.span()));
+        .map_with(|_, e| ("else".to_string(), e.span()))
+        .then(block_parser(stmnts.clone()))
+        .map_with(|(else_keyword, body), e| (ElseCondition::Else(else_keyword, body), e.span()));
 
     let else_inline = just(T!["else"])
-        .ignore_then(just(T![":"]))
-        .ignore_then(stmnts.clone().recover_with(via_parser(
+        .map_with(|_, e| ("else".to_string(), e.span()))
+        .then_ignore(just(T![":"]))
+        .then(stmnts.clone().recover_with(via_parser(
             any().or_not().map_with(|_, e| (Statement::Error, e.span())),
         )))
-        .map_with(|body, e| (ElseCondition::InlineElse(Box::new(body)), e.span()));
+        .map_with(|(else_keyword, body), e| {
+            (
+                ElseCondition::InlineElse(else_keyword, Box::new(body)),
+                e.span(),
+            )
+        });
 
     choice((else_condition, else_inline)).boxed()
 }
@@ -31,7 +38,7 @@ fn cond_parser<'a>(
     stmnts: impl AmberParser<'a, Spanned<Statement>>,
 ) -> impl AmberParser<'a, Spanned<IfCondition>> {
     let inline_if = parse_expr(stmnts.clone())
-        .then_ignore(just(T![":"]))
+        .then_ignore(just(T![":"]).boxed())
         .then(stmnts.clone().recover_with(via_parser(
             any().or_not().map_with(|_, e| (Statement::Error, e.span())),
         )))
@@ -53,9 +60,15 @@ pub fn if_cond_parser<'a>(
     stmnts: impl AmberParser<'a, Spanned<Statement>>,
 ) -> impl AmberParser<'a, Spanned<Statement>> {
     just(T!["if"])
-        .ignore_then(cond_parser(stmnts.clone()))
+        .map_with(|_, e| ("if".to_string(), e.span()))
+        .then(cond_parser(stmnts.clone()))
         .then(else_cond_parser(stmnts).or_not())
-        .map_with(|(if_cond, else_cond), e| (Statement::IfCondition(if_cond, else_cond), e.span()))
+        .map_with(|((if_keyword, if_cond), else_cond), e| {
+            (
+                Statement::IfCondition(if_keyword, if_cond, else_cond),
+                e.span(),
+            )
+        })
         .boxed()
 }
 
@@ -63,8 +76,9 @@ pub fn if_chain_parser<'a>(
     stmnts: impl AmberParser<'a, Spanned<Statement>>,
 ) -> impl AmberParser<'a, Spanned<Statement>> {
     just(T!["if"])
-        .ignore_then(just(T!["{"]))
-        .ignore_then(
+        .map_with(|_, e| ("if".to_string(), e.span()))
+        .then_ignore(just(T!["{"]))
+        .then(
             cond_parser(stmnts.clone())
                 .recover_with(via_parser(
                     none_of([T!["}"], T!["else"]]).map_with(|_, e| (IfCondition::Error, e.span())),
@@ -74,20 +88,17 @@ pub fn if_chain_parser<'a>(
         )
         .then(else_cond_parser(stmnts).or_not())
         .then_ignore(just(T!["}"]).recover_with(via_parser(any().or_not().map(|_| T!["}"]))))
-        .map_with(
-            |(if_conds, else_cond): (Vec<Spanned<IfCondition>>, Option<Spanned<ElseCondition>>),
-             e| {
-                let mut if_chain: Vec<Spanned<IfChainContent>> = if_conds
-                    .into_iter()
-                    .map(|if_cond| (IfChainContent::IfCondition(if_cond.clone()), if_cond.1))
-                    .collect::<Vec<_>>();
+        .map_with(|((if_keyword, if_conds), else_cond), e| {
+            let mut if_chain: Vec<Spanned<IfChainContent>> = if_conds
+                .into_iter()
+                .map(|if_cond| (IfChainContent::IfCondition(if_cond.clone()), if_cond.1))
+                .collect::<Vec<_>>();
 
-                if let Some(else_cond) = else_cond {
-                    if_chain.push((IfChainContent::Else(else_cond.clone()), else_cond.1));
-                }
+            if let Some(else_cond) = else_cond {
+                if_chain.push((IfChainContent::Else(else_cond.clone()), else_cond.1));
+            }
 
-                (Statement::IfChain(if_chain), e.span())
-            },
-        )
+            (Statement::IfChain(if_keyword, if_chain), e.span())
+        })
         .boxed()
 }

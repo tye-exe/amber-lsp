@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"true then 1 + 2 else false then 5 else 6\").unwrap()"
+expression: "parse_unwrap(&tokenize(\"true then 1 + 2 else false then 5 else 6\"))"
 ---
 [
     (
@@ -17,6 +17,10 @@ expression: "parse(\"true then 1 + 2 else false then 5 else 6\").unwrap()"
                                     ),
                                 ),
                                 0..4,
+                            ),
+                            (
+                                "then",
+                                5..9,
                             ),
                             (
                                 Add(
@@ -42,6 +46,10 @@ expression: "parse(\"true then 1 + 2 else false then 5 else 6\").unwrap()"
                                 10..15,
                             ),
                             (
+                                "else",
+                                16..20,
+                            ),
+                            (
                                 Ternary(
                                     (
                                         Boolean(
@@ -53,6 +61,10 @@ expression: "parse(\"true then 1 + 2 else false then 5 else 6\").unwrap()"
                                         21..26,
                                     ),
                                     (
+                                        "then",
+                                        27..31,
+                                    ),
+                                    (
                                         Number(
                                             (
                                                 5.0,
@@ -60,6 +72,10 @@ expression: "parse(\"true then 1 + 2 else false then 5 else 6\").unwrap()"
                                             ),
                                         ),
                                         32..33,
+                                    ),
+                                    (
+                                        "else",
+                                        34..38,
                                     ),
                                     (
                                         Number(

@@ -1,12 +1,16 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"loop {}\").unwrap()"
+expression: "parse_unwrap(&tokenize(\"loop {}\"))"
 ---
 [
     (
         Statement(
             (
                 InfiniteLoop(
+                    (
+                        "loop",
+                        0..4,
+                    ),
                     (
                         Block(
                             [],

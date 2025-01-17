@@ -1,12 +1,16 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"loop var1 in 1..2 {}\").unwrap()"
+expression: "parse_unwrap(&tokenize(\"loop var1 in 1..2 {}\"))"
 ---
 [
     (
         Statement(
             (
                 IterLoop(
+                    (
+                        "loop",
+                        0..4,
+                    ),
                     (
                         Single(
                             (
@@ -15,6 +19,10 @@ expression: "parse(\"loop var1 in 1..2 {}\").unwrap()"
                             ),
                         ),
                         5..9,
+                    ),
+                    (
+                        "in",
+                        10..12,
                     ),
                     (
                         Range(

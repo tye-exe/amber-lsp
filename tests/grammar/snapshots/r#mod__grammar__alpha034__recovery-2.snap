@@ -52,6 +52,10 @@ expression: "parse(&tokenize(\"\n    5 + 5 +;\n    echo 10\"))"
                     (
                         Echo(
                             (
+                                "echo",
+                                18..22,
+                            ),
+                            (
                                 Number(
                                     (
                                         10.0,

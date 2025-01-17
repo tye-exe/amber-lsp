@@ -12,18 +12,15 @@ pub fn unary_parser<'a>(
     expr: impl AmberParser<'a, Spanned<Expression>>,
 ) -> impl AmberParser<'a, Spanned<Expression>> {
     choice((
-        just(T!['-']).to(Expression::Neg as fn(_) -> _),
-        just(T!["not"]).to(Expression::Not as fn(_) -> _),
-        just(T!["nameof"]).to(Expression::Nameof as fn(_) -> _),
+        just(T!['-']).map_with(|t, e| ((t.to_string(), e.span()), Expression::Neg as fn(_, _) -> _)),
+        just(T!["not"]).map_with(|t, e| ((t.to_string(), e.span()), Expression::Not as fn(_, _) -> _)),
+        just(T!["nameof"]).map_with(|t, e| ((t.to_string(), e.span()), Expression::Nameof as fn(_, _) -> _)),
     ))
     .repeated()
-    .foldr(
-        atom_parser(stmnts, expr),
-        |op: fn(Box<Spanned<Expression>>) -> Expression, expr| {
-            let span = SimpleSpan::new(expr.1.start, expr.1.end);
+    .foldr(atom_parser(stmnts, expr), |(op_string, op), expr| {
+        let span = SimpleSpan::new(expr.1.start, expr.1.end);
 
-            (op(Box::new(expr)), span)
-        },
-    )
+        (op(op_string, Box::new(expr)), span)
+    })
     .boxed()
 }

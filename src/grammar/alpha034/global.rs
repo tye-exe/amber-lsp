@@ -37,7 +37,10 @@ pub fn import_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
                 .map_with(|name, e| {
                     (
                         name.iter().map(|t| t.to_string()).collect::<String>(),
-                        e.span(),
+                        SimpleSpan::new(
+                            (e.span() as SimpleSpan).start - 1,
+                            (e.span() as SimpleSpan).end + 1,
+                        ),
                     )
                 }),
         )
@@ -167,7 +170,8 @@ pub fn function_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
 
 pub fn main_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
     just(T!["main"])
-        .ignore_then(
+        .map_with(|_, e| ("main".to_string(), e.span()))
+        .then(
             just(T!["{"])
                 .recover_with(via_parser(
                     any()
@@ -188,7 +192,7 @@ pub fn main_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
                     just(T!["}"]).recover_with(via_parser(any().or_not().map(|_| T!["}"]))),
                 ),
         )
-        .map_with(|body, e| (GlobalStatement::Main(body), e.span()))
+        .map_with(|(main, body), e| (GlobalStatement::Main(main, body), e.span()))
         .boxed()
 }
 

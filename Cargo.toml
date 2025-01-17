@@ -10,7 +10,10 @@ tower-lsp = "0.20.0"
 phf = { version = "0.11", features = ["macros"] }
 dashmap = "6.0.1"
 ropey = "1.6.1"
-chumsky = { version = "1.0.0-alpha.7", features = ["default", "label"]}
+chumsky = { git = "https://github.com/KrosFire/chumsky", rev = "406ea80", features = [
+  "default",
+  "label",
+] }
 heraclitus-compiler = "1.8.0"
 serde_json = "1.0.128"
 rangemap = "1.5.1"

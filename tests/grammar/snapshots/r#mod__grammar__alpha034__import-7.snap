@@ -25,7 +25,7 @@ expression: "parse(&tokenize(\"import  \\\"unclosed\"))"
                     ),
                     (
                         "unclosed",
-                        9..17,
+                        8..18,
                     ),
                 ),
                 0..17,
@@ -35,6 +35,6 @@ expression: "parse(&tokenize(\"import  \\\"unclosed\"))"
     [
         found "\"" at 8..9 expected '"*"', or '"{"',
         found "\"" at 8..9 expected something else,
-        found end of input at 0..17 expected '"\""',
+        found end of input at 17..17 expected '"\""',
     ],
 )

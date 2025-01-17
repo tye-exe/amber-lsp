@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"not true\").unwrap()"
+expression: "parse_unwrap(&tokenize(\"not true\"))"
 ---
 [
     (
@@ -9,6 +9,10 @@ expression: "parse(\"not true\").unwrap()"
                 Expression(
                     (
                         Not(
+                            (
+                                "not",
+                                0..3,
+                            ),
                             (
                                 Boolean(
                                     (

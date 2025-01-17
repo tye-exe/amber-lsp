@@ -9,7 +9,7 @@ expression: "parse(&tokenize(r#\"\n        // comments\n        // comments\n\n 
                 Statement(
                     (
                         Comment(
-                            " comments\n",
+                            "comments",
                         ),
                         9..21,
                     ),
@@ -20,7 +20,7 @@ expression: "parse(&tokenize(r#\"\n        // comments\n        // comments\n\n 
                 Statement(
                     (
                         Comment(
-                            " comments\n",
+                            "comments",
                         ),
                         29..41,
                     ),
@@ -49,7 +49,7 @@ expression: "parse(&tokenize(r#\"\n        // comments\n        // comments\n\n 
                     ),
                     (
                         "test.ab",
-                        66..73,
+                        65..74,
                     ),
                 ),
                 50..74,
@@ -120,6 +120,10 @@ expression: "parse(&tokenize(r#\"\n        // comments\n        // comments\n\n 
                                     [
                                         (
                                             Return(
+                                                (
+                                                    "return",
+                                                    137..143,
+                                                ),
                                                 None,
                                             ),
                                             137..143,
@@ -220,6 +224,10 @@ expression: "parse(&tokenize(r#\"\n        // comments\n        // comments\n\n 
                     [
                         (
                             Return(
+                                (
+                                    "return",
+                                    216..222,
+                                ),
                                 Some(
                                     (
                                         Text(
@@ -315,6 +323,10 @@ expression: "parse(&tokenize(r#\"\n        // comments\n        // comments\n\n 
                                         (
                                             VariableInit(
                                                 (
+                                                    "let",
+                                                    283..286,
+                                                ),
+                                                (
                                                     "x",
                                                     287..288,
                                                 ),
@@ -333,6 +345,10 @@ expression: "parse(&tokenize(r#\"\n        // comments\n        // comments\n\n 
                                         (
                                             Echo(
                                                 (
+                                                    "echo",
+                                                    307..311,
+                                                ),
+                                                (
                                                     Var(
                                                         (
                                                             "x",
@@ -346,6 +362,10 @@ expression: "parse(&tokenize(r#\"\n        // comments\n        // comments\n\n 
                                         ),
                                         (
                                             IfChain(
+                                                (
+                                                    "if",
+                                                    328..330,
+                                                ),
                                                 [
                                                     (
                                                         IfCondition(
@@ -380,6 +400,10 @@ expression: "parse(&tokenize(r#\"\n        // comments\n        // comments\n\n 
                                                                                 (
                                                                                     Echo(
                                                                                         (
+                                                                                            "echo",
+                                                                                            378..382,
+                                                                                        ),
+                                                                                        (
                                                                                             Number(
                                                                                                 (
                                                                                                     3.0,
@@ -405,6 +429,10 @@ expression: "parse(&tokenize(r#\"\n        // comments\n        // comments\n\n 
                                                         Else(
                                                             (
                                                                 InlineElse(
+                                                                    (
+                                                                        "else",
+                                                                        419..423,
+                                                                    ),
                                                                     (
                                                                         Expression(
                                                                             (

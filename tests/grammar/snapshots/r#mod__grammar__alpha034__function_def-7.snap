@@ -17,7 +17,7 @@ expression: "parse(&tokenize(\"fun\"))"
                     ),
                     (
                         "",
-                        0..3,
+                        3..3,
                     ),
                     [],
                     None,
@@ -28,8 +28,8 @@ expression: "parse(&tokenize(\"fun\"))"
         ],
     ),
     [
-        Expected function name at 0..3,
-        found end of input at 0..3 expected '"("',
-        found end of input at 0..3 expected '":"', or '"{"',
+        Expected function name at 3..3,
+        found end of input at 3..3 expected '"("',
+        found end of input at 3..3 expected '":"', or '"{"',
     ],
 )

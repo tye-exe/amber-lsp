@@ -1,12 +1,16 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"if true {}\").unwrap()"
+expression: "parse_unwrap(&tokenize(\"if true {}\"))"
 ---
 [
     (
         Statement(
             (
                 IfCondition(
+                    (
+                        "if",
+                        0..2,
+                    ),
                     (
                         IfCondition(
                             (

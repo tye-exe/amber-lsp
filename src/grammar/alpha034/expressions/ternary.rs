@@ -14,15 +14,23 @@ pub fn ternary_parser<'a>(
     range_parser(stmnts, expr.clone())
         .foldl(
             just(T!["then"])
-                .ignore_then(
+                .map_with(|t, e| (t.to_string(), e.span()))
+                .then(
                     expr.clone().recover_with(via_parser(
                         any()
                             .or_not()
                             .map_with(|_, e| (Expression::Error, e.span())),
                     )),
                 )
-                .then_ignore(
-                    just(T!["else"]).recover_with(via_parser(any().or_not().map(|_| T![""]))),
+                .then(
+                    just(T!["else"])
+                        .map_with(|t, e| (t.to_string(), e.span()))
+                        .recover_with(via_parser(
+                            any().map_with(|_, e| ("".to_string(), e.span())),
+                        ))
+                        .recover_with(via_parser(
+                            end().map_with(|_, e| ("".to_string(), e.span())),
+                        )),
                 )
                 .then(
                     expr.recover_with(via_parser(
@@ -32,11 +40,17 @@ pub fn ternary_parser<'a>(
                     )),
                 )
                 .repeated(),
-            |cond, (if_true, if_false)| {
+            |cond, (((then_keyword, if_true), else_keyword), if_false)| {
                 let span = SimpleSpan::new(cond.1.start, if_false.1.end);
 
                 (
-                    Expression::Ternary(Box::new(cond), Box::new(if_true), Box::new(if_false)),
+                    Expression::Ternary(
+                        Box::new(cond),
+                        then_keyword,
+                        Box::new(if_true),
+                        else_keyword,
+                        Box::new(if_false),
+                    ),
                     span,
                 )
             },

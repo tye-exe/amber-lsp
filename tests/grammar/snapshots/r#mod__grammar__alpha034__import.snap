@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse_unwrap(\"import * from \\\"path/to/module\\\"\")"
+expression: "parse_unwrap(&tokenize(\"import * from \\\"path/to/module\\\"\"))"
 ---
 [
     (
@@ -23,7 +23,7 @@ expression: "parse_unwrap(\"import * from \\\"path/to/module\\\"\")"
             ),
             (
                 "path/to/module",
-                15..29,
+                14..30,
             ),
         ),
         0..30,

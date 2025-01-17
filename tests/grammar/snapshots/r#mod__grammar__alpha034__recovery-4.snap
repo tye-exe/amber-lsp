@@ -34,6 +34,10 @@ expression: "parse(&tokenize(r#\"\n        fun foo(a) {\n\n            return \"
                     [
                         (
                             Return(
+                                (
+                                    "return",
+                                    35..41,
+                                ),
                                 Some(
                                     (
                                         Text(

@@ -22,7 +22,7 @@ expression: "parse(&tokenize(\"1..\"))"
                                     ),
                                     (
                                         Error,
-                                        0..3,
+                                        3..3,
                                     ),
                                 ),
                                 0..3,
@@ -36,6 +36,6 @@ expression: "parse(&tokenize(\"1..\"))"
         ],
     ),
     [
-        found end of input at 0..3 expected '"="', '"-"', '"not"', '"nameof"', '"true"', '"false"', '"null"', '"status"', '"\""', '"["', '"$"', or '"("',
+        found end of input at 3..3 expected '"="', '"-"', '"not"', '"nameof"', '"true"', '"false"', '"null"', '"status"', '"\""', '"["', '"$"', or '"("',
     ],
 )

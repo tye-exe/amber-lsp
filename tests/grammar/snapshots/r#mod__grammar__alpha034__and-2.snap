@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"true and false and true\").unwrap()"
+expression: "parse_unwrap(&tokenize(\"true and false and true\"))"
 ---
 [
     (
@@ -21,6 +21,10 @@ expression: "parse(\"true and false and true\").unwrap()"
                                         0..4,
                                     ),
                                     (
+                                        "and",
+                                        5..8,
+                                    ),
+                                    (
                                         Boolean(
                                             (
                                                 false,
@@ -31,6 +35,10 @@ expression: "parse(\"true and false and true\").unwrap()"
                                     ),
                                 ),
                                 0..14,
+                            ),
+                            (
+                                "and",
+                                15..18,
                             ),
                             (
                                 Boolean(

@@ -39,6 +39,10 @@ expression: "parse(&tokenize(\"fun foo(abc:  {\n        echo 10\n    }\"))"
                         (
                             Echo(
                                 (
+                                    "echo",
+                                    24..28,
+                                ),
+                                (
                                     Number(
                                         (
                                             10.0,

@@ -55,7 +55,7 @@ pub fn analyze_exp(
             analyze_exp(file_id, exp1, symbol_table, backend);
             analyze_exp(file_id, exp2, symbol_table, backend);
         }
-        Expression::And(exp1, exp2) => {
+        Expression::And(exp1, _, exp2) => {
             analyze_exp(file_id, exp1, symbol_table, backend);
             analyze_exp(file_id, exp2, symbol_table, backend);
         }
@@ -64,7 +64,7 @@ pub fn analyze_exp(
                 analyze_exp(file_id, exp, symbol_table, backend);
             });
         }
-        Expression::Cast(exp, _) => {
+        Expression::Cast(exp, _, _) => {
             analyze_exp(file_id, &exp, symbol_table, backend);
         }
         Expression::Command(inter_cmd, failure) => {
@@ -95,7 +95,7 @@ pub fn analyze_exp(
             analyze_exp(file_id, exp1, symbol_table, backend);
             analyze_exp(file_id, exp2, symbol_table, backend);
         }
-        Expression::Is(exp, _) => {
+        Expression::Is(_, exp, _) => {
             analyze_exp(file_id, exp, symbol_table, backend);
         }
         Expression::Le(exp1, exp2) => {
@@ -114,20 +114,20 @@ pub fn analyze_exp(
             analyze_exp(file_id, exp1, symbol_table, backend);
             analyze_exp(file_id, exp2, symbol_table, backend);
         }
-        Expression::Nameof(exp) => {
+        Expression::Nameof(_, exp) => {
             analyze_exp(file_id, exp, symbol_table, backend);
         }
-        Expression::Neg(exp) => {
+        Expression::Neg(_, exp) => {
             analyze_exp(file_id, exp, symbol_table, backend);
         }
         Expression::Neq(exp1, exp2) => {
             analyze_exp(file_id, exp1, symbol_table, backend);
             analyze_exp(file_id, exp2, symbol_table, backend);
         }
-        Expression::Not(exp) => {
+        Expression::Not(_, exp) => {
             analyze_exp(file_id, exp, symbol_table, backend);
         }
-        Expression::Or(exp1, exp2) => {
+        Expression::Or(exp1, _, exp2) => {
             analyze_exp(file_id, exp1, symbol_table, backend);
             analyze_exp(file_id, exp2, symbol_table, backend);
         }
@@ -142,7 +142,7 @@ pub fn analyze_exp(
             analyze_exp(file_id, exp1, symbol_table, backend);
             analyze_exp(file_id, exp2, symbol_table, backend);
         }
-        Expression::Ternary(exp1, exp2, exp3) => {
+        Expression::Ternary(exp1, _, exp2, _, exp3) => {
             analyze_exp(file_id, exp1, symbol_table, backend);
             analyze_exp(file_id, exp2, symbol_table, backend);
             analyze_exp(file_id, exp3, symbol_table, backend);

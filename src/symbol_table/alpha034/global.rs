@@ -221,7 +221,7 @@ pub fn analyze_global_stmnt(
                         }),
                 }
             }
-            GlobalStatement::Main(body) => {
+            GlobalStatement::Main(_, body) => {
                 body.iter().for_each(|stmnt| {
                     analyze_stmnt(&file_id, stmnt, symbol_table, backend, stmnt.1.end);
                 });

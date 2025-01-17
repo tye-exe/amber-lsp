@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse_unwrap(\"foo() failed {}\")"
+expression: "parse_unwrap(&tokenize(\"foo() failed {}\"))"
 ---
 [
     (
@@ -17,6 +17,10 @@ expression: "parse_unwrap(\"foo() failed {}\")"
                             Some(
                                 (
                                     Handle(
+                                        (
+                                            "failed",
+                                            6..12,
+                                        ),
                                         [],
                                     ),
                                     6..15,

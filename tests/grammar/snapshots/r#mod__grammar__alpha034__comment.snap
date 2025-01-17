@@ -1,13 +1,13 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse_unwrap(\"\n        // This is a comment\n        1 + 2\n    \")"
+expression: "parse_unwrap(&tokenize(\"\n        // This is a comment\n        1 + 2\n    \"))"
 ---
 [
     (
         Statement(
             (
                 Comment(
-                    " This is a comment\n",
+                    "This is a comment",
                 ),
                 9..30,
             ),

@@ -1,14 +1,18 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse_unwrap(\"\n        main {\n            // abc\n        }\n        \")"
+expression: "parse_unwrap(&tokenize(\"\n        main {\n            // abc\n        }\n        \"))"
 ---
 [
     (
         Main(
+            (
+                "main",
+                9..13,
+            ),
             [
                 (
                     Comment(
-                        " abc\n",
+                        "abc",
                     ),
                     28..35,
                 ),

@@ -9,8 +9,9 @@ pub fn failure_parser<'a>(
     stmnts: impl AmberParser<'a, Spanned<Statement>>,
 ) -> impl AmberParser<'a, Spanned<FailureHandler>> {
     let handle_parser = just(T!["failed"])
-        .ignore_then(just(T!["{"]).recover_with(via_parser(any().or_not().map(|_| T!["{"]))))
-        .ignore_then(
+        .map_with(|t, e| (t.to_string(), e.span()))
+        .then_ignore(just(T!["{"]).recover_with(via_parser(any().or_not().map(|_| T!["{"]))))
+        .then(
             stmnts
                 .recover_with(via_parser(
                     none_of([T!["}"]]).map_with(|_, e| (Statement::Error, e.span())),
@@ -19,7 +20,7 @@ pub fn failure_parser<'a>(
                 .collect(),
         )
         .then_ignore(just(T!["}"]).recover_with(via_parser(any().or_not().map(|_| T!["}"]))))
-        .map(|block| FailureHandler::Handle(block))
+        .map(|(failed_keyword, block)| FailureHandler::Handle(failed_keyword, block))
         .boxed();
 
     let prop_parser = just(T!['?']).map(|_| FailureHandler::Propagate).boxed();

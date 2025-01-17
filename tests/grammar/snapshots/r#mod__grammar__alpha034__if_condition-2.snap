@@ -1,12 +1,16 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"if true { echo 10 }\").unwrap()"
+expression: "parse_unwrap(&tokenize(\"if true { echo 10 }\"))"
 ---
 [
     (
         Statement(
             (
                 IfCondition(
+                    (
+                        "if",
+                        0..2,
+                    ),
                     (
                         IfCondition(
                             (
@@ -23,6 +27,10 @@ expression: "parse(\"if true { echo 10 }\").unwrap()"
                                     [
                                         (
                                             Echo(
+                                                (
+                                                    "echo",
+                                                    10..14,
+                                                ),
                                                 (
                                                     Number(
                                                         (

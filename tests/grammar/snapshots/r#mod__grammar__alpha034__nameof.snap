@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"nameof variable\").unwrap()"
+expression: "parse_unwrap(&tokenize(\"nameof variable\"))"
 ---
 [
     (
@@ -9,6 +9,10 @@ expression: "parse(\"nameof variable\").unwrap()"
                 Expression(
                     (
                         Nameof(
+                            (
+                                "nameof",
+                                0..6,
+                            ),
                             (
                                 Var(
                                     (
