@@ -1,12 +1,16 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"fail\").unwrap()"
+expression: "parse_unwrap(&tokenize(\"fail\"))"
 ---
 [
     (
         Statement(
             (
                 Fail(
+                    (
+                        "fail",
+                        0..4,
+                    ),
                     None,
                 ),
                 0..4,

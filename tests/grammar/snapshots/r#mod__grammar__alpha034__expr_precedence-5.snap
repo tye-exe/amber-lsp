@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"-(2 + 3) * 5\").unwrap()"
+expression: "parse_unwrap(&tokenize(\"-(2 + 3) * 5\"))"
 ---
 [
     (
@@ -11,6 +11,10 @@ expression: "parse(\"-(2 + 3) * 5\").unwrap()"
                         Multiply(
                             (
                                 Neg(
+                                    (
+                                        "-",
+                                        0..1,
+                                    ),
                                     (
                                         Parentheses(
                                             (

@@ -7,7 +7,7 @@ pub fn comment_parser<'a>() -> impl AmberParser<'a, Spanned<Statement>> {
         .filter(|t: &Token| t.to_string().starts_with("//"))
         .map_with(|com, e| {
             (
-                Statement::Comment(com.to_string()[2..].to_string()),
+                Statement::Comment(com.to_string()[2..].trim().to_string()),
                 e.span(),
             )
         })

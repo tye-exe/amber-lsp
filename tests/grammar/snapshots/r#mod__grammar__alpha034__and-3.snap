@@ -23,6 +23,10 @@ expression: "parse(&tokenize(\"true and false and\"))"
                                                 0..4,
                                             ),
                                             (
+                                                "and",
+                                                5..8,
+                                            ),
+                                            (
                                                 Boolean(
                                                     (
                                                         false,
@@ -35,8 +39,12 @@ expression: "parse(&tokenize(\"true and false and\"))"
                                         0..14,
                                     ),
                                     (
+                                        "and",
+                                        15..18,
+                                    ),
+                                    (
                                         Error,
-                                        0..18,
+                                        18..18,
                                     ),
                                 ),
                                 0..18,
@@ -50,6 +58,6 @@ expression: "parse(&tokenize(\"true and false and\"))"
         ],
     ),
     [
-        found end of input at 0..18 expected '"-"', '"not"', '"nameof"', '"true"', '"false"', '"null"', '"status"', '"\""', '"["', '"$"', or '"("',
+        found end of input at 18..18 expected '"-"', '"not"', '"nameof"', '"true"', '"false"', '"null"', '"status"', '"\""', '"["', '"$"', or '"("',
     ],
 )

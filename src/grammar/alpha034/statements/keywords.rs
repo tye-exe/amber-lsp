@@ -14,20 +14,32 @@ pub fn keywords_parser<'a>(
         just(T!["break"]).map_with(|_, e| (Statement::Break, e.span())),
         just(T!["continue"]).map_with(|_, e| (Statement::Continue, e.span())),
         just(T!["return"])
-            .ignore_then(parse_expr(stmnts.clone()).or_not())
-            .map_with(|expr, e| (Statement::Return(expr.map(Box::new)), e.span())),
+            .map_with(|_, e| ("return".to_string(), e.span()))
+            .then(parse_expr(stmnts.clone()).or_not())
+            .map_with(|(return_keyword, expr), e| {
+                (
+                    Statement::Return(return_keyword, expr.map(Box::new)),
+                    e.span(),
+                )
+            }),
         just(T!["fail"])
-            .ignore_then(parse_expr(stmnts.clone()).or_not())
-            .map_with(|expr, e| (Statement::Fail(expr.map(Box::new)), e.span())),
+            .map_with(|_, e| ("fail".to_string(), e.span()))
+            .then(parse_expr(stmnts.clone()).or_not())
+            .map_with(|(fail_keyword, expr), e| {
+                (Statement::Fail(fail_keyword, expr.map(Box::new)), e.span())
+            }),
         just(T!["echo"])
-            .ignore_then(
+            .map_with(|_, e| ("echo".to_string(), e.span()))
+            .then(
                 parse_expr(stmnts).recover_with(via_parser(
                     any()
                         .or_not()
                         .map_with(|_, e| (Expression::Error, e.span())),
                 )),
             )
-            .map_with(|expr, e| (Statement::Echo(Box::new(expr)), e.span())),
+            .map_with(|(echo_keyword, expr), e| {
+                (Statement::Echo(echo_keyword, Box::new(expr)), e.span())
+            }),
     ))
     .boxed()
 }

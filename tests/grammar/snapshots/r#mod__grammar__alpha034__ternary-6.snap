@@ -21,6 +21,10 @@ expression: "parse(&tokenize(\"true then 1 else\"))"
                                         0..4,
                                     ),
                                     (
+                                        "then",
+                                        5..9,
+                                    ),
+                                    (
                                         Number(
                                             (
                                                 1.0,
@@ -30,8 +34,12 @@ expression: "parse(&tokenize(\"true then 1 else\"))"
                                         10..11,
                                     ),
                                     (
+                                        "else",
+                                        12..16,
+                                    ),
+                                    (
                                         Error,
-                                        0..16,
+                                        16..16,
                                     ),
                                 ),
                                 0..16,
@@ -45,6 +53,6 @@ expression: "parse(&tokenize(\"true then 1 else\"))"
         ],
     ),
     [
-        found end of input at 0..16 expected "expression",
+        found end of input at 16..16 expected "expression",
     ],
 )

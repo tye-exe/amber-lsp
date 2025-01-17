@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"1 as Num as Text\").unwrap()"
+expression: "parse_unwrap(&tokenize(\"1 as Num as Text\"))"
 ---
 [
     (
@@ -21,11 +21,19 @@ expression: "parse(\"1 as Num as Text\").unwrap()"
                                         0..1,
                                     ),
                                     (
+                                        "as",
+                                        2..4,
+                                    ),
+                                    (
                                         "Num",
                                         5..8,
                                     ),
                                 ),
                                 0..8,
+                            ),
+                            (
+                                "as",
+                                9..11,
                             ),
                             (
                                 "Text",

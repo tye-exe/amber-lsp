@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"true or false and true and true or false\").unwrap()"
+expression: "parse_unwrap(&tokenize(\"true or false and true and true or false\"))"
 ---
 [
     (
@@ -21,6 +21,10 @@ expression: "parse(\"true or false and true and true or false\").unwrap()"
                                         0..4,
                                     ),
                                     (
+                                        "or",
+                                        5..7,
+                                    ),
+                                    (
                                         And(
                                             (
                                                 And(
@@ -34,6 +38,10 @@ expression: "parse(\"true or false and true and true or false\").unwrap()"
                                                         8..13,
                                                     ),
                                                     (
+                                                        "and",
+                                                        14..17,
+                                                    ),
+                                                    (
                                                         Boolean(
                                                             (
                                                                 true,
@@ -44,6 +52,10 @@ expression: "parse(\"true or false and true and true or false\").unwrap()"
                                                     ),
                                                 ),
                                                 8..22,
+                                            ),
+                                            (
+                                                "and",
+                                                23..26,
                                             ),
                                             (
                                                 Boolean(
@@ -59,6 +71,10 @@ expression: "parse(\"true or false and true and true or false\").unwrap()"
                                     ),
                                 ),
                                 0..31,
+                            ),
+                            (
+                                "or",
+                                32..34,
                             ),
                             (
                                 Boolean(

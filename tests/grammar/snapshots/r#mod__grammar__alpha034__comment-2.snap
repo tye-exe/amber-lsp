@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse_unwrap(\"1 + 2 // This is a comment without a newline\")"
+expression: "parse_unwrap(&tokenize(\"1 + 2 // This is a comment without a newline\"))"
 ---
 [
     (
@@ -40,7 +40,7 @@ expression: "parse_unwrap(\"1 + 2 // This is a comment without a newline\")"
         Statement(
             (
                 Comment(
-                    " This is a comment without a newline",
+                    "This is a comment without a newline",
                 ),
                 6..44,
             ),

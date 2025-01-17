@@ -28,11 +28,11 @@ expression: "parse(&tokenize(\"import { var1\"))"
                     ),
                     (
                         "from",
-                        0..13,
+                        13..13,
                     ),
                     (
                         "",
-                        0..13,
+                        13..13,
                     ),
                 ),
                 0..13,
@@ -40,8 +40,8 @@ expression: "parse(&tokenize(\"import { var1\"))"
         ],
     ),
     [
-        found end of input at 0..13 expected '","', or '"}"',
-        found end of input at 0..13 expected '"from"',
-        found end of input at 0..13 expected '"\""',
+        found end of input at 13..13 expected '","', or '"}"',
+        found end of input at 13..13 expected '"from"',
+        found end of input at 13..13 expected '"\""',
     ],
 )

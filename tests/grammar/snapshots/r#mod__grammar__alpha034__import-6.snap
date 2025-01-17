@@ -36,7 +36,7 @@ expression: "parse(&tokenize(\"import { var1 var2 \\\"unclosed\"))"
                     ),
                     (
                         "unclosed",
-                        20..28,
+                        19..29,
                     ),
                 ),
                 0..28,
@@ -47,6 +47,6 @@ expression: "parse(&tokenize(\"import { var1 var2 \\\"unclosed\"))"
         found "var2" at 14..18 expected '","',
         found "\"" at 19..20 expected '","', or '"}"',
         found "\"" at 19..20 expected something else,
-        found end of input at 0..28 expected '"\""',
+        found end of input at 28..28 expected '"\""',
     ],
 )

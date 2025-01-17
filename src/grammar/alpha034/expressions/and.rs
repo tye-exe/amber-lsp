@@ -14,7 +14,8 @@ pub fn and_parser<'a>(
     comparison_parser(stmnts.clone(), expr.clone())
         .foldl(
             just(T!["and"])
-                .ignore_then(
+                .map_with(|t, s| (t.to_string(), s.span()))
+                .then(
                     comparison_parser(stmnts, expr).recover_with(via_parser(
                         any()
                             .or_not()
@@ -22,10 +23,10 @@ pub fn and_parser<'a>(
                     )),
                 )
                 .repeated(),
-            |lhs: Spanned<Expression>, rhs: Spanned<Expression>| {
+            |lhs, (and_keyword, rhs)| {
                 let span = SimpleSpan::new(lhs.1.start, rhs.1.end);
 
-                (Expression::And(Box::new(lhs), Box::new(rhs)), span)
+                (Expression::And(Box::new(lhs), and_keyword, Box::new(rhs)), span)
             },
         )
         .boxed()

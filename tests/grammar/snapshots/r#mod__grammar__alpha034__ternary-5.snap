@@ -21,6 +21,10 @@ expression: "parse(&tokenize(\"true then 1\"))"
                                         0..4,
                                     ),
                                     (
+                                        "then",
+                                        5..9,
+                                    ),
+                                    (
                                         Number(
                                             (
                                                 1.0,
@@ -30,8 +34,12 @@ expression: "parse(&tokenize(\"true then 1\"))"
                                         10..11,
                                     ),
                                     (
+                                        "",
+                                        11..11,
+                                    ),
+                                    (
                                         Error,
-                                        0..11,
+                                        11..11,
                                     ),
                                 ),
                                 0..11,
@@ -45,7 +53,7 @@ expression: "parse(&tokenize(\"true then 1\"))"
         ],
     ),
     [
-        found end of input at 0..11 expected '"."', '";"', '"as"', '"is"', '"*"', '"/"', '"%"', '"+"', '"-"', '">="', '">"', '"<="', '"<"', '"=="', '"!="', '"and"', '"or"', '".."', '"then"', or '"else"',
-        found end of input at 0..11 expected "expression",
+        found end of input at 11..11 expected '"."', '";"', '"as"', '"is"', '"*"', '"/"', '"%"', '"+"', '"-"', '">="', '">"', '"<="', '"<"', '"=="', '"!="', '"and"', '"or"', '".."', '"then"', or '"else"',
+        found end of input at 11..11 expected "expression",
     ],
 )

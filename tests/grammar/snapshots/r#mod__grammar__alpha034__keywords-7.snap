@@ -1,12 +1,16 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"return 1\").unwrap()"
+expression: "parse_unwrap(&tokenize(\"return 1\"))"
 ---
 [
     (
         Statement(
             (
                 Return(
+                    (
+                        "return",
+                        0..6,
+                    ),
                     Some(
                         (
                             Number(

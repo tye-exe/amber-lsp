@@ -1,13 +1,21 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse_unwrap(\"\n        main {\n            echo 10;\n            echo 20\n\n            echo 30;\n\n            10 20 30\n        }\n    \")"
+expression: "parse_unwrap(&tokenize(\"\n        main {\n            echo 10;\n            echo 20\n\n            echo 30;\n\n            10 20 30\n        }\n    \"))"
 ---
 [
     (
         Main(
+            (
+                "main",
+                9..13,
+            ),
             [
                 (
                     Echo(
+                        (
+                            "echo",
+                            28..32,
+                        ),
                         (
                             Number(
                                 (
@@ -23,6 +31,10 @@ expression: "parse_unwrap(\"\n        main {\n            echo 10;\n            
                 (
                     Echo(
                         (
+                            "echo",
+                            49..53,
+                        ),
+                        (
                             Number(
                                 (
                                     20.0,
@@ -36,6 +48,10 @@ expression: "parse_unwrap(\"\n        main {\n            echo 10;\n            
                 ),
                 (
                     Echo(
+                        (
+                            "echo",
+                            70..74,
+                        ),
                         (
                             Number(
                                 (

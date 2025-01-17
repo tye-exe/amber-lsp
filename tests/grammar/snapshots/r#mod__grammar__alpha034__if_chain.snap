@@ -1,12 +1,16 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"\n        if {\n            2 == 3 {\n                echo 10\n            }\n            true: echo 10\n            else {\n                echo 20\n            }\n        }\n    \").unwrap()"
+expression: "parse_unwrap(&tokenize(\"\n        if {\n            2 == 3 {\n                echo 10\n            }\n            true: echo 10\n            else {\n                echo 20\n            }\n        }\n    \"))"
 ---
 [
     (
         Statement(
             (
                 IfChain(
+                    (
+                        "if",
+                        9..11,
+                    ),
                     [
                         (
                             IfCondition(
@@ -40,6 +44,10 @@ expression: "parse(\"\n        if {\n            2 == 3 {\n                echo 
                                                 [
                                                     (
                                                         Echo(
+                                                            (
+                                                                "echo",
+                                                                51..55,
+                                                            ),
                                                             (
                                                                 Number(
                                                                     (
@@ -78,6 +86,10 @@ expression: "parse(\"\n        if {\n            2 == 3 {\n                echo 
                                         (
                                             Echo(
                                                 (
+                                                    "echo",
+                                                    91..95,
+                                                ),
+                                                (
                                                     Number(
                                                         (
                                                             10.0,
@@ -100,10 +112,18 @@ expression: "parse(\"\n        if {\n            2 == 3 {\n                echo 
                                 (
                                     Else(
                                         (
+                                            "else",
+                                            111..115,
+                                        ),
+                                        (
                                             Block(
                                                 [
                                                     (
                                                         Echo(
+                                                            (
+                                                                "echo",
+                                                                134..138,
+                                                            ),
                                                             (
                                                                 Number(
                                                                     (

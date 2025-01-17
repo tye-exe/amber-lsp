@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"\n        {\n            echo 10\n        }\n        {\n            {\n                echo 20\n            }\n        }\n    \").unwrap()"
+expression: "parse_unwrap(&tokenize(\"\n        {\n            echo 10\n        }\n        {\n            {\n                echo 20\n            }\n        }\n    \"))"
 ---
 [
     (
@@ -12,6 +12,10 @@ expression: "parse(\"\n        {\n            echo 10\n        }\n        {\n   
                             [
                                 (
                                     Echo(
+                                        (
+                                            "echo",
+                                            23..27,
+                                        ),
                                         (
                                             Number(
                                                 (
@@ -48,6 +52,10 @@ expression: "parse(\"\n        {\n            echo 10\n        }\n        {\n   
                                                 [
                                                     (
                                                         Echo(
+                                                            (
+                                                                "echo",
+                                                                81..85,
+                                                            ),
                                                             (
                                                                 Number(
                                                                     (

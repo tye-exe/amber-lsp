@@ -1,12 +1,16 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"if true { echo 10 } else { echo 20 }\").unwrap()"
+expression: "parse_unwrap(&tokenize(\"if true { echo 10 } else { echo 20 }\"))"
 ---
 [
     (
         Statement(
             (
                 IfCondition(
+                    (
+                        "if",
+                        0..2,
+                    ),
                     (
                         IfCondition(
                             (
@@ -23,6 +27,10 @@ expression: "parse(\"if true { echo 10 } else { echo 20 }\").unwrap()"
                                     [
                                         (
                                             Echo(
+                                                (
+                                                    "echo",
+                                                    10..14,
+                                                ),
                                                 (
                                                     Number(
                                                         (
@@ -46,10 +54,18 @@ expression: "parse(\"if true { echo 10 } else { echo 20 }\").unwrap()"
                         (
                             Else(
                                 (
+                                    "else",
+                                    20..24,
+                                ),
+                                (
                                     Block(
                                         [
                                             (
                                                 Echo(
+                                                    (
+                                                        "echo",
+                                                        27..31,
+                                                    ),
                                                     (
                                                         Number(
                                                             (

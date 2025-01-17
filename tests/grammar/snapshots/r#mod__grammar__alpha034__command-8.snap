@@ -22,7 +22,7 @@ expression: "parse(&tokenize(\"$command {\"))"
                                             Expression(
                                                 (
                                                     Error,
-                                                    0..10,
+                                                    10..10,
                                                 ),
                                             ),
                                             9..10,
@@ -42,7 +42,7 @@ expression: "parse(&tokenize(\"$command {\"))"
     ),
     [
         found end of input at 9..10 expected "expression",
-        found end of input at 0..10 expected '"}"',
-        found end of input at 0..10 expected '"}"', '"\\"', '"-"', '"{"', or '"$"',
+        found end of input at 10..10 expected '"}"',
+        found end of input at 10..10 expected '"}"', '"\\"', '"-"', '"{"', or '"$"',
     ],
 )

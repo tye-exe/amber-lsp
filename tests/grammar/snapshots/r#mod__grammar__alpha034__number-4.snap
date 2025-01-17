@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"-1.24\").unwrap()"
+expression: "parse_unwrap(&tokenize(\"-1.24\"))"
 ---
 [
     (
@@ -9,6 +9,10 @@ expression: "parse(\"-1.24\").unwrap()"
                 Expression(
                     (
                         Neg(
+                            (
+                                "-",
+                                0..1,
+                            ),
                             (
                                 Number(
                                     (

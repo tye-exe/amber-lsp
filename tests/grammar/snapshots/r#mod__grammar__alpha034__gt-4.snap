@@ -36,7 +36,7 @@ expression: "parse(&tokenize(\"1 + 2 > \"))"
                                     ),
                                     (
                                         Error,
-                                        0..7,
+                                        7..7,
                                     ),
                                 ),
                                 0..7,
@@ -50,6 +50,6 @@ expression: "parse(&tokenize(\"1 + 2 > \"))"
         ],
     ),
     [
-        found end of input at 0..7 expected '"-"', '"not"', '"nameof"', '"true"', '"false"', '"null"', '"status"', '"\""', '"["', '"$"', or '"("',
+        found end of input at 7..7 expected '"-"', '"not"', '"nameof"', '"true"', '"false"', '"null"', '"status"', '"\""', '"["', '"$"', or '"("',
     ],
 )

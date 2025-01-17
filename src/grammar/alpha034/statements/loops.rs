@@ -14,8 +14,11 @@ pub fn inf_loop_parser<'a>(
     stmnts: impl AmberParser<'a, Spanned<Statement>>,
 ) -> impl AmberParser<'a, Spanned<Statement>> {
     just(T!["loop"])
-        .ignore_then(block_parser(stmnts))
-        .map_with(|block, e| (Statement::InfiniteLoop(block), e.span()))
+        .map_with(|_, e| ("loop".to_string(), e.span()))
+        .then(block_parser(stmnts))
+        .map_with(|(loop_keyword, block), e| {
+            (Statement::InfiniteLoop(loop_keyword, block), e.span())
+        })
         .boxed()
 }
 
@@ -35,12 +38,17 @@ pub fn iter_loop_parser<'a>(
         .map_with(|(var, index), e| (IterLoopVars::WithIndex(var, index), e.span()));
 
     just(T!["loop"])
-        .ignore_then(
+        .map_with(|_, e| ("loop".to_string(), e.span()))
+        .then(
             choice((with_index_var, single_var)).recover_with(via_parser(
                 none_of([T!["in"]]).map_with(|_, e| (IterLoopVars::Error, e.span())),
             )),
         )
-        .then_ignore(just(T!["in"]).recover_with(via_parser(any().or_not().map(|_| T!["in"]))))
+        .then(
+            just(T!["in"])
+                .recover_with(via_parser(any().or_not().map(|_| T!["in"])))
+                .map_with(|t, e| (t.to_string(), e.span())),
+        )
         .then(
             parse_expr(stmnts.clone()).recover_with(via_parser(
                 any()
@@ -51,8 +59,11 @@ pub fn iter_loop_parser<'a>(
         .then(block_parser(stmnts).recover_with(via_parser(
             any().or_not().map_with(|_, e| (Block::Error, e.span())),
         )))
-        .map_with(|((vars, expr), body), e| {
-            (Statement::IterLoop(vars, Box::new(expr), body), e.span())
+        .map_with(|((((loop_keyword, vars), in_keyword), expr), body), e| {
+            (
+                Statement::IterLoop(loop_keyword, vars, in_keyword, Box::new(expr), body),
+                e.span(),
+            )
         })
         .boxed()
 }

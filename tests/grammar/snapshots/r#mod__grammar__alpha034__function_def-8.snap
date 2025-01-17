@@ -25,6 +25,10 @@ expression: "parse(&tokenize(\"fun foo {\n        echo 10\n    }\"))"
                         (
                             Echo(
                                 (
+                                    "echo",
+                                    18..22,
+                                ),
+                                (
                                     Number(
                                         (
                                             10.0,

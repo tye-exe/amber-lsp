@@ -19,7 +19,7 @@ pub fn analyze_stmnt(
 ) {
     match stmnt {
         Statement::Block(block) => analyze_block(file_id, block, symbol_table, backend),
-        Statement::IfChain(if_chain) => {
+        Statement::IfChain(_, if_chain) => {
             for (if_chain_content, _) in if_chain.iter() {
                 match if_chain_content {
                     IfChainContent::IfCondition((condition, _)) => match condition {
@@ -40,10 +40,10 @@ pub fn analyze_stmnt(
                         _ => {}
                     },
                     IfChainContent::Else((else_cond, _)) => match else_cond {
-                        ElseCondition::Else(block) => {
+                        ElseCondition::Else(_, block) => {
                             return analyze_block(file_id, block, symbol_table, backend)
                         }
-                        ElseCondition::InlineElse(stmnt) => {
+                        ElseCondition::InlineElse(_, stmnt) => {
                             return analyze_stmnt(
                                 file_id,
                                 stmnt,
@@ -56,7 +56,7 @@ pub fn analyze_stmnt(
                 }
             }
         }
-        Statement::IfCondition(if_cond, else_cond) => {
+        Statement::IfCondition(_, if_cond, else_cond) => {
             match &if_cond.0 {
                 IfCondition::IfCondition(exp, block) => {
                     analyze_exp(file_id, exp, symbol_table, backend);
@@ -77,17 +77,17 @@ pub fn analyze_stmnt(
 
             if let Some(else_cond) = else_cond {
                 match &else_cond.0 {
-                    ElseCondition::Else(block) => {
+                    ElseCondition::Else(_, block) => {
                         return analyze_block(file_id, block, symbol_table, backend)
                     }
-                    ElseCondition::InlineElse(stmnt) => {
+                    ElseCondition::InlineElse(_, stmnt) => {
                         return analyze_stmnt(file_id, stmnt, symbol_table, backend, stmnt.1.end)
                     }
                 }
             }
         }
-        Statement::InfiniteLoop(block) => analyze_block(file_id, block, symbol_table, backend),
-        Statement::IterLoop((vars, _), exp, block) => {
+        Statement::InfiniteLoop(_, block) => analyze_block(file_id, block, symbol_table, backend),
+        Statement::IterLoop(_, (vars, _), _, exp, block) => {
             let block_span = block.1.clone();
             match &vars {
                 IterLoopVars::WithIndex((var1, var1_span), (var2, var2_span)) => {
@@ -173,7 +173,7 @@ pub fn analyze_stmnt(
             analyze_exp(file_id, exp, symbol_table, backend);
             analyze_block(file_id, block, symbol_table, backend);
         }
-        Statement::VariableInit((var_name, var_span), exp) => {
+        Statement::VariableInit(_, (var_name, var_span), exp) => {
             symbol_table.symbols.insert(
                 var_span.start..=var_span.end,
                 SymbolInfo {
@@ -201,14 +201,14 @@ pub fn analyze_stmnt(
 
             analyze_exp(file_id, exp, symbol_table, backend);
         }
-        Statement::Echo(exp) => analyze_exp(file_id, exp, symbol_table, backend),
+        Statement::Echo(_, exp) => analyze_exp(file_id, exp, symbol_table, backend),
         Statement::Expression(exp) => analyze_exp(file_id, exp, symbol_table, backend),
-        Statement::Fail(exp) => {
+        Statement::Fail(_, exp) => {
             if let Some(exp) = exp {
                 analyze_exp(file_id, exp, symbol_table, backend);
             }
         }
-        Statement::Return(exp) => {
+        Statement::Return(_, exp) => {
             if let Some(exp) = exp {
                 analyze_exp(file_id, exp, symbol_table, backend);
             }
@@ -327,7 +327,7 @@ pub fn analyze_failure_handler(
     backend: &Backend,
 ) {
     match failure {
-        FailureHandler::Handle(stmnts) => {
+        FailureHandler::Handle(_, stmnts) => {
             stmnts.iter().for_each(|stmnt| {
                 analyze_stmnt(file_id, stmnt, symbol_table, backend, span.end);
             });

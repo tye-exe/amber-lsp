@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse_unwrap(\"\n        fun func(a: Num, b: Text, c: Bool): Num {\n            echo 10\n\n            return 10\n        }\n    \")"
+expression: "parse_unwrap(&tokenize(\"\n        fun func(a: Num, b: Text, c: Bool): Num {\n            echo 10\n\n            return 10\n        }\n    \"))"
 ---
 [
     (
@@ -68,6 +68,10 @@ expression: "parse_unwrap(\"\n        fun func(a: Num, b: Text, c: Bool): Num {\
                 (
                     Echo(
                         (
+                            "echo",
+                            63..67,
+                        ),
+                        (
                             Number(
                                 (
                                     10.0,
@@ -81,6 +85,10 @@ expression: "parse_unwrap(\"\n        fun func(a: Num, b: Text, c: Bool): Num {\
                 ),
                 (
                     Return(
+                        (
+                            "return",
+                            84..90,
+                        ),
                         Some(
                             (
                                 Number(

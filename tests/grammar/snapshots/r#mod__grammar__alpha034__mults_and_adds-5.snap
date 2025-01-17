@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"3 * 2 - --2 * 2\").unwrap()"
+expression: "parse_unwrap(&tokenize(\"3 * 2 - --2 * 2\"))"
 ---
 [
     (
@@ -37,7 +37,15 @@ expression: "parse(\"3 * 2 - --2 * 2\").unwrap()"
                                     (
                                         Neg(
                                             (
+                                                "-",
+                                                8..9,
+                                            ),
+                                            (
                                                 Neg(
+                                                    (
+                                                        "-",
+                                                        9..10,
+                                                    ),
                                                     (
                                                         Number(
                                                             (

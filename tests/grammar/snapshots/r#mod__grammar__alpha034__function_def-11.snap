@@ -52,6 +52,10 @@ expression: "parse(&tokenize(\"fun foo(abc: !WrongType {\n        echo 10\n    }
                         (
                             Echo(
                                 (
+                                    "echo",
+                                    34..38,
+                                ),
+                                (
                                     Number(
                                         (
                                             10.0,

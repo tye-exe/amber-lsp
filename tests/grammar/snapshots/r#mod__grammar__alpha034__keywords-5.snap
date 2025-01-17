@@ -1,12 +1,16 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"echo 1\").unwrap()"
+expression: "parse_unwrap(&tokenize(\"echo 1\"))"
 ---
 [
     (
         Statement(
             (
                 Echo(
+                    (
+                        "echo",
+                        0..4,
+                    ),
                     (
                         Number(
                             (

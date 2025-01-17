@@ -23,11 +23,11 @@ expression: "parse(&tokenize(r#\"\n        import {}\n\n    \"#))"
                     ),
                     (
                         "from",
-                        9..18,
+                        18..18,
                     ),
                     (
                         "",
-                        9..18,
+                        18..18,
                     ),
                 ),
                 9..18,
@@ -35,7 +35,7 @@ expression: "parse(&tokenize(r#\"\n        import {}\n\n    \"#))"
         ],
     ),
     [
-        found end of input at 9..18 expected '"from"',
-        found end of input at 9..18 expected '"\""',
+        found end of input at 18..18 expected '"from"',
+        found end of input at 18..18 expected '"\""',
     ],
 )

@@ -17,15 +17,15 @@ expression: "parse(&tokenize(\"import\"))"
                     ),
                     (
                         ImportAll,
-                        0..6,
+                        6..6,
                     ),
                     (
                         "from",
-                        0..6,
+                        6..6,
                     ),
                     (
                         "",
-                        0..6,
+                        6..6,
                     ),
                 ),
                 0..6,
@@ -33,8 +33,8 @@ expression: "parse(&tokenize(\"import\"))"
         ],
     ),
     [
-        found end of input at 0..6 expected '"*"', or '"{"',
-        found end of input at 0..6 expected '"from"',
-        found end of input at 0..6 expected '"\""',
+        found end of input at 6..6 expected '"*"', or '"{"',
+        found end of input at 6..6 expected '"from"',
+        found end of input at 6..6 expected '"\""',
     ],
 )

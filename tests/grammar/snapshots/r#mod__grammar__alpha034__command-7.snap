@@ -54,6 +54,10 @@ expression: "parse(&tokenize(\"$command {unclosed interpolation$ let x = 10\"))"
                     (
                         VariableInit(
                             (
+                                "let",
+                                34..37,
+                            ),
+                            (
                                 "x",
                                 38..39,
                             ),

@@ -1,12 +1,16 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"\n        if true: echo 10\n        else: echo 20\n    \").unwrap()"
+expression: "parse_unwrap(&tokenize(\"\n        if true: echo 10\n        else: echo 20\n    \"))"
 ---
 [
     (
         Statement(
             (
                 IfCondition(
+                    (
+                        "if",
+                        9..11,
+                    ),
                     (
                         InlineIfCondition(
                             (
@@ -20,6 +24,10 @@ expression: "parse(\"\n        if true: echo 10\n        else: echo 20\n    \").
                             ),
                             (
                                 Echo(
+                                    (
+                                        "echo",
+                                        18..22,
+                                    ),
                                     (
                                         Number(
                                             (
@@ -39,7 +47,15 @@ expression: "parse(\"\n        if true: echo 10\n        else: echo 20\n    \").
                         (
                             InlineElse(
                                 (
+                                    "else",
+                                    34..38,
+                                ),
+                                (
                                     Echo(
+                                        (
+                                            "echo",
+                                            40..44,
+                                        ),
                                         (
                                             Number(
                                                 (

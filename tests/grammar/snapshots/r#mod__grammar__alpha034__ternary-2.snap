@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse(\"true then 1 + 2 else 2 + 1\").unwrap()"
+expression: "parse_unwrap(&tokenize(\"true then 1 + 2 else 2 + 1\"))"
 ---
 [
     (
@@ -17,6 +17,10 @@ expression: "parse(\"true then 1 + 2 else 2 + 1\").unwrap()"
                                     ),
                                 ),
                                 0..4,
+                            ),
+                            (
+                                "then",
+                                5..9,
                             ),
                             (
                                 Add(
@@ -40,6 +44,10 @@ expression: "parse(\"true then 1 + 2 else 2 + 1\").unwrap()"
                                     ),
                                 ),
                                 10..15,
+                            ),
+                            (
+                                "else",
+                                16..20,
                             ),
                             (
                                 Add(
