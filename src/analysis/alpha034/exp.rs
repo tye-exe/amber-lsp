@@ -615,6 +615,7 @@ pub fn analyze_exp(
                     data_type: DataType::Number,
                     is_definition: false,
                     undefined: false,
+                    span: *exp_span,
                 },
             );
 

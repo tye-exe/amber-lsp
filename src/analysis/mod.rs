@@ -4,7 +4,10 @@ use types::GenericsMap;
 
 use crate::{
     files::{FileVersion, Files},
-    grammar::{alpha034::{CompilerFlag, DataType}, Span},
+    grammar::{
+        alpha034::{CompilerFlag, DataType},
+        Span,
+    },
     paths::FileId,
 };
 
@@ -25,7 +28,7 @@ pub struct VarSymbol {}
 pub enum SymbolType {
     Function(FunctionSymbol),
     Variable(VarSymbol),
-    ImportPath(Span),
+    ImportPath,
 }
 
 /// Information about a symbol in the document.
@@ -36,6 +39,7 @@ pub struct SymbolInfo {
     pub data_type: DataType,
     pub is_definition: bool,
     pub undefined: bool,
+    pub span: Span,
 }
 
 impl SymbolInfo {
@@ -69,7 +73,7 @@ impl SymbolInfo {
                     self.data_type.to_string(generics_map)
                 )
             }
-            SymbolType::ImportPath(_) => format!("import \"{}\"", self.name),
+            SymbolType::ImportPath => format!("import \"{}\"", self.name),
             _ => format!("{}: {}", self.name, self.data_type.to_string(generics_map)),
         }
     }
@@ -138,6 +142,7 @@ pub fn insert_symbol_definition(
             data_type,
             is_definition: true,
             undefined: false,
+            span: (definition_location.start..definition_location.end).into(),
         },
     );
 
@@ -187,13 +192,14 @@ pub fn import_symbol(
         }
 
         symbol_table.symbols.insert(
-            symbol_span,
+            symbol_span.clone(),
             SymbolInfo {
                 name: symbol.to_string(),
                 symbol_type: symbol_type.clone(),
                 data_type,
                 is_definition: false,
                 undefined: false,
+                span: Span::new(*symbol_span.start(), *symbol_span.end()),
             },
         );
     }
@@ -284,6 +290,7 @@ pub fn insert_symbol_reference(
                     data_type,
                     is_definition: false,
                     undefined: false,
+                    span: Span::new(*span.start(), *span.end()),
                 },
             );
         }
@@ -307,6 +314,7 @@ pub fn insert_symbol_reference(
                     data_type: DataType::Null,
                     is_definition: false,
                     undefined: true,
+                    span: Span::new(*span.start(), *span.end()),
                 },
             );
         }

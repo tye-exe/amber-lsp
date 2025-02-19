@@ -19,6 +19,10 @@ Cargo.lock
 
 
 # Added by cargo
-
 /target
+
+# Local VSCode settings
 .vscode/settings.json
+
+# Testing
+test.*

@@ -277,7 +277,7 @@ pub async fn analyze_global_stmnt(
                         end: 1,
                     },
                     DataType::Null,
-                    SymbolType::ImportPath(path_span.clone()),
+                    SymbolType::ImportPath,
                     false,
                 );
             }

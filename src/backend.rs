@@ -611,10 +611,10 @@ impl LanguageServer for Backend {
                         let file_url = self.files.lookup(&definition.file.0);
 
                         match symbol_info.symbol_type {
-                            SymbolType::ImportPath(path_span) => {
+                            SymbolType::ImportPath => {
                                 let selection_range = Range {
-                                    start: self.offset_to_position(path_span.start, &rope).unwrap(),
-                                    end: self.offset_to_position(path_span.end, &rope).unwrap(),
+                                    start: self.offset_to_position(symbol_info.span.start, &rope).unwrap(),
+                                    end: self.offset_to_position(symbol_info.span.end, &rope).unwrap(),
                                 };
 
                                 Some(GotoDefinitionResponse::Link(vec![LocationLink {

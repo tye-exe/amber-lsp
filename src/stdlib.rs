@@ -16,7 +16,7 @@ pub async fn resolve(backend: &Backend, path: String) -> Option<Url> {
     let path = match backend.amber_version {
         AmberVersion::Alpha034 => "alpha034/std/".to_string() + &file_name,
         AmberVersion::Alpha035 => "alpha035/std/".to_string() + &file_name,
-        _ => "alpha040/std/".to_string() + &file_name, // TODO: Change default path when resolved issues with parsing
+        _ => "alpha034/std/".to_string() + &file_name,
     };
 
     if let Some(module) = STDLIB.get_file(path.clone()) {
