@@ -11,7 +11,14 @@ expression: "parse(&tokenize(\"$command {\"))"
                         Expression(
                             (
                                 Command(
+                                    [],
                                     [
+                                        (
+                                            Text(
+                                                "$",
+                                            ),
+                                            0..1,
+                                        ),
                                         (
                                             Text(
                                                 "command",
@@ -26,6 +33,12 @@ expression: "parse(&tokenize(\"$command {\"))"
                                                 ),
                                             ),
                                             9..10,
+                                        ),
+                                        (
+                                            Text(
+                                                "$",
+                                            ),
+                                            10..10,
                                         ),
                                     ],
                                     None,

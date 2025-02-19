@@ -1,6 +1,6 @@
 ---
 source: tests/grammar/alpha034.rs
-expression: "parse_unwrap(\"$echo \\\"Hello, {name}!\\\"$\")"
+expression: "parse_unwrap(&tokenize(\"$echo \\\"Hello, {name}!\\\"$\"))"
 ---
 [
     (
@@ -9,7 +9,14 @@ expression: "parse_unwrap(\"$echo \\\"Hello, {name}!\\\"$\")"
                 Expression(
                     (
                         Command(
+                            [],
                             [
+                                (
+                                    Text(
+                                        "$",
+                                    ),
+                                    0..1,
+                                ),
                                 (
                                     Text(
                                         "echo",
@@ -59,6 +66,12 @@ expression: "parse_unwrap(\"$echo \\\"Hello, {name}!\\\"$\")"
                                         "\"",
                                     ),
                                     21..22,
+                                ),
+                                (
+                                    Text(
+                                        "$",
+                                    ),
+                                    22..23,
                                 ),
                             ],
                             None,

@@ -11,7 +11,14 @@ expression: "parse(&tokenize(\"$command --arg1 -v\"))"
                         Expression(
                             (
                                 Command(
+                                    [],
                                     [
+                                        (
+                                            Text(
+                                                "$",
+                                            ),
+                                            0..1,
+                                        ),
                                         (
                                             Text(
                                                 "command",
@@ -29,6 +36,12 @@ expression: "parse(&tokenize(\"$command --arg1 -v\"))"
                                                 "-v",
                                             ),
                                             16..18,
+                                        ),
+                                        (
+                                            Text(
+                                                "$",
+                                            ),
+                                            18..18,
                                         ),
                                     ],
                                     None,

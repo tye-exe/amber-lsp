@@ -1,7 +1,10 @@
 use chumsky::prelude::*;
 
 use crate::{
-    grammar::alpha034::{lexer::Token, parser::ident, AmberParser, Expression, Spanned, Statement},
+    grammar::alpha034::{
+        global::type_parser, lexer::Token, parser::default_recovery, AmberParser, DataType,
+        Expression, Spanned, Statement,
+    },
     T,
 };
 
@@ -16,16 +19,19 @@ pub fn is_parser<'a>(
             just(T!["is"])
                 .map_with(|t, e| (t.to_string(), e.span()))
                 .then(
-                    ident("type".to_string())
-                        .recover_with(via_parser(any().or_not().map(|_| "".to_string())))
-                        .map_with(|txt, e| (txt, e.span())),
+                    type_parser().recover_with(via_parser(
+                        default_recovery()
+                            .or_not()
+                            .map_with(|_, e| (DataType::Error, e.span())),
+                    )),
                 )
                 .repeated(),
             |expr, (is_keyword, cast)| {
                 let span = SimpleSpan::new(expr.1.start, cast.1.end);
 
-                (Expression::Is(is_keyword, Box::new(expr), cast), span)
+                (Expression::Is(Box::new(expr), is_keyword, cast), span)
             },
         )
         .boxed()
+        .labelled("expression")
 }

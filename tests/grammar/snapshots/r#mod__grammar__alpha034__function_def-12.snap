@@ -1,0 +1,27 @@
+---
+source: tests/grammar/alpha034.rs
+expression: "parse_unwrap(&tokenize(\"pub fun func() {}\"))"
+---
+[
+    (
+        FunctionDefinition(
+            [],
+            (
+                true,
+                0..3,
+            ),
+            (
+                "fun",
+                4..7,
+            ),
+            (
+                "func",
+                8..12,
+            ),
+            [],
+            None,
+            [],
+        ),
+        0..17,
+    ),
+]

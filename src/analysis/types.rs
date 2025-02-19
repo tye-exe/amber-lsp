@@ -1,0 +1,255 @@
+use std::sync::atomic::Ordering::SeqCst;
+use std::{collections::HashSet, sync::atomic::AtomicUsize};
+
+use crate::{
+    files::FileVersion,
+    grammar::alpha034::DataType,
+    paths::FileId,
+    utils::{FastDashMap, FastDashSet},
+};
+
+#[derive(Debug)]
+pub struct GenericsMap {
+    map: FastDashMap<usize, DataType>,
+    inferred: FastDashSet<usize>,
+    generics_per_file: FastDashMap<(FileId, FileVersion), Vec<usize>>,
+}
+
+static ATOMIC_COUNTER: AtomicUsize = AtomicUsize::new(0);
+
+impl GenericsMap {
+    pub fn new() -> Self {
+        Self {
+            map: FastDashMap::default(),
+            inferred: FastDashSet::default(),
+            generics_per_file: FastDashMap::default(),
+        }
+    }
+
+    #[inline]
+    pub fn new_generic_id(&self) -> usize {
+        return ATOMIC_COUNTER.fetch_add(1, SeqCst);
+    }
+
+    pub fn reset_counter(&self) {
+        ATOMIC_COUNTER.store(0, SeqCst);
+    }
+
+    pub fn constrain_generic_type(&self, id: usize, constraint: DataType) {
+        if self.has_ref_to_generic(&constraint, id) {
+            return;
+        }
+
+        self.constrain(id, constraint);
+    }
+
+    fn constrain(&self, id: usize, constraint: DataType) {
+        match self.get(id) {
+            DataType::Generic(id) => {
+                self.constrain_generic_type(id, constraint);
+            }
+            ty if self.is_more_or_equally_specific(&ty, &constraint) => {
+                self.map.insert(id, constraint);
+            }
+            _ => {}
+        }
+    }
+
+    #[inline]
+    pub fn mark_as_inferred(&self, id: usize) {
+        self.inferred.insert(id);
+    }
+
+    #[inline]
+    pub fn is_inferred(&self, id: usize) -> bool {
+        self.inferred.contains(&id)
+    }
+
+    pub fn get(&self, id: usize) -> DataType {
+        let ty = self.map.get(&id).map(|t| t.value().clone());
+
+        ty.unwrap_or(DataType::Any)
+    }
+
+    pub fn get_recursive(&self, id: usize) -> DataType {
+        match self.get(id) {
+            DataType::Generic(id) => self.get_recursive(id),
+            DataType::Union(types) => DataType::Union(
+                types
+                    .iter()
+                    .map(|ty| match ty {
+                        DataType::Generic(id) => self.get_recursive(*id),
+                        ty => ty.clone(),
+                    })
+                    .collect(),
+            ),
+            DataType::Array(ty) => match *ty {
+                DataType::Generic(id) => DataType::Array(Box::new(self.get_recursive(id))),
+                ty => DataType::Array(Box::new(ty.clone())),
+            },
+            ty => ty,
+        }
+    }
+
+    pub fn deref_type(&self, ty: &DataType) -> DataType {
+        match ty {
+            DataType::Generic(id) if self.is_inferred(*id) => self.get_recursive(*id),
+            DataType::Union(types) => {
+                DataType::Union(types.iter().map(|ty| self.deref_type(ty)).collect())
+            }
+            DataType::Array(ty) => DataType::Array(Box::new(self.deref_type(ty))),
+            ty => ty.clone(),
+        }
+    }
+
+    pub fn clean(&self, file_id: FileId, file_version: FileVersion) {
+        self.generics_per_file
+            .get(&(file_id, file_version))
+            .map(|generics| {
+                let ids = generics.value();
+                for id in ids {
+                    self.map.remove(id);
+                    self.inferred.remove(id);
+                }
+            });
+        self.generics_per_file.remove(&(file_id, file_version));
+    }
+
+    pub fn insert(&self, file_id: FileId, file_version: FileVersion, generics: Vec<usize>) {
+        self.generics_per_file.insert((file_id, file_version), generics);
+    }
+
+    pub fn get_generics(&self, file_id: FileId, file_version: FileVersion) -> Vec<usize> {
+        self.generics_per_file
+            .get(&(file_id, file_version))
+            .map(|generics| generics.value().clone())
+            .unwrap_or_default()
+    }
+
+    pub fn clone(&self) -> Self {
+        let map = self.map.clone();
+        let inferred = self.inferred.clone();
+        let generics_per_file = self.generics_per_file.clone();
+        Self {
+            map,
+            inferred,
+            generics_per_file,
+        }
+    }
+
+    fn is_more_or_equally_specific(&self, current: &DataType, new: &DataType) -> bool {
+        match (current, new) {
+            (DataType::Generic(id), ty) => {
+                let expected = self.get(*id);
+                self.is_more_or_equally_specific(&expected, ty)
+            }
+            (ty, DataType::Generic(id)) => {
+                let given = self.get(*id);
+                self.is_more_or_equally_specific(ty, &given)
+            }
+            (DataType::Any, _) => true,
+            (_, DataType::Any) => false,
+            (DataType::Array(current), DataType::Array(new)) => {
+                self.is_more_or_equally_specific(current, new)
+            }
+            (_, DataType::Union(new_types)) => new_types
+                .iter()
+                .all(|new| self.is_more_or_equally_specific(current, new)),
+            (DataType::Union(current_types), new) => current_types
+                .iter()
+                .any(|current| self.is_more_or_equally_specific(current, new)),
+            (_, DataType::Error) => false,
+            (t1, t2) => *t1 == *t2,
+        }
+    }
+
+    fn has_ref_to_generic(&self, ty: &DataType, id: usize) -> bool {
+        match ty {
+            DataType::Generic(new_id) => {
+                (*new_id == id) || {
+                    let ty = self.get(*new_id);
+                    self.has_ref_to_generic(&ty, id)
+                }
+            }
+            DataType::Union(types) => types.iter().any(|ty| self.has_ref_to_generic(ty, id)),
+            DataType::Array(ty) => self.has_ref_to_generic(ty, id),
+            _ => false,
+        }
+    }
+
+    pub fn to_string(&self) -> String {
+        let mut collection = self
+            .map
+            .iter()
+            .map(|entry| {
+                (
+                    *entry.key(),
+                    format!("[{}]: {}", entry.key(), entry.value().to_string(self)),
+                )
+            })
+            .collect::<Vec<(usize, String)>>();
+
+        collection.sort_unstable_by_key(|(id, _)| *id);
+
+        collection
+            .into_iter()
+            .map(|(_, s)| s)
+            .collect::<Vec<String>>()
+            .join("\n")
+    }
+}
+
+pub fn make_union_type(types: Vec<DataType>) -> DataType {
+    if types.is_empty() {
+        return DataType::Any;
+    }
+
+    let flatten_types = flatten_types(types);
+
+    let mut seen = HashSet::new();
+    let dedup_types: Vec<DataType> = flatten_types
+        .into_iter()
+        .filter(|ty| seen.insert(ty.clone()))
+        .collect();
+
+    if dedup_types.len() == 1 {
+        dedup_types[0].clone()
+    } else {
+        DataType::Union(dedup_types)
+    }
+}
+
+pub fn matches_type(expected: &DataType, given: &DataType, generics_map: &GenericsMap) -> bool {
+    match (expected, given) {
+        (DataType::Generic(id), _) => {
+            let expected = generics_map.get_recursive(*id);
+            matches_type(&expected, given, generics_map)
+        }
+        (_, DataType::Generic(id)) => {
+            let given = generics_map.get_recursive(*id);
+            matches_type(expected, &given, generics_map)
+        }
+        (_, DataType::Union(given_types)) => given_types
+            .iter()
+            .all(|given| matches_type(expected, given, generics_map)),
+        (DataType::Union(expected_types), given_ty) => expected_types
+            .iter()
+            .any(|expected_type| matches_type(expected_type, given_ty, generics_map)),
+        (DataType::Array(expected_type), DataType::Array(given_type)) => {
+            matches_type(expected_type, given_type, generics_map)
+        }
+        (DataType::Any, _) | (_, DataType::Any) => true,
+        (DataType::Error, _) | (_, DataType::Error) => false,
+        (t1, t2) => *t1 == *t2,
+    }
+}
+
+fn flatten_types(types: Vec<DataType>) -> Vec<DataType> {
+    types
+        .into_iter()
+        .flat_map(|t| match t {
+            DataType::Union(types) => flatten_types(types),
+            t => vec![t],
+        })
+        .collect()
+}

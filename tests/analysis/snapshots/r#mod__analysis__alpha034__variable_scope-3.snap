@@ -1,0 +1,18 @@
+---
+source: tests/analysis/alpha034.rs
+expression: a_defs.get(&47)
+---
+Some(
+    SymbolLocation {
+        file: (
+            FileId(
+                0,
+            ),
+            FileVersion(
+                1,
+            ),
+        ),
+        start: 35,
+        end: 36,
+    },
+)

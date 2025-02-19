@@ -22,43 +22,52 @@ expression: "parse(&tokenize(\"\n        1 +\n        let x = 10\n    \"))"
                                     ),
                                     (
                                         Error,
-                                        21..24,
+                                        21..12,
                                     ),
                                 ),
-                                9..24,
+                                9..12,
                             ),
                         ),
-                        9..24,
+                        9..12,
                     ),
                 ),
-                9..24,
+                9..12,
             ),
             (
                 Statement(
                     (
-                        VariableSet(
+                        VariableInit(
+                            (
+                                "let",
+                                21..24,
+                            ),
                             (
                                 "x",
                                 25..26,
                             ),
                             (
-                                Number(
+                                Expression(
                                     (
-                                        10.0,
+                                        Number(
+                                            (
+                                                10.0,
+                                                29..31,
+                                            ),
+                                        ),
                                         29..31,
                                     ),
                                 ),
                                 29..31,
                             ),
                         ),
-                        25..31,
+                        21..31,
                     ),
                 ),
-                25..31,
+                21..31,
             ),
         ],
     ),
     [
-        multiple errors found at 21..24,
+        found "let" at 21..24 expected "expression",
     ],
 )

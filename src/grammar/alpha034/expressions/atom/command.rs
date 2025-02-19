@@ -2,8 +2,10 @@ use chumsky::prelude::*;
 
 use crate::{
     grammar::alpha034::{
-        lexer::Token, statements::failed::failure_parser, AmberParser, Expression,
-        InterpolatedCommand, Spanned, Statement,
+        lexer::Token,
+        parser::default_recovery,
+        statements::{failed::failure_parser, modifiers::modifier_parser},
+        AmberParser, Expression, InterpolatedCommand, Spanned, Statement,
     },
     T,
 };
@@ -33,14 +35,14 @@ pub fn command_parser<'a>(
 
     let interpolated = expr
         .recover_with(via_parser(
-            any()
+            default_recovery()
                 .or_not()
                 .map_with(|_, e| (Expression::Error, e.span())),
         ))
         .delimited_by(
             just(T!['{']),
             just(T!['}']).recover_with(via_parser(
-                none_of(T!["}"])
+                default_recovery()
                     .repeated()
                     .then(just(T!['}']))
                     .or_not()
@@ -50,16 +52,15 @@ pub fn command_parser<'a>(
         .map(|expr| InterpolatedCommand::Expression(Box::new(expr)))
         .boxed();
 
-    just(T!['$'])
-        .ignore_then(
+    modifier_parser()
+        .repeated()
+        .collect()
+        .then(just(T!['$']).map_with(|_, e| (InterpolatedCommand::Text("$".to_string()), e.span())))
+        .then(
             choice((
                 any()
                     .filter(|c: &Token| {
-                        *c != T!["$"]
-                            && *c != T!["{"]
-                            && *c != T!["}"]
-                            && *c != T!["\\"]
-                            && *c != T!["-"]
+                        *c != T!["$"] && *c != T!["{"] && *c != T!["\\"] && *c != T!["-"]
                     })
                     .map(|text| InterpolatedCommand::Text(text.to_string())),
                 escape,
@@ -68,10 +69,24 @@ pub fn command_parser<'a>(
             ))
             .map_with(|cmd, e| (cmd, e.span()))
             .repeated()
-            .collect(),
+            .collect::<Vec<Spanned<InterpolatedCommand>>>(),
         )
-        .then_ignore(just(T!['$']).recover_with(via_parser(any().or_not().map(|_| T!['$']))))
+        .then(
+            just(T!['$'])
+                .recover_with(via_parser(default_recovery().or_not().map(|_| T!['$'])))
+                .map_with(|_, e| (InterpolatedCommand::Text("$".to_string()), e.span())),
+        )
         .then(failure_parser(stmnts).or_not())
-        .map_with(|(expr, handler), e| (Expression::Command(expr, handler), e.span()))
+        .map_with(|((((modifier, begin), content), end), handler), e| {
+            let mut content_with_bounds = vec![begin];
+            content_with_bounds.extend(content);
+            content_with_bounds.push(end);
+
+            (
+                Expression::Command(modifier, content_with_bounds, handler),
+                e.span(),
+            )
+        })
         .boxed()
+        .labelled("command")
 }

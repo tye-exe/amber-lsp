@@ -11,7 +11,14 @@ expression: "parse(&tokenize(\"$command {}$\"))"
                         Expression(
                             (
                                 Command(
+                                    [],
                                     [
+                                        (
+                                            Text(
+                                                "$",
+                                            ),
+                                            0..1,
+                                        ),
                                         (
                                             Text(
                                                 "command",
@@ -22,10 +29,16 @@ expression: "parse(&tokenize(\"$command {}$\"))"
                                             Expression(
                                                 (
                                                     Error,
-                                                    10..11,
+                                                    10..10,
                                                 ),
                                             ),
                                             9..11,
+                                        ),
+                                        (
+                                            Text(
+                                                "$",
+                                            ),
+                                            11..12,
                                         ),
                                     ],
                                     None,
@@ -42,6 +55,5 @@ expression: "parse(&tokenize(\"$command {}$\"))"
     ),
     [
         found end of input at 9..10 expected "expression",
-        found "$" at 11..12 expected '"}"',
     ],
 )

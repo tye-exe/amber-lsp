@@ -1,24 +1,34 @@
 use chumsky::prelude::*;
 
 use crate::{
-    grammar::alpha034::{lexer::Token, AmberParser, Block, Spanned, Statement},
+    grammar::alpha034::{
+        lexer::Token, parser::default_recovery, AmberParser, Block, Spanned, Statement,
+    },
     T,
 };
+
+use super::modifiers::modifier_parser;
 
 pub fn block_parser<'a>(
     stmnts: impl AmberParser<'a, Spanned<Statement>>,
 ) -> impl AmberParser<'a, Spanned<Block>> {
-    stmnts
-        .recover_with(via_parser(
-            none_of([T!['}']]).map_with(|_, e| (Statement::Error, e.span())),
-        ))
+    modifier_parser()
         .repeated()
         .collect()
-        .delimited_by(
-            just(T!['{']),
-            just(T!['}']).recover_with(via_parser(any().or_not().map(|_| T!['}']))),
+        .then(
+            stmnts
+                .recover_with(via_parser(
+                    default_recovery().map_with(|_, e| (Statement::Error, e.span())),
+                ))
+                .repeated()
+                .collect()
+                .delimited_by(
+                    just(T!['{']),
+                    just(T!['}'])
+                        .recover_with(via_parser(default_recovery().or_not().map(|_| T!['}']))),
+                ),
         )
-        .map_with(move |body, e| (Block::Block(body), e.span()))
+        .map_with(move |(modifier, body), e| (Block::Block(modifier, body), e.span()))
         .boxed()
 }
 

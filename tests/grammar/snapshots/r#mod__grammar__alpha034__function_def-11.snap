@@ -7,6 +7,7 @@ expression: "parse(&tokenize(\"fun foo(abc: !WrongType {\n        echo 10\n    }
         [
             (
                 FunctionDefinition(
+                    [],
                     (
                         false,
                         0..3,
@@ -21,21 +22,17 @@ expression: "parse(&tokenize(\"fun foo(abc: !WrongType {\n        echo 10\n    }
                     ),
                     [
                         (
-                            Generic(
+                            Typed(
                                 (
                                     "abc",
                                     8..11,
                                 ),
+                                (
+                                    <Invalid type>,
+                                    13..14,
+                                ),
                             ),
-                            8..11,
-                        ),
-                        (
-                            Error,
-                            11..12,
-                        ),
-                        (
-                            Error,
-                            13..14,
+                            8..14,
                         ),
                         (
                             Generic(
@@ -74,10 +71,7 @@ expression: "parse(&tokenize(\"fun foo(abc: !WrongType {\n        echo 10\n    }
         ],
     ),
     [
-        multiple errors found at 13..14,
-        multiple errors found at 11..12,
-        found "!" at 13..14 expected '","',
-        multiple errors found at 13..14,
+        found "!" at 13..14 expected "type",
         found "WrongType" at 14..23 expected '","',
         found "{" at 24..25 expected '":"', '","', or '")"',
     ],

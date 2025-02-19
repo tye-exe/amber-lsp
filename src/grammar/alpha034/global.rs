@@ -3,8 +3,11 @@ use chumsky::prelude::*;
 use crate::T;
 
 use super::{
-    lexer::Token, parser::ident, statements::statement_parser, AmberParser, FunctionArgument,
-    GlobalStatement, ImportContent, Spanned, Statement,
+    lexer::Token,
+    parser::{default_recovery, ident},
+    statements::statement_parser,
+    AmberParser, CompilerFlag, DataType, FunctionArgument, GlobalStatement, ImportContent, Spanned,
+    Statement,
 };
 
 pub fn import_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
@@ -13,46 +16,38 @@ pub fn import_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
     let import_specific_parser = just(T!["{"])
         .ignore_then(
             ident("variable".to_string())
-                .recover_with(via_parser(
-                    none_of([T!["}"], T!['"']]).map(|_| "".to_string()),
-                ))
+                .recover_with(via_parser(default_recovery().map(|_| "".to_string())))
                 .map_with(|name, e| (name, e.span()))
-                .separated_by(just(T![","]).recover_with(via_parser(
-                    none_of([T!["}"], T!['"']]).rewind().map(|_| T![","]),
-                )))
+                .separated_by(
+                    just(T![","])
+                        .recover_with(via_parser(default_recovery().rewind().map(|_| T![","]))),
+                )
                 .collect(),
         )
         .then_ignore(
-            just(T!["}"]).recover_with(via_parser(none_of([T!['"']]).or_not().map(|_| T!["}"]))),
+            just(T!["}"]).recover_with(via_parser(default_recovery().or_not().map(|_| T!["}"]))),
         )
         .map_with(|vars, e| (ImportContent::ImportSpecific(vars), e.span()))
         .boxed();
 
     let path_parser = just(T!['"'])
-        .ignore_then(
+        .then(
             any()
                 .filter(|c| *c != T!['"'])
                 .repeated()
                 .collect::<Vec<Token>>()
-                .map_with(|name, e| {
-                    (
-                        name.iter().map(|t| t.to_string()).collect::<String>(),
-                        SimpleSpan::new(
-                            (e.span() as SimpleSpan).start - 1,
-                            (e.span() as SimpleSpan).end + 1,
-                        ),
-                    )
-                }),
+                .map(|name| name.iter().map(|t| t.to_string()).collect::<String>()),
         )
-        .then_ignore(
+        .then(
             just(T!['"']).recover_with(via_parser(
-                none_of([T!['"']])
+                default_recovery()
                     .repeated()
                     .then(just(T!['"']))
                     .or_not()
                     .map(|_| T!['"']),
             )),
         )
+        .map_with(|((_, path), _): ((Token, String), Token), e| (path, e.span()))
         .boxed();
 
     just(T!["pub"])
@@ -63,19 +58,23 @@ pub fn import_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
             import_all_parser
                 .or(import_specific_parser)
                 .recover_with(via_parser(
-                    none_of([T!['"'], T!["from"]])
+                    default_recovery()
                         .or_not()
                         .map_with(|_, e| (ImportContent::ImportAll, e.span())),
                 )),
         )
         .then(
             just(T!["from"])
-                .recover_with(via_parser(none_of([T!['"']]).or_not().map(|_| T!["from"])))
+                .recover_with(via_parser(default_recovery().or_not().map(|_| T!["from"])))
                 .map_with(|_, e| ("from".to_string(), e.span())),
         )
-        .then(path_parser.recover_with(via_parser(
-            any().or_not().map_with(|_, e| ("".to_string(), e.span())),
-        )))
+        .then(
+            path_parser.recover_with(via_parser(
+                default_recovery()
+                    .or_not()
+                    .map_with(|_, e| ("".to_string(), e.span())),
+            )),
+        )
         .map_with(|((((is_pub, imp), vars), from), path), e| {
             (
                 GlobalStatement::Import(is_pub, imp, vars, from, path),
@@ -85,16 +84,44 @@ pub fn import_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
         .boxed()
 }
 
-fn type_parser<'a>() -> impl AmberParser<'a, Spanned<String>> {
-    just(T![':'])
+pub fn type_parser<'a>() -> impl AmberParser<'a, Spanned<DataType>> {
+    let literal_type = choice((
+        just(T!["Text"]).to(DataType::Text),
+        just(T!["Num"]).to(DataType::Number),
+        just(T!["Bool"]).to(DataType::Boolean),
+        just(T!["Null"]).to(DataType::Null),
+    ))
+    .boxed();
+
+    literal_type
+        .clone()
+        .or(just(T!["["])
+            .ignore_then(literal_type)
+            .then_ignore(just(T!["]"]))
+            .map(|ty| DataType::Array(Box::new(ty))))
+        .map_with(|ty, e| (ty, e.span()))
+        .labelled("type")
+        .boxed()
+}
+
+fn compiler_flag_parser<'a>() -> impl AmberParser<'a, Spanned<CompilerFlag>> {
+    just(T!["#"])
+        .ignore_then(just(T!["["]))
         .ignore_then(
-            ident("type".to_string())
-                .or(just(T!["["])
-                    .ignore_then(ident("type".to_string()))
-                    .then_ignore(just(T!["]"]))
-                    .map(|ty| format!("[{}]", ty)))
-                .map_with(|name, e| (name, e.span())),
+            choice((
+                just(T!["allow_nested_if_else"]).to(CompilerFlag::AllowNestedIfElse),
+                just(T!["allow_generic_return"]).to(CompilerFlag::AllowGenericReturn),
+                just(T!["allow_absurd_cast"]).to(CompilerFlag::AllowAbsurdCast),
+            ))
+            .recover_with(via_parser(
+                default_recovery().or_not().map(|_| CompilerFlag::Error),
+            )),
         )
+        .then_ignore(
+            just(T!["]"]).recover_with(via_parser(default_recovery().or_not().map(|_| T!["]"]))),
+        )
+        .map_with(|flag, e| (flag, e.span()))
+        .labelled("compiler flag")
         .boxed()
 }
 
@@ -105,66 +132,100 @@ pub fn function_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
 
     let typed_arg_parser = ident("argument".to_string())
         .map_with(|name, e| (name, e.span()))
-        .then(type_parser())
+        .then(
+            just(T![":"]).ignore_then(
+                type_parser().recover_with(via_parser(
+                    default_recovery()
+                        .or_not()
+                        .map_with(|_, e| (DataType::Error, e.span())),
+                )),
+            ),
+        )
         .map_with(|(name, ty), e| (FunctionArgument::Typed(name, ty), e.span()))
         .boxed();
 
-    let arg_parser = choice((typed_arg_parser, generic_arg_parser)).boxed();
+    let arg_parser = choice((typed_arg_parser, generic_arg_parser))
+        .labelled("argument")
+        .boxed();
 
     let args_parser = arg_parser
         .recover_with(via_parser(
-            none_of([T![')'], T!['{']]).map_with(|_, e| (FunctionArgument::Error, e.span())),
+            default_recovery().map_with(|_, e| (FunctionArgument::Error, e.span())),
         ))
-        .separated_by(just(T![","]).recover_with(via_parser(
-            none_of([T![')'], T!['{']]).rewind().map(|_| T![","]),
-        )))
+        .separated_by(
+            just(T![","]).recover_with(via_parser(default_recovery().rewind().map(|_| T![","]))),
+        )
         .collect()
         .delimited_by(
             just(T!['(']),
-            just(T![')']).recover_with(via_parser(
-                none_of([T!['{'], T!['}']]).or_not().map(|_| T![')']),
-            )),
+            just(T![')']).recover_with(via_parser(default_recovery().or_not().map(|_| T![')']))),
         )
         .boxed();
 
-    let ret_parser = type_parser()
+    let ret_parser = just(T![":"])
+        .ignore_then(
+            type_parser().recover_with(via_parser(
+                default_recovery()
+                    .or_not()
+                    .map_with(|_, e| (DataType::Error, e.span())),
+            )),
+        )
         .or_not()
         .then(
             just(T!["{"])
                 .ignore_then(
                     statement_parser()
                         .recover_with(via_parser(
-                            none_of([T!['}']]).map_with(|_, e| (Statement::Error, e.span())),
+                            default_recovery().map_with(|_, e| (Statement::Error, e.span())),
                         ))
                         .repeated()
                         .collect(),
                 )
                 .then_ignore(
-                    just(T!["}"]).recover_with(via_parser(any().or_not().map(|_| T!["}"]))),
+                    just(T!["}"])
+                        .recover_with(via_parser(default_recovery().or_not().map(|_| T!["}"]))),
                 ),
         )
         .boxed();
 
-    just(T!["pub"])
-        .or_not()
-        .map_with(|is_pub, e| (is_pub.is_some(), e.span()))
+    compiler_flag_parser()
+        .repeated()
+        .collect()
+        .then(
+            just(T!["pub"])
+                .or_not()
+                .map_with(|is_pub, e| (is_pub.is_some(), e.span())),
+        )
         .then(just(T!["fun"]).map_with(|_, e| ("fun".to_string(), e.span())))
         .then(
             ident("function".to_string())
                 .map_err(|err| Rich::custom(err.span().clone(), "Expected function name"))
-                .recover_with(via_parser(any().or_not().map(|_| "".to_string())))
+                .recover_with(via_parser(
+                    default_recovery().or_not().map(|_| "".to_string()),
+                ))
                 .map_with(|name, e| (name, e.span())),
         )
-        .then(args_parser.recover_with(via_parser(
-            none_of([T!["{"], T!["}"]]).or_not().map(|_| vec![]),
+        .then(args_parser.recover_with(via_parser(default_recovery().or_not().map(|_| vec![]))))
+        .then(ret_parser.recover_with(via_parser(
+            default_recovery().or_not().map(|_| (None, vec![])),
         )))
-        .then(ret_parser.recover_with(via_parser(any().or_not().map(|_| (None, vec![])))))
-        .map_with(|((((is_pub, fun), name), args), (ty, body)), e| {
-            (
-                GlobalStatement::FunctionDefinition(is_pub, fun, name, args, ty, body),
-                e.span(),
-            )
-        })
+        .map_with(
+            |(((((compiler_flags, is_pub), fun), name), args), (ty, body)), e| {
+                (
+                    GlobalStatement::FunctionDefinition(
+                        compiler_flags,
+                        is_pub,
+                        fun,
+                        name,
+                        args,
+                        ty,
+                        body,
+                    ),
+                    e.span(),
+                )
+            },
+        )
+        .labelled("function")
         .boxed()
 }
 
@@ -174,7 +235,7 @@ pub fn main_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
         .then(
             just(T!["{"])
                 .recover_with(via_parser(
-                    any()
+                    default_recovery()
                         .repeated()
                         .then(just(T!['{']))
                         .or_not()
@@ -183,13 +244,14 @@ pub fn main_parser<'a>() -> impl AmberParser<'a, Spanned<GlobalStatement>> {
                 .ignore_then(
                     statement_parser()
                         .recover_with(via_parser(
-                            none_of([T!['}']]).map_with(|_, e| (Statement::Error, e.span())),
+                            default_recovery().map_with(|_, e| (Statement::Error, e.span())),
                         ))
                         .repeated()
                         .collect(),
                 )
                 .then_ignore(
-                    just(T!["}"]).recover_with(via_parser(any().or_not().map(|_| T!["}"]))),
+                    just(T!["}"])
+                        .recover_with(via_parser(default_recovery().or_not().map(|_| T!["}"]))),
                 ),
         )
         .map_with(|(main, body), e| (GlobalStatement::Main(main, body), e.span()))

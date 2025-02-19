@@ -1,6 +1,16 @@
+use std::{collections::HashSet, fmt};
+
+use crate::analysis::types::GenericsMap;
+
 pub use super::Spanned;
 use super::{Grammar, LSPAnalysis, ParserResponse, Span};
-use chumsky::{error::Rich, extra::Err, input::{Input, SpannedInput}, span::SimpleSpan, Parser};
+use chumsky::{
+    error::Rich,
+    extra::Err,
+    input::{Input, SpannedInput},
+    span::SimpleSpan,
+    Parser,
+};
 use heraclitus_compiler::prelude::*;
 use lexer::{get_rules, Token};
 use prelude::lexer::Lexer;
@@ -22,7 +32,7 @@ pub enum InterpolatedText {
 
 #[derive(PartialEq, Debug, Clone)]
 pub enum Block {
-    Block(Vec<Spanned<Statement>>),
+    Block(Vec<Spanned<CommandModifier>>, Vec<Spanned<Statement>>),
     Error,
 }
 
@@ -38,6 +48,49 @@ pub enum InterpolatedCommand {
     CommandOption(String),
     Expression(Box<Spanned<Expression>>),
     Text(String),
+}
+
+#[derive(PartialEq, Eq, Clone, Hash)]
+pub enum DataType {
+    Any,
+    Number,
+    Boolean,
+    Text,
+    Null,
+    Array(Box<DataType>),
+    Union(Vec<DataType>),
+    Generic(usize),
+    Error,
+}
+
+impl DataType {
+    pub fn to_string(&self, generics_map: &GenericsMap) -> String {
+        match self {
+            DataType::Any => "Any".to_string(),
+            DataType::Number => "Num".to_string(),
+            DataType::Boolean => "Bool".to_string(),
+            DataType::Text => "Text".to_string(),
+            DataType::Null => "Null".to_string(),
+            DataType::Array(t) => format!("[{}]", t.to_string(generics_map)),
+            DataType::Union(types) => {
+                let mut seen = HashSet::new();
+                types
+                    .iter()
+                    .map(|t| t.to_string(generics_map))
+                    .filter(|t| seen.insert(t.clone()))
+                    .collect::<Vec<String>>()
+                    .join(" | ")
+            }
+            DataType::Generic(id) => generics_map.get(*id).to_string(generics_map),
+            DataType::Error => "<Invalid type>".to_string(),
+        }
+    }
+}
+
+impl fmt::Debug for DataType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.to_string(&GenericsMap::new()))
+    }
 }
 
 #[derive(PartialEq, Debug, Clone)]
@@ -78,21 +131,23 @@ pub enum Expression {
         Box<Spanned<Expression>>,
     ),
     FunctionInvocation(
+        Vec<Spanned<CommandModifier>>,
         Spanned<String>,
         Vec<Spanned<Expression>>,
         Option<Spanned<FailureHandler>>,
     ),
     Command(
+        Vec<Spanned<CommandModifier>>,
         Vec<Spanned<InterpolatedCommand>>,
         Option<Spanned<FailureHandler>>,
     ),
     Array(Vec<Spanned<Expression>>),
     Range(Box<Spanned<Expression>>, Box<Spanned<Expression>>),
     Null,
-    Cast(Box<Spanned<Expression>>, Spanned<String>, Spanned<String>),
+    Cast(Box<Spanned<Expression>>, Spanned<String>, Spanned<DataType>),
     Status,
     Nameof(Spanned<String>, Box<Spanned<Expression>>),
-    Is(Spanned<String>, Box<Spanned<Expression>>, Spanned<String>),
+    Is(Box<Spanned<Expression>>, Spanned<String>, Spanned<DataType>),
     Error,
 }
 
@@ -105,7 +160,7 @@ pub enum ImportContent {
 #[derive(PartialEq, Debug, Clone)]
 pub enum FunctionArgument {
     Generic(Spanned<String>),
-    Typed(Spanned<String>, Spanned<String>),
+    Typed(Spanned<String>, Spanned<DataType>),
     Error,
 }
 
@@ -141,10 +196,36 @@ pub enum CommandModifier {
     Silent,
 }
 
+#[derive(PartialEq, Debug, Clone, Eq)]
+pub enum CompilerFlag {
+    AllowNestedIfElse,
+    AllowGenericReturn,
+    AllowAbsurdCast,
+    Error,
+}
+
+impl fmt::Display for CompilerFlag {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            CompilerFlag::AllowNestedIfElse => write!(f, "allow_nested_if_else"),
+            CompilerFlag::AllowGenericReturn => write!(f, "allow_generic_return"),
+            CompilerFlag::AllowAbsurdCast => write!(f, "allow_absurd_cast"),
+            CompilerFlag::Error => write!(f, "<Invalid flag>"),
+        }
+    }
+}
+
+#[derive(PartialEq, Debug, Clone)]
+pub enum VariableInitType {
+    Expression(Spanned<Expression>),
+    DataType(Spanned<DataType>),
+    Error,
+}
+
 #[derive(PartialEq, Debug, Clone)]
 pub enum Statement {
     Expression(Box<Spanned<Expression>>),
-    VariableInit(Spanned<String>, Spanned<String>, Box<Spanned<Expression>>),
+    VariableInit(Spanned<String>, Spanned<String>, Spanned<VariableInitType>),
     VariableSet(Spanned<String>, Box<Spanned<Expression>>),
     IfCondition(
         Spanned<String>,
@@ -170,7 +251,6 @@ pub enum Statement {
     Return(Spanned<String>, Option<Box<Spanned<Expression>>>),
     Fail(Spanned<String>, Option<Box<Spanned<Expression>>>),
     Echo(Spanned<String>, Box<Spanned<Expression>>),
-    CommandModifier(Spanned<CommandModifier>),
     Block(Spanned<Block>),
     Comment(String),
     Error,
@@ -192,17 +272,19 @@ pub enum GlobalStatement {
     ///
     /// is_public, "fun", name, args, return_type, body
     FunctionDefinition(
+        Vec<Spanned<CompilerFlag>>,
         Spanned<bool>,
         Spanned<String>,
         Spanned<String>,
         Vec<Spanned<FunctionArgument>>,
-        Option<Spanned<String>>,
+        Option<Spanned<DataType>>,
         Vec<Spanned<Statement>>,
     ),
     Main(Spanned<String>, Vec<Spanned<Statement>>),
     Statement(Spanned<Statement>),
 }
 
+#[derive(Debug)]
 pub struct AmberCompiler {
     lexer: Lexer,
 }
@@ -220,11 +302,12 @@ impl AmberCompiler {
 }
 
 impl LSPAnalysis for AmberCompiler {
+    #[tracing::instrument(skip_all)]
     fn tokenize(&self, input: &str) -> Vec<Spanned<Token>> {
         // It should never fail
         self.lexer
             .tokenize(input)
-            .unwrap()
+            .expect("Failed to tokenize input")
             .iter()
             .filter_map(|t| {
                 if t.word == "\n" {
@@ -239,6 +322,7 @@ impl LSPAnalysis for AmberCompiler {
             .collect()
     }
 
+    #[tracing::instrument(skip_all)]
     fn parse<'a>(&self, tokens: &'a Vec<Spanned<Token>>) -> ParserResponse<'a> {
         let len = tokens.last().map(|t| t.1.end).unwrap_or(0);
         let parser_input = tokens.spanned(Span::new(len, len));

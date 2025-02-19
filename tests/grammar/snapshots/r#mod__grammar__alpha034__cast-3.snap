@@ -25,7 +25,7 @@ expression: "parse(&tokenize(\"1 as \"))"
                                         2..4,
                                     ),
                                     (
-                                        "",
+                                        <Invalid type>,
                                         4..4,
                                     ),
                                 ),
@@ -40,6 +40,6 @@ expression: "parse(&tokenize(\"1 as \"))"
         ],
     ),
     [
-        found end of input at 4..4 expected something else,
+        found end of input at 4..4 expected "type",
     ],
 )
