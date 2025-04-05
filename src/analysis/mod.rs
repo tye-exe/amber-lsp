@@ -1,17 +1,18 @@
 use rangemap::RangeInclusiveMap;
 use std::{collections::HashMap, ops::RangeInclusive};
-use types::GenericsMap;
+use tower_lsp::lsp_types::Url;
+use types::{DataType, GenericsMap};
 
 use crate::{
+    backend::{AmberVersion, Backend},
     files::{FileVersion, Files},
-    grammar::{
-        alpha034::{CommandModifier, CompilerFlag, DataType},
-        Span, Spanned,
-    },
+    grammar::{CommandModifier, CompilerFlag, Span, Spanned},
     paths::FileId,
+    stdlib::resolve,
 };
 
 pub mod alpha034;
+pub mod alpha035;
 pub mod types;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -19,12 +20,14 @@ pub struct FunctionSymbol {
     pub arguments: Vec<Spanned<FunctionArgument>>,
     pub is_public: bool,
     pub compiler_flags: Vec<CompilerFlag>,
+    pub docs: Option<String>,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct FunctionArgument {
     pub name: String,
     pub data_type: DataType,
+    pub is_optional: bool,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -53,6 +56,7 @@ pub enum Context {
     Block(BlockContext),
     Main,
     Loop,
+    DocString(String),
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -78,6 +82,7 @@ impl SymbolInfo {
                 is_public,
                 arguments,
                 compiler_flags,
+                ..
             }) => {
                 let compiler_flags_str = compiler_flags
                     .iter()
@@ -96,11 +101,21 @@ impl SymbolInfo {
                     self.name,
                     arguments
                         .iter()
-                        .map(|(FunctionArgument { name, data_type }, _)| format!(
-                            "{}: {}",
-                            name,
-                            data_type.to_string(generics_map)
-                        ))
+                        .map(
+                            |(
+                                FunctionArgument {
+                                    name,
+                                    data_type,
+                                    is_optional,
+                                },
+                                _,
+                            )| format!(
+                                "{}{}: {}",
+                                name,
+                                if *is_optional { "?" } else { "" },
+                                data_type.to_string(generics_map)
+                            )
+                        )
                         .collect::<Vec<String>>()
                         .join(", "),
                     self.data_type.to_string(generics_map)
@@ -305,6 +320,7 @@ pub fn insert_symbol_reference(
                     arguments,
                     is_public,
                     compiler_flags,
+                    docs,
                 }) => SymbolType::Function(FunctionSymbol {
                     arguments: arguments
                         .iter()
@@ -313,6 +329,7 @@ pub fn insert_symbol_reference(
                                 FunctionArgument {
                                     name: arg.name.clone(),
                                     data_type: scoped_generics.deref_type(&arg.data_type),
+                                    is_optional: arg.is_optional,
                                 },
                                 span.clone(),
                             )
@@ -320,6 +337,7 @@ pub fn insert_symbol_reference(
                         .collect(),
                     is_public,
                     compiler_flags,
+                    docs: docs.clone(),
                 }),
                 symbol => symbol,
             };
@@ -422,4 +440,26 @@ pub fn get_symbol_definition_info(
         }
         None => None,
     }
+}
+
+#[tracing::instrument(skip_all)]
+pub async fn map_import_path(uri: &Url, path: &str, backend: &Backend) -> Url {
+    if path.starts_with("std/") || path == "std" {
+        match backend.amber_version {
+            AmberVersion::Alpha034 if path == "std" => {
+                if let Some(url) = resolve(backend, "std/main".to_string()).await {
+                    return url;
+                }
+            }
+            _ => {
+                if let Some(url) = resolve(backend, path.to_string()).await {
+                    return url;
+                }
+            }
+        }
+    }
+
+    let path = uri.to_file_path().unwrap().parent().unwrap().join(path);
+
+    Url::from_file_path(path).unwrap()
 }

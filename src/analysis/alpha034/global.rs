@@ -1,20 +1,20 @@
 use crate::{
     analysis::{
-        self, import_symbol, insert_symbol_definition,
-        types::{make_union_type, matches_type},
+        self, import_symbol, insert_symbol_definition, map_import_path,
+        types::{make_union_type, matches_type, DataType},
         Context, FunctionContext, FunctionSymbol, ImportContext, SymbolInfo, SymbolLocation,
         SymbolType,
     },
     backend::Backend,
     files::FileVersion,
     grammar::{
-        alpha034::{DataType, FunctionArgument, GlobalStatement, ImportContent},
+        alpha034::{FunctionArgument, GlobalStatement, ImportContent},
         Span, Spanned,
     },
     paths::FileId,
 };
 
-use super::{map_import_path, stmnts::analyze_stmnt};
+use super::stmnts::analyze_stmnt;
 
 #[tracing::instrument(skip_all)]
 pub async fn analyze_global_stmnt(
@@ -147,6 +147,7 @@ pub async fn analyze_global_stmnt(
                                     analysis::FunctionArgument {
                                         name: name.clone(),
                                         data_type: DataType::Generic(new_generic_types.remove(0)),
+                                        is_optional: false,
                                     },
                                     span.clone(),
                                 )),
@@ -154,6 +155,7 @@ pub async fn analyze_global_stmnt(
                                     analysis::FunctionArgument {
                                         name: name.clone(),
                                         data_type: ty.clone(),
+                                        is_optional: false,
                                     },
                                     span.clone(),
                                 )),
@@ -165,6 +167,7 @@ pub async fn analyze_global_stmnt(
                             .iter()
                             .map(|(flag, _)| flag.clone())
                             .collect(),
+                        docs: None,
                     }),
                     *is_pub,
                     &vec![],

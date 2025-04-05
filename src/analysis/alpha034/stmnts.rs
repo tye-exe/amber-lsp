@@ -1,5 +1,3 @@
-use tracing::info;
-
 use crate::{
     analysis::{
         get_symbol_definition_info, insert_symbol_definition, insert_symbol_reference,
@@ -638,8 +636,6 @@ pub fn analyze_block(
     contexts: &Vec<Context>,
 ) -> Option<DataType> {
     let mut types: Vec<DataType> = vec![];
-
-    info!("Analyzing block, {}", span);
 
     if let Block::Block(modifiers, stmnt) = block {
         let mut new_contexts = contexts.clone();

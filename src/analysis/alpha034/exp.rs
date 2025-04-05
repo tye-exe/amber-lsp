@@ -5,12 +5,12 @@ use chumsky::span::SimpleSpan;
 use crate::{
     analysis::{
         get_symbol_definition_info, insert_symbol_reference,
-        types::{make_union_type, matches_type, GenericsMap},
+        types::{make_union_type, matches_type, DataType, GenericsMap},
         Context, FunctionArgument, FunctionSymbol, SymbolInfo, SymbolLocation, SymbolType,
     },
     files::{FileVersion, Files},
     grammar::{
-        alpha034::{DataType, Expression, InterpolatedCommand, InterpolatedText},
+        alpha034::{Expression, InterpolatedCommand, InterpolatedText},
         Spanned,
     },
     paths::FileId,
@@ -137,6 +137,7 @@ pub fn analyze_exp(
                                             name: arg.name.clone(),
                                             data_type: scoped_generic_types
                                                 .deref_type(&arg.data_type),
+                                            is_optional: false,
                                         },
                                         arg_span,
                                     )

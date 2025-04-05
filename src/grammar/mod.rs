@@ -1,13 +1,13 @@
-use std::fmt::Debug;
-
-use alpha034::GlobalStatement;
 use chumsky::{error::Rich, span::SimpleSpan};
+use std::fmt::{self, Debug};
 
 pub mod alpha034;
+pub mod alpha035;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Grammar {
-    Alpha034(Option<Vec<Spanned<GlobalStatement>>>),
+    Alpha034(Option<Vec<Spanned<alpha034::GlobalStatement>>>),
+    Alpha035(Option<Vec<Spanned<alpha035::GlobalStatement>>>),
 }
 
 pub type Span = SimpleSpan;
@@ -52,4 +52,29 @@ pub enum JumpDefinitionResult {
     InFile(Span),
     OpenFile(String),
     None,
+}
+
+#[derive(PartialEq, Eq, Debug, Clone)]
+pub enum CommandModifier {
+    Unsafe,
+    Silent,
+}
+
+#[derive(PartialEq, Debug, Clone, Eq)]
+pub enum CompilerFlag {
+    AllowNestedIfElse,
+    AllowGenericReturn,
+    AllowAbsurdCast,
+    Error,
+}
+
+impl fmt::Display for CompilerFlag {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            CompilerFlag::AllowNestedIfElse => write!(f, "allow_nested_if_else"),
+            CompilerFlag::AllowGenericReturn => write!(f, "allow_generic_return"),
+            CompilerFlag::AllowAbsurdCast => write!(f, "allow_absurd_cast"),
+            CompilerFlag::Error => write!(f, "<Invalid flag>"),
+        }
+    }
 }
