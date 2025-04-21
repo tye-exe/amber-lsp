@@ -2,6 +2,18 @@
     "comments": {
         "lineComment": "//",
     },
+    "docComments": {
+        "lineComment": "///",
+    },
+    "onEnterRules": [
+        {
+            "beforeText": "///.*",
+            "action": {
+                "indent": "none",
+                "appendText": "/// "
+            }
+        }
+    ],
     "brackets": [
         ["{", "}"],
         ["[", "]"],
