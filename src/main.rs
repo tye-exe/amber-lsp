@@ -1,5 +1,5 @@
 use std::{
-    os::unix::process::ExitStatusExt,
+    env::temp_dir,
     process::{Command, Stdio},
 };
 
@@ -17,9 +17,9 @@ enum CliAmberVersion {
     Alpha040,
 }
 
-impl Into<AmberVersion> for CliAmberVersion {
-    fn into(self) -> AmberVersion {
-        match self {
+impl From<CliAmberVersion> for AmberVersion {
+    fn from(val: CliAmberVersion) -> Self {
+        match val {
             CliAmberVersion::Auto => AmberVersion::Alpha034,
             CliAmberVersion::Alpha034 => AmberVersion::Alpha034,
             CliAmberVersion::Alpha035 => AmberVersion::Alpha035,
@@ -56,8 +56,12 @@ struct Args {
     amber_version: CliAmberVersion,
 }
 
-#[tokio::main(flavor = "multi_thread", worker_threads = 10)]
+#[tokio::main]
 async fn main() {
+    let cache_dir = temp_dir().join("amber-lsp");
+    let file_appender = tracing_appender::rolling::hourly(cache_dir, "amber-lsp.log");
+    let (non_blocking_writer, _guard) = tracing_appender::non_blocking(file_appender);
+
     // construct a subscriber that prints formatted traces to stdout
     let subscriber = tracing_subscriber::fmt()
         // Use a more compact, abbreviated log format
@@ -72,16 +76,8 @@ async fn main() {
         .with_target(false)
         // Log when entering and exiting spans
         .with_span_events(FmtSpan::ENTER | FmtSpan::CLOSE)
-        // Log to stderr
-        // .with_writer(std::io::stderr)
         // log to a file
-        .with_writer(
-            std::fs::OpenOptions::new()
-                .create(true)
-                .append(true)
-                .open("amber-lsp.log")
-                .unwrap(),
-        )
+        .with_writer(non_blocking_writer)
         // Disabled ANSI color codes for better compatibility with some terminals
         .with_ansi(false)
         // Build the subscriber
@@ -107,22 +103,20 @@ async fn main() {
 
 #[tracing::instrument(skip_all)]
 fn detect_amber_version() -> AmberVersion {
-    let output = String::from_utf8_lossy(
-        Command::new("amber")
-            .arg("-V")
-            .stdout(Stdio::piped())
-            .output()
-            .unwrap_or(std::process::Output {
-                stdout: Vec::new(),
-                stderr: Vec::new(),
-                status: std::process::ExitStatus::from_raw(0),
-            })
-            .stdout
-            .as_slice(),
-    )
-    .to_string();
+    let output = Command::new("amber")
+        .arg("-V")
+        .stdout(Stdio::piped())
+        .output();
 
-    match output.split_whitespace().last() {
+    let version = match output {
+        Ok(output) => String::from_utf8_lossy(&output.stdout).to_string(),
+        Err(e) => {
+            tracing::error!("Failed to execute amber command: {}", e);
+            return AmberVersion::Alpha040; // Default to the latest version if detection fails
+        }
+    };
+
+    match version.split_whitespace().last() {
         Some("0.3.4-alpha") => AmberVersion::Alpha034,
         Some("0.3.5-alpha") => AmberVersion::Alpha035,
         Some("0.4.0-alpha") => AmberVersion::Alpha040,

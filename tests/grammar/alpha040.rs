@@ -12,9 +12,9 @@ fn tokenize(input: &str) -> Vec<Spanned<Token>> {
     AmberCompiler::new().tokenize(input)
 }
 
-fn parse<'a>(
-    tokens: &'a Vec<Spanned<Token>>,
-) -> (Option<Vec<Spanned<GlobalStatement>>>, Vec<Rich<'a, String>>) {
+fn parse(
+    tokens: &[Spanned<Token>],
+) -> (Option<Vec<Spanned<GlobalStatement>>>, Vec<Rich<'_, String>>) {
     let ParserResponse {
         ast,
         errors,
@@ -29,7 +29,7 @@ fn parse<'a>(
     (ast, errors)
 }
 
-fn parse_unwrap<'a>(tokens: &'a Vec<Spanned<Token>>) -> Vec<Spanned<GlobalStatement>> {
+fn parse_unwrap(tokens: &[Spanned<Token>]) -> Vec<Spanned<GlobalStatement>> {
     let (ast, errors) = parse(tokens);
     if !errors.is_empty() {
         panic!("Errors: {:?}", errors);
@@ -83,5 +83,9 @@ fn test_stdlib_math() {
 fn test_stdlib_text() {
     let stdlib = read_to_string("resources/alpha040/std/text.ab").unwrap();
 
-    assert_debug_snapshot!(parse_unwrap(&tokenize(&stdlib)));
+    let tokens = tokenize(&stdlib);
+
+    assert_debug_snapshot!(tokens);
+
+    assert_debug_snapshot!(parse_unwrap(&tokens));
 }

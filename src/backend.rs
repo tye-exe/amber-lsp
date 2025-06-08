@@ -20,6 +20,8 @@ use crate::grammar::{self, Grammar, LSPAnalysis, ParserResponse};
 use crate::paths::FileId;
 use crate::stdlib::find_in_stdlib;
 
+type PinnedFuture<'a, T> = Pin<Box<dyn Future<Output = Result<T>> + Send + 'a>>;
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum AmberVersion {
     Alpha034,
@@ -67,22 +69,14 @@ impl Backend {
     }
 
     #[tracing::instrument(skip_all)]
-    pub fn open_document<'a>(
-        &'a self,
-        uri: &'a Url,
-    ) -> Pin<Box<dyn Future<Output = Result<(FileId, FileVersion)>> + Send + 'a>> {
+    pub fn open_document<'a>(&'a self, uri: &'a Url) -> PinnedFuture<'a, (FileId, FileVersion)> {
         Box::pin(async move {
             if let Some(file_id) = self.files.get(uri) {
                 let version = self.files.get_latest_version(file_id);
                 return Ok((file_id, version));
             }
 
-            let text = match self
-                .files
-                .fs
-                .read(&uri.to_file_path().unwrap().to_string_lossy())
-                .await
-            {
+            let text = match self.files.fs.read(&uri.to_file_path().unwrap()).await {
                 Ok(text) => Rope::from_str(&text),
                 Err(_) => {
                     return Err(Error::internal_error());
@@ -302,7 +296,7 @@ impl LanguageServer for Backend {
                                 work_done_progress_options: WorkDoneProgressOptions::default(),
                                 legend: SemanticTokensLegend {
                                     token_types: self.token_types.to_vec(),
-                                    token_modifiers: vec![].into(),
+                                    token_modifiers: vec![],
                                 },
                                 range: Some(true),
                                 full: Some(SemanticTokensFullOptions::Bool(true)),
@@ -874,12 +868,7 @@ impl LanguageServer for Backend {
                     searched_path.parent().unwrap()
                 };
 
-                for entry_path in self
-                    .files
-                    .fs
-                    .read_dir(dir_to_search.to_str().unwrap())
-                    .await
-                {
+                for entry_path in self.files.fs.read_dir(dir_to_search).await {
                     let entry_name = entry_path
                         .file_name()
                         .unwrap()
@@ -893,12 +882,10 @@ impl LanguageServer for Backend {
                             Ok(target) if target.is_dir() => CompletionItemKind::FOLDER,
                             _ => CompletionItemKind::FILE,
                         }
+                    } else if entry_path.is_dir() {
+                        CompletionItemKind::FOLDER
                     } else {
-                        if entry_path.is_dir() {
-                            CompletionItemKind::FOLDER
-                        } else {
-                            CompletionItemKind::FILE
-                        }
+                        CompletionItemKind::FILE
                     };
 
                     let absolute_entry_path = entry_path.canonicalize().unwrap();
@@ -950,12 +937,12 @@ impl LanguageServer for Backend {
                                 return None;
                             }
 
-                            return get_symbol_definition_info(
+                            get_symbol_definition_info(
                                 &self.files,
                                 name,
                                 &location.file,
                                 usize::MAX,
-                            );
+                            )
                         })
                         .collect::<Vec<SymbolInfo>>(),
                     _ => symbol_table
@@ -1064,7 +1051,7 @@ impl LanguageServer for Backend {
 
         match symbol_info.symbol_type {
             SymbolType::Function(FunctionSymbol { ref arguments, .. }) => {
-                let mut active_parameter = 0 as u32;
+                let mut active_parameter = 0_u32;
 
                 info!(
                     "Signature help for function {} at offset {}",

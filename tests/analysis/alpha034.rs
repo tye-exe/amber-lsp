@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{path::Path, sync::Arc};
 
 use amber_lsp::{
     analysis::{FunctionSymbol, SymbolType},
@@ -23,7 +23,16 @@ async fn test_function_definition() {
 
     let vfs = &backend.files.fs;
 
-    let file = "/main.ab";
+    let file = {
+        #[cfg(windows)]
+        {
+            Path::new("C:\\main.ab")
+        }
+        #[cfg(unix)]
+        {
+            Path::new("/main.ab")
+        }
+    };
     vfs.write(
         file,
         "
@@ -39,6 +48,7 @@ async fn test_function_definition() {
     .await
     .unwrap();
 
+    // FIXME: File paths should be os independent
     let uri = Url::from_file_path(file).unwrap();
     let file_id = backend.open_document(&uri).await.unwrap();
 
@@ -75,7 +85,16 @@ async fn test_variable_definition() {
 
     let vfs = &backend.files.fs;
 
-    let file = "/main.ab";
+    let file = {
+        #[cfg(windows)]
+        {
+            Path::new("C:\\main.ab")
+        }
+        #[cfg(unix)]
+        {
+            Path::new("/main.ab")
+        }
+    };
     vfs.write(
         file,
         "
@@ -114,7 +133,16 @@ async fn test_variable_scope() {
 
     let vfs = &backend.files.fs;
 
-    let file = "/main.ab";
+    let file = {
+        #[cfg(windows)]
+        {
+            Path::new("C:\\main.ab")
+        }
+        #[cfg(unix)]
+        {
+            Path::new("/main.ab")
+        }
+    };
     vfs.write(
         file,
         "
@@ -188,7 +216,16 @@ async fn test_symbol_reference_in_expression() {
 
     let vfs = &backend.files.fs;
 
-    let file = "/main.ab";
+    let file = {
+        #[cfg(windows)]
+        {
+            Path::new("C:\\main.ab")
+        }
+        #[cfg(unix)]
+        {
+            Path::new("/main.ab")
+        }
+    };
     vfs.write(
         file,
         r#"
@@ -239,7 +276,16 @@ async fn test_public_definitions() {
 
     let vfs = &backend.files.fs;
 
-    let file = "/main.ab";
+    let file = {
+        #[cfg(windows)]
+        {
+            Path::new("C:\\main.ab")
+        }
+        #[cfg(unix)]
+        {
+            Path::new("/main.ab")
+        }
+    };
     vfs.write(file, r#"pub fun foo() {}"#).await.unwrap();
 
     let uri = Url::from_file_path(file).unwrap();
@@ -267,8 +313,17 @@ async fn test_import_specific_symbols() {
 
     let vfs = &backend.files.fs;
 
-    let src_file = "/src.ab";
-    let main_file = "/main.ab";
+    let (src_file, main_file) = {
+        #[cfg(windows)]
+        {
+            (Path::new("C:\\src.ab"), Path::new("C:\\main.ab"))
+        }
+        #[cfg(unix)]
+        {
+            (Path::new("/src.ab"), Path::new("/main.ab"))
+        }
+    };
+
     vfs.write(
         src_file,
         r#"pub fun foo(a, b) {
@@ -320,8 +375,17 @@ async fn test_import_all_symbols() {
 
     let vfs = &backend.files.fs;
 
-    let src_file = "/src.ab";
-    let main_file = "/main.ab";
+    let (src_file, main_file) = {
+        #[cfg(windows)]
+        {
+            (Path::new("C:\\src.ab"), Path::new("C:\\main.ab"))
+        }
+        #[cfg(unix)]
+        {
+            (Path::new("/src.ab"), Path::new("/main.ab"))
+        }
+    };
+
     vfs.write(src_file, r#"pub fun foo() {}"#).await.unwrap();
     vfs.write(
         main_file,
@@ -366,7 +430,16 @@ async fn test_generic_type_inference() {
 
     let vfs = &backend.files.fs;
 
-    let file = "/main.ab";
+    let file = {
+        #[cfg(windows)]
+        {
+            Path::new("C:\\main.ab")
+        }
+        #[cfg(unix)]
+        {
+            Path::new("/main.ab")
+        }
+    };
     vfs.write(
         file,
         r#"
@@ -397,7 +470,10 @@ async fn test_generic_type_inference() {
         SymbolType::Function(FunctionSymbol { arguments, .. }) => {
             assert_debug_snapshot!(arguments
                 .iter()
-                .map(|(arg, _)| (arg.name.clone(), arg.data_type.to_string(&backend.files.generic_types)))
+                .map(|(arg, _)| (
+                    arg.name.clone(),
+                    arg.data_type.to_string(&backend.files.generic_types)
+                ))
                 .collect::<Vec<_>>());
         }
         _ => panic!("Expected function symbol"),
@@ -419,7 +495,16 @@ async fn test_generics_reference() {
 
     let vfs = &backend.files.fs;
 
-    let file = "/main.ab";
+    let file = {
+        #[cfg(windows)]
+        {
+            Path::new("C:\\main.ab")
+        }
+        #[cfg(unix)]
+        {
+            Path::new("/main.ab")
+        }
+    };
     vfs.write(
         file,
         r#"
@@ -447,7 +532,10 @@ async fn test_generics_reference() {
         SymbolType::Function(FunctionSymbol { arguments, .. }) => {
             assert_debug_snapshot!(arguments
                 .iter()
-                .map(|(arg, _)| (arg.name.clone(), arg.data_type.to_string(&backend.files.generic_types)))
+                .map(|(arg, _)| (
+                    arg.name.clone(),
+                    arg.data_type.to_string(&backend.files.generic_types)
+                ))
                 .collect::<Vec<_>>());
         }
         _ => panic!("Expected function symbol"),
