@@ -260,7 +260,9 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm ci
+          npm i -g vsce
         working-directory: clients/vscode
 
       - name: Fetch local artifacts
@@ -272,9 +274,11 @@ jobs:
 
       - name: Package extension
         run:  vsce package
+        working-directory: clients/vscode
 
       - name: Upload .vsix as artifact
         uses: actions/upload-artifact@v4
+        working-directory: clients/vscode
         with:
           name: artifacts-vscode-extension
           path: '*.vsix'
