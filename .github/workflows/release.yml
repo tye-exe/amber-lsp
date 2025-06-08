@@ -207,9 +207,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.plan.outputs.val).ci.github.artifacts_matrix }}
-    
-    env:
-      FILE_NAME: "amber-ext-${{ join(matrix.targets, '_') }}.vsix"
 
     runs-on: ubuntu-latest
 
@@ -235,15 +232,28 @@ jobs:
           path: clients/vscode/out/
           merge-multiple: true
 
+      - name: Unpack artifacts
+        run: |
+          for file in *.tar.gz; do
+            tar -xf "$file" -C ./
+          done
+
+          for file in *.zip; do
+            unzip -o "$file" -d ./
+          done
+
+          rm -f *.tar.gz *.zip *.json *.sha256
+        working-directory: clients/vscode/out
+
       - name: Package extension
-        run:  vsce package -o ${{ env.FILE_NAME }}
+        run:  vsce package -o amber-ext-${{ join(matrix.targets, '_') }}.vsix
         working-directory: clients/vscode
 
       - name: Upload .vsix as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: artifacts-vscode-extension
-          path: clients/vscode/${{ env.FILE_NAME }}
+          name: artifacts-vscode-extension-${{ join(matrix.targets, '_') }}
+          path: clients/vscode/amber-ext-${{ join(matrix.targets, '_') }}.vsix
   
   # Determines if we should publish/announce
   host:

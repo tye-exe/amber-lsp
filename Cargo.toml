@@ -50,3 +50,4 @@ targets = ["aarch64-apple-darwin", "x86_64-apple-darwin", "x86_64-unknown-linux-
 pr-run-mode = "plan"
 # Skip checking whether the specified configuration files are up to date
 allow-dirty = ["ci"]
+unix-archive = ".tar.gz"
