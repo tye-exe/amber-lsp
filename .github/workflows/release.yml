@@ -278,7 +278,6 @@ jobs:
 
       - name: Upload .vsix as artifact
         uses: actions/upload-artifact@v4
-        working-directory: clients/vscode
         with:
           name: artifacts-vscode-extension
           path: '*.vsix'
