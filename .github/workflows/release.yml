@@ -234,15 +234,15 @@ jobs:
 
       - name: Unpack artifacts
         run: |
+          shopt -s nullglob
+
           for file in *.tar.gz; do
-            tar -xf "$file" -C ./
+            tar -xzf "$file"
           done
 
           for file in *.zip; do
             unzip -o "$file" -d ./
           done
-
-          rm -f *.tar.gz *.zip *.json *.sha256
         working-directory: clients/vscode/out
 
       - name: Package extension
