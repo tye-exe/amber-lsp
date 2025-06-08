@@ -233,14 +233,14 @@ jobs:
           merge-multiple: true
 
       - name: Package extension
-        run:  vsce package
+        run:  vsce package -o amber-ext.vsix
         working-directory: clients/vscode
 
       - name: Upload .vsix as artifact
         uses: actions/upload-artifact@v4
         with:
           name: artifacts-vscode-extension
-          path: '*.vsix'
+          path: clients/vscode/amber-ext.vsix
   
   # Determines if we should publish/announce
   host:
