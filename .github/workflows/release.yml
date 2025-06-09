@@ -237,11 +237,11 @@ jobs:
           shopt -s nullglob
 
           for file in *.tar.gz; do
-            tar -xzf "$file"
+            tar --strip-components=1 -xzf "$file"
           done
 
           for file in *.zip; do
-            unzip -o "$file" -d ./
+            unzip -jo "$file" -d ./
           done
         working-directory: clients/vscode/out
 
