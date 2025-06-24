@@ -37,7 +37,7 @@ Tests are divided based on Amber compiler version (eg. alpha034 for "0.3.4-alpha
 
 They are mainly based on snapshots using [cargo insta](https://insta.rs/docs/cli/).
 
-Code coverage is generated with (cargo tarpaulin)[https://crates.io/crates/cargo-tarpaulin].
+Code coverage is generated with [cargo tarpaulin](https://crates.io/crates/cargo-tarpaulin).
 You can test code coverage via `run_coverage.ab` script, which will display results in a form of an HTML page.
 
 ```bash
