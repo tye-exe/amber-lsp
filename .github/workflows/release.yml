@@ -252,7 +252,7 @@ jobs:
             build ./clients/vscode/package_vscode_ext.ab ./clients/vscode/package_vscode_ext.sh
 
       - name: Package and publish extension
-        run: ./package_vscode_ext.sh ${{ matrix.targets }} publish
+        run: ./package_vscode_ext.sh ${{ join(matrix.targets, '_') }} publish
         working-directory: clients/vscode
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
@@ -271,7 +271,13 @@ jobs:
       - build-global-artifacts
       - package-vscode-extension
     # Only run if we're "publishing", and only if local and global didn't fail (skipped is fine)
-    if: ${{ always() && needs.plan.outputs.publishing == 'true' && (needs.build-global-artifacts.result == 'skipped' || needs.build-global-artifacts.result == 'success') && (needs.build-local-artifacts.result == 'skipped' || needs.build-local-artifacts.result == 'success') }}
+    if: ${{
+        always() &&
+        needs.plan.outputs.publishing == 'true' &&
+        (needs.build-global-artifacts.result == 'skipped' || needs.build-global-artifacts.result == 'success') &&
+        (needs.build-local-artifacts.result == 'skipped' || needs.build-local-artifacts.result == 'success') }} &&
+        (needs.package-vscode-extension == 'skipped' || needs.package-vscode-extension == 'success')
+      }}
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
