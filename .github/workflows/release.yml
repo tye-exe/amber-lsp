@@ -228,7 +228,7 @@ jobs:
       - name: Fetch local artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: artifacts-build-local-${{ matrix.targets }}
+          pattern: artifacts-build-local-${{ join(matrix.targets, '_') }}
           path: clients/vscode/out/
           merge-multiple: true
 
