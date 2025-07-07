@@ -276,7 +276,7 @@ jobs:
         needs.plan.outputs.publishing == 'true' &&
         (needs.build-global-artifacts.result == 'skipped' || needs.build-global-artifacts.result == 'success') &&
         (needs.build-local-artifacts.result == 'skipped' || needs.build-local-artifacts.result == 'success') }} &&
-        (needs.package-vscode-extension == 'skipped' || needs.package-vscode-extension == 'success')
+        (needs.package-vscode-extension.result == 'skipped' || needs.package-vscode-extension.result == 'success')
       }}
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

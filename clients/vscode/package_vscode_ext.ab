@@ -24,6 +24,6 @@ main (args) {
     $ vsce package -o {package_name} --target {target} $?
 
     if args[2] == "publish" {
-        $ vsce publish --target {target} --skip-duplicate -i {package_name} $?
+        $ vsce publish --skip-duplicate -i {package_name} $?
     }
 }
