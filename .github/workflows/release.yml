@@ -243,11 +243,15 @@ jobs:
           for file in *.tar.gz; do
             tar --strip-components=1 -xzf "$file"
           done
+
+          rm -f *.zip *.tar.gz
+
+          ls -l
         working-directory: clients/vscode/server/
 
       - name: Check artifacts
         working-directory: clients/vscode/server/
-        run: test -x amber-lsp || test -x amber-lsp.exe
+        run: test -x amber-lsp || test -e amber-lsp.exe
 
       - name: Build script
         uses: docker://ghcr.io/amber-lang/amber:alpine-0.4.0-alpha
