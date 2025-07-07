@@ -36,3 +36,6 @@ coverage_output
 # Locally generated scripts. We should only have amber scripts in repo.
 # This exclusion helps to not commit built amber scripts.
 *.sh
+
+# Env vars
+*.env

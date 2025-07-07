@@ -3,7 +3,7 @@
 	"description": "Amber language server",
 	"author": "KrosFire",
 	"license": "MIT",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"publisher": "amber-lsp-publisher",
 	"repository": {
 		"type": "git",

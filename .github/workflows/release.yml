@@ -251,17 +251,63 @@ jobs:
           args: |
             build ./clients/vscode/package_vscode_ext.ab ./clients/vscode/package_vscode_ext.sh
 
-      - name: Package and publish extension
-        run: ./package_vscode_ext.sh ${{ join(matrix.targets, '_') }} publish
+      - name: Package extension
+        run: ./package_vscode_ext.sh ${{ join(matrix.targets, '_') }}
         working-directory: clients/vscode
-        env:
-          VSCE_PAT: ${{ secrets.VSCE_PAT }}
 
       - name: Upload .vsix as artifact
         uses: actions/upload-artifact@v4
         with:
           name: artifacts-vscode-extension-${{ join(matrix.targets, '_') }}
           path: clients/vscode/*.vsix
+
+  publish-vscode-extendion:
+    needs:
+      - plan
+      - package-vscode-extension
+
+    # Only run if we're "publishing" and the package step didn't fail (skipped is fine)
+    if: ${{ always() && needs.plan.outputs.publishing == 'true' && (needs.package-vscode-extension.result == 'skipped' || needs.package-vscode-extension.result == 'success') }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install vsce
+        run: npm install -g vsce
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: artifacts-vscode-extension-*
+          path: clients/vscode/
+
+      - name: Publish VSCode extension (macOS Apple Silicon)
+        run: vsce publish -i amber-ext-darwin-arm64.vsix
+        working-directory: clients/vscode/
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+
+      - name: Publish VSCode extension (macOS Intel)
+        run: vsce publish -i amber-ext-darwin-x64.vsix
+        working-directory: clients/vscode/
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+
+      - name: Publish VSCode extension (Windows x64)
+        run: vsce publish -i amber-ext-win32-x64.vsix
+        working-directory: clients/vscode/
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+
+      - name: Publish VSCode extension (Linux x64)
+        run: vsce publish -i amber-ext-linux-x64.vsix
+        working-directory: clients/vscode/
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
 
   # Determines if we should publish/announce
   host:
@@ -270,13 +316,15 @@ jobs:
       - build-local-artifacts
       - build-global-artifacts
       - package-vscode-extension
+      - publish-vscode-extendion
     # Only run if we're "publishing", and only if local and global didn't fail (skipped is fine)
     if: ${{
         always() &&
         needs.plan.outputs.publishing == 'true' &&
         (needs.build-global-artifacts.result == 'skipped' || needs.build-global-artifacts.result == 'success') &&
         (needs.build-local-artifacts.result == 'skipped' || needs.build-local-artifacts.result == 'success') }} &&
-        (needs.package-vscode-extension.result == 'skipped' || needs.package-vscode-extension.result == 'success')
+        (needs.package-vscode-extension.result == 'skipped' || needs.package-vscode-extension.result == 'success') &&
+        (needs.publish-vscode-extendion.result == 'skipped' || needs.publish-vscode-extendion.result == 'success')
       }}
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

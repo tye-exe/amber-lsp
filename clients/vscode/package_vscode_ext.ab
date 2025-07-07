@@ -22,8 +22,4 @@ main (args) {
 
     let package_name = "amber-ext-{target}.vsix"
     $ vsce package -o {package_name} --target {target} $?
-
-    if args[2] == "publish" {
-        $ vsce publish --skip-duplicate -i {package_name} $?
-    }
 }
