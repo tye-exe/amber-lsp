@@ -24,7 +24,7 @@ export function activate(context: ExtensionContext) {
 	const version = workspace.getConfiguration('amber-lsp').get<string>('version', 'auto');
 
 	let ext = platform() === 'win32' ? '.exe' : '';
-	const command = process.env.SERVER_PATH || `${context.extensionPath}/out/amber-lsp${ext}`
+	const command = process.env.SERVER_PATH || `${context.extensionPath}/server/amber-lsp${ext}`
 
 	const run: Executable = {
 	  command,
@@ -92,7 +92,7 @@ export function activate(context: ExtensionContext) {
 				  logs,
           editor: 'vscode',
           os: platform(),
-          lspVersion: '0.1.5',
+          lspVersion: '0.1.8',
 				})
 
 				window.showInformationMessage("Crash report sent successfully. Thank you for helping us improve Amber!");

@@ -229,21 +229,26 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           pattern: artifacts-build-local-${{ join(matrix.targets, '_') }}
-          path: clients/vscode/out/
+          path: clients/vscode/server/
           merge-multiple: true
 
       - name: Unpack artifacts
         run: |
           shopt -s nullglob
 
-          for file in *.tar.gz; do
-            tar --strip-components=1 -xzf "$file"
-          done
-
           for file in *.zip; do
             unzip -jo "$file" -d ./
           done
-        working-directory: clients/vscode/out
+
+          for file in *.tar.gz; do
+            tar --strip-components=1 -xzf "$file"
+          done
+        working-directory: clients/vscode/server/
+
+      - name: Check artifacts
+        working-directory: clients/vscode/server/
+        run: |
+          test -x ./amber-lsp
 
       - name: Build script
         uses: docker://ghcr.io/amber-lang/amber:alpine-0.4.0-alpha
@@ -285,37 +290,31 @@ jobs:
 
       - name: Unpack artifacts
         run: |
-          shopt -s nullglob
-
-          for file in *.tar.gz; do
-            tar --strip-components=1 -xzf "$file"
-          done
-
           for file in *.zip; do
             unzip -jo "$file" -d ./
           done
         working-directory: clients/vscode/
 
       - name: Publish VSCode extension (macOS Apple Silicon)
-        run: vsce publish -i amber-ext-darwin-arm64.vsix
+        run: vsce publish -i amber-ext-darwin-arm64.vsix --skip-duplicate
         working-directory: clients/vscode/
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
 
       - name: Publish VSCode extension (macOS Intel)
-        run: vsce publish -i amber-ext-darwin-x64.vsix
+        run: vsce publish -i amber-ext-darwin-x64.vsix --skip-duplicate
         working-directory: clients/vscode/
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
 
       - name: Publish VSCode extension (Windows x64)
-        run: vsce publish -i amber-ext-win32-x64.vsix
+        run: vsce publish -i amber-ext-win32-x64.vsix --skip-duplicate
         working-directory: clients/vscode/
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
 
       - name: Publish VSCode extension (Linux x64)
-        run: vsce publish -i amber-ext-linux-x64.vsix
+        run: vsce publish -i amber-ext-linux-x64.vsix --skip-duplicate
         working-directory: clients/vscode/
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
