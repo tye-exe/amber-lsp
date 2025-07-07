@@ -291,13 +291,6 @@ jobs:
           path: clients/vscode/
           merge-multiple: true
 
-      - name: Unpack artifacts
-        run: |
-          for file in *.zip; do
-            unzip -jo "$file" -d ./
-          done
-        working-directory: clients/vscode/
-
       - name: Publish VSCode extension (macOS Apple Silicon)
         run: vsce publish -i amber-ext-darwin-arm64.vsix --skip-duplicate
         working-directory: clients/vscode/
