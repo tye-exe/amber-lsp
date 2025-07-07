@@ -3,6 +3,5 @@ node_modules
 src/
 tsconfig.json
 esbuild.js
-assets/
 *.ab
 *.sh
