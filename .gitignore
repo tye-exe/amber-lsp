@@ -39,3 +39,6 @@ coverage_output
 
 # Env vars
 *.env
+
+# MacOS system files
+.DS_Store

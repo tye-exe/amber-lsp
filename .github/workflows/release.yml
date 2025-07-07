@@ -261,12 +261,11 @@ jobs:
           name: artifacts-vscode-extension-${{ join(matrix.targets, '_') }}
           path: clients/vscode/*.vsix
 
-  publish-vscode-extendion:
+  publish-vscode-extension:
     needs:
       - plan
       - package-vscode-extension
 
-    # Only run if we're "publishing" and the package step didn't fail (skipped is fine)
     if: ${{ always() && needs.plan.outputs.publishing == 'true' && (needs.package-vscode-extension.result == 'skipped' || needs.package-vscode-extension.result == 'success') }}
 
     runs-on: ubuntu-latest
@@ -284,6 +283,19 @@ jobs:
         with:
           pattern: artifacts-vscode-extension-*
           path: clients/vscode/
+
+      - name: Unpack artifacts
+        run: |
+          shopt -s nullglob
+
+          for file in *.tar.gz; do
+            tar --strip-components=1 -xzf "$file"
+          done
+
+          for file in *.zip; do
+            unzip -jo "$file" -d ./
+          done
+        working-directory: clients/vscode/
 
       - name: Publish VSCode extension (macOS Apple Silicon)
         run: vsce publish -i amber-ext-darwin-arm64.vsix
@@ -316,15 +328,15 @@ jobs:
       - build-local-artifacts
       - build-global-artifacts
       - package-vscode-extension
-      - publish-vscode-extendion
+      - publish-vscode-extension
     # Only run if we're "publishing", and only if local and global didn't fail (skipped is fine)
     if: ${{
         always() &&
         needs.plan.outputs.publishing == 'true' &&
         (needs.build-global-artifacts.result == 'skipped' || needs.build-global-artifacts.result == 'success') &&
-        (needs.build-local-artifacts.result == 'skipped' || needs.build-local-artifacts.result == 'success') }} &&
+        (needs.build-local-artifacts.result == 'skipped' || needs.build-local-artifacts.result == 'success') &&
         (needs.package-vscode-extension.result == 'skipped' || needs.package-vscode-extension.result == 'success') &&
-        (needs.publish-vscode-extendion.result == 'skipped' || needs.publish-vscode-extendion.result == 'success')
+        (needs.publish-vscode-extension.result == 'skipped' || needs.publish-vscode-extension.result == 'success')
       }}
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
