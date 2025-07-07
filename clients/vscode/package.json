@@ -1,6 +1,7 @@
 {
 	"name": "amber-lsp",
-	"description": "Amber language server",
+	"displayName": "Amber Language",
+	"description": "Support for the Amber programming language in Visual Studio Code.",
 	"author": "KrosFire",
 	"license": "MIT",
 	"version": "1.0.2",

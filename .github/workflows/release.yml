@@ -272,8 +272,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: Install vsce
         run: npm install -g vsce
@@ -283,6 +281,7 @@ jobs:
         with:
           pattern: artifacts-vscode-extension-*
           path: clients/vscode/
+          merge-multiple: true
 
       - name: Unpack artifacts
         run: |
