@@ -247,8 +247,7 @@ jobs:
 
       - name: Check artifacts
         working-directory: clients/vscode/server/
-        run: |
-          test -x ./amber-lsp
+        run: test -x ./amber-lsp*
 
       - name: Build script
         uses: docker://ghcr.io/amber-lang/amber:alpine-0.4.0-alpha
