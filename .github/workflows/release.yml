@@ -261,7 +261,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: artifacts-vscode-extension-${{ join(matrix.targets, '_') }}
-          path: clients/vscode/amber-ext-${{ join(matrix.targets, '_') }}.vsix
+          path: clients/vscode/*.vsix
 
   # Determines if we should publish/announce
   host:

@@ -3,14 +3,16 @@
 	"description": "Amber language server",
 	"author": "KrosFire",
 	"license": "MIT",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"publisher": "amber-lsp-publisher",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/amber-lang/amber-lsp"
 	},
 	"icon": "icon.png",
-	"categories": [],
+	"categories": [
+		"Programming Languages"
+	],
 	"keywords": [
 		"amber",
 		"lsp",

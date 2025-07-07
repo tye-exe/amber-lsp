@@ -20,9 +20,10 @@ fun target_to_valid_vsce_target(target: Text): Text {
 main (args) {
     let target = target_to_valid_vsce_target(args[1])
 
-    $ vsce package -o amber-ext-{target}.vsce --target {target} $?
+    let package_name = "amber-ext-{target}.vsix"
+    $ vsce package -o {package_name} --target {target} $?
 
     if args[2] == "publish" {
-        $ vsce publish --target {target} $?
+        $ vsce publish --target {target} --skip-duplicate -i {package_name} $?
     }
 }
