@@ -54,7 +54,7 @@ impl FS for MemoryFS {
     fn read<'a>(
         &'a self,
         path: &'a Path,
-    ) -> Pin<Box<(dyn Future<Output = Result<String>> + Send + 'a)>> {
+    ) -> Pin<Box<dyn Future<Output = Result<String>> + Send + 'a>> {
         Box::pin(async move {
             let files = self.files.lock().unwrap();
             Ok(files.get(path.to_str().unwrap()).unwrap().clone())
