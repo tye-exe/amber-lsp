@@ -13,7 +13,7 @@ async function main() {
     sourcesContent: false,
     platform: 'node',
     outfile: 'out/extension.js',
-    external: ['vscode', 'axios', 'os', 'path', 'fs', 'fs/promises'],
+    external: ['vscode', 'os', 'path', 'fs', 'fs/promises'],
     logLevel: 'warning',
     plugins: [
       /* add to the end of plugins array */
