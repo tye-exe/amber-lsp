@@ -73,3 +73,12 @@ If you're using Zed, you need to clone [Zed extension repo](https://github.com/a
 to local Amber LSP server binary.
 
 If you want to connect the server to some other editor, build the project and link to the executable
+
+### Release
+
+In order to make a release:
+
+1. Bump version in Cargo.toml and clients/vscode/package.json
+2. Create a new tag that equals to the version in Cargo.toml like this: `git tag "v1.0.0"`
+3. Push new tag `git push origin "v1.0.0"`
+4. Make sure that release pipeline finishes successfully
