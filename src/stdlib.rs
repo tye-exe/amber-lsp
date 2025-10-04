@@ -1,4 +1,9 @@
-use std::{env::temp_dir, future::Future, path::PathBuf, pin::Pin};
+use std::{
+    env::current_exe,
+    future::Future,
+    path::{Path, PathBuf},
+    pin::Pin,
+};
 
 use clap::builder::OsStr;
 use include_dir::{include_dir, Dir, DirEntry};
@@ -9,61 +14,84 @@ use crate::backend::{AmberVersion, Backend};
 
 pub const STDLIB: Dir = include_dir!("$CARGO_MANIFEST_DIR/resources/");
 
-pub fn is_builtin_file(uri: &Uri) -> bool {
-    let cache_dir = temp_dir().join("amber-lsp");
+fn get_stdlib_dir(amber_version: AmberVersion) -> Result<PathBuf, std::io::Error> {
+    let amber_subdir = match amber_version {
+        AmberVersion::Alpha034 => "alpha034",
+        AmberVersion::Alpha035 => "alpha035",
+        AmberVersion::Alpha040 => "alpha040",
+    };
+
+    Ok(current_exe()?
+        .parent()
+        .unwrap()
+        .to_path_buf()
+        .join("amber-lsp-resources")
+        .join(amber_subdir))
+}
+
+#[tracing::instrument]
+pub fn is_builtin_file(uri: &Uri, amber_version: AmberVersion) -> bool {
+    let builtin_file_path = match get_stdlib_dir(amber_version) {
+        Ok(dir) => dir,
+        Err(_) => {
+            return false;
+        }
+    }
+    .join("builtin.ab")
+    .canonicalize();
 
     let file_path = match uri.to_file_path() {
-        Some(path) => path,
+        Some(path) => path.canonicalize(),
         None => {
             return false;
         }
     };
 
-    file_path.starts_with(cache_dir) && file_path.ends_with("builtin.ab")
+    if builtin_file_path.is_err() || file_path.is_err() {
+        return false;
+    }
+
+    file_path.unwrap() == builtin_file_path.unwrap()
 }
 
 #[tracing::instrument(skip_all)]
-async fn save_resources(backend: &Backend) -> PathBuf {
-    let cache_dir = temp_dir().join("amber-lsp");
+pub async fn save_resources(backend: &Backend) -> PathBuf {
+    let stdlib_dir = get_stdlib_dir(backend.amber_version.clone()).unwrap();
 
-    let path = match backend.amber_version {
+    let binary_stdlib_dir = match backend.amber_version {
         AmberVersion::Alpha034 => "alpha034/".to_string(),
         AmberVersion::Alpha035 => "alpha035/".to_string(),
         AmberVersion::Alpha040 => "alpha040/".to_string(),
     };
 
-    let _ = backend
-        .files
-        .fs
-        .create_dir_all(&cache_dir.join(path.clone()))
-        .await;
+    let _ = backend.files.fs.create_dir_all(&stdlib_dir).await;
 
-    if let Some(dir) = STDLIB.get_dir(path.clone()) {
+    if let Some(dir) = STDLIB.get_dir(binary_stdlib_dir) {
         for entry in dir.entries() {
-            save_entry(backend, &cache_dir, entry).await;
+            save_entry(backend, &stdlib_dir, entry).await;
         }
     }
 
-    cache_dir.join(path.clone())
+    stdlib_dir
 }
 
 fn save_entry<'a>(
     backend: &'a Backend,
-    current_path: &'a PathBuf,
+    current_path: &'a Path,
     entry: &'a DirEntry<'a>,
 ) -> Pin<Box<dyn Future<Output = ()> + Send + 'a>> {
     Box::pin(async move {
         match entry {
             DirEntry::Dir(dir) => {
-                let path = current_path.join(dir.path());
+                let path = current_path.join(dir.path().file_name().unwrap());
 
                 let _ = backend.files.fs.create_dir_all(&path).await;
                 for entry in dir.entries() {
-                    save_entry(backend, current_path, entry).await;
+                    save_entry(backend, &path, entry).await;
                 }
             }
             DirEntry::File(file) => {
-                let path = current_path.join(file.path());
+                let path = current_path.join(file.path().file_name().unwrap());
 
                 if path.exists() {
                     return;
