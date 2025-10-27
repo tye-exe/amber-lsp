@@ -1,8 +1,9 @@
 [workspace]
 resolver = "2"
-members = ["lsp"]
+members = ["lsp", "lib"]
 
 [workspace.dependencies]
+lib = { path = "./lib" }
 tokio = "1.39.1"
 tower-lsp-server = "0.22.0"
 phf = "0.11"

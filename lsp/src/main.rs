@@ -3,8 +3,8 @@ use std::{
     process::{Command, Stdio},
 };
 
-use amber_lsp::backend::{AmberVersion, Backend};
 use clap::{builder::PossibleValue, Parser, ValueEnum};
+use lib::backend::{AmberVersion, Backend};
 use tower_lsp_server::{LspService, Server};
 use tracing::subscriber;
 use tracing_subscriber::fmt::format::FmtSpan;
