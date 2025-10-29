@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["lsp", "lib"]
+members = ["lsp", "lib", "formatter"]
 
 [workspace.dependencies]
 lib = { path = "./lib" }

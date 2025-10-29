@@ -1,7 +1,6 @@
 use clap::Parser;
-use lib::{backend::Backend, detect_amber_version, CliAmberVersion};
+use lib::{CliAmberVersion, detect_amber_version};
 use std::env::temp_dir;
-use tower_lsp_server::{LspService, Server};
 use tracing::subscriber;
 use tracing_subscriber::fmt::format::FmtSpan;
 
@@ -13,8 +12,7 @@ struct Args {
     amber_version: CliAmberVersion,
 }
 
-#[tokio::main]
-async fn main() {
+fn main() {
     let cache_dir = temp_dir().join("amber-lsp");
     let file_appender = tracing_appender::rolling::hourly(cache_dir, "amber-lsp.log");
     let (non_blocking_writer, _guard) = tracing_appender::non_blocking(file_appender);
@@ -45,15 +43,9 @@ async fn main() {
 
     let args = Args::parse();
 
-    let stdin = tokio::io::stdin();
-    let stdout = tokio::io::stdout();
-
     let amber_version = if args.amber_version == CliAmberVersion::Auto {
         detect_amber_version()
     } else {
         args.amber_version.into()
     };
-
-    let (service, socket) = LspService::new(|client| Backend::new(client, amber_version, None));
-    Server::new(stdin, stdout, socket).serve(service).await;
 }
