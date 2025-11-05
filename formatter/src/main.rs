@@ -1,5 +1,9 @@
+use amber_fmt::Output;
 use clap::Parser;
-use lib::{CliAmberVersion, detect_amber_version};
+use lib::{
+    CliAmberVersion,
+    grammar::{Grammar, LSPAnalysis, alpha040::AmberCompiler},
+};
 use std::env::temp_dir;
 use tracing::subscriber;
 use tracing_subscriber::fmt::format::FmtSpan;
@@ -41,11 +45,42 @@ fn main() {
     // use that subscriber to process traces emitted after this point
     subscriber::set_global_default(subscriber).expect("Could not set global default subscriber");
 
-    let args = Args::parse();
+    // let args = Args::parse();
 
-    let amber_version = if args.amber_version == CliAmberVersion::Auto {
-        detect_amber_version()
-    } else {
-        args.amber_version.into()
-    };
+    // let amber_version = if args.amber_version == CliAmberVersion::Auto {
+    //     detect_amber_version()
+    // } else {
+    //     args.amber_version.into()
+    // };
+
+    // let mut stdin = std::io::stdin();
+    // let mut data = String::new();
+    // stdin.read_to_string(&mut data).unwrap();
+
+    // For temporary testing
+    let data = include_str!("../../lib/resources/alpha040/std/array.ab");
+
+    let amber_compiler = AmberCompiler::new();
+    let tokenize = amber_compiler.tokenize(data);
+    let parse = amber_compiler.parse(&tokenize);
+
+    println!("{:?}", parse.ast);
+    match parse.ast {
+        Grammar::Alpha034(items) => todo!(),
+        Grammar::Alpha035(items) => todo!(),
+        Grammar::Alpha040(items) => {
+            if let Some(items) = items {
+                {
+                    let mut output = Output::default();
+                    for item in items {
+                        use amber_fmt::SpanTextOutput;
+                        (&item).output(&mut output);
+                    }
+                    let format = output.format(data).expect("Able to parse");
+                    println!("{format}");
+                }
+            }
+        }
+        Grammar::Alpha040(items) => {}
+    }
 }
